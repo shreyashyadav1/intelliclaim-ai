@@ -1,22 +1,25 @@
 """
 IntelliClaim AI - RAG (Retrieval-Augmented Generation) Service
 
-Indexes documents into ChromaDB via LlamaIndex and answers natural-language
-questions using LangChain's RetrievalQA chain. Falls back to mock responses
+Indexes documents into ChromaDB via LlamaIndex (VectorStoreIndex + ChromaVectorStore)
+and answers natural-language questions using a LangChain LCEL retrieval chain
+(OpenAI Embeddings + ChatOpenAI + Chroma retriever). Falls back to mock responses
 when OpenAI keys are not configured.
 """
 
 import logging
 import os
-from typing import Any, Optional
+from typing import Any
 
 from config import settings
 
 logger = logging.getLogger(__name__)
 
-# Lazy-initialised singletons for vector store components
-_chroma_collection = None
+# ---------------------------------------------------------------------------
+# Lazy-initialised singletons for vector store and LangChain components
+# ---------------------------------------------------------------------------
 _chroma_client = None
+_chroma_collection = None
 
 
 def _get_chroma_client():
@@ -34,7 +37,7 @@ def _get_chroma_client():
     return _chroma_client
 
 
-def _get_collection():
+def _get_chroma_collection():
     """Return (or create) the 'intelliclaim_docs' ChromaDB collection."""
     global _chroma_collection
     if _chroma_collection is None:
@@ -47,17 +50,33 @@ def _get_collection():
     return _chroma_collection
 
 
+def _get_langchain_vectorstore():
+    """Return a LangChain Chroma vector store with explicit OpenAI embeddings."""
+    from langchain_community.vectorstores import Chroma
+    from langchain_openai import OpenAIEmbeddings
+
+    client = _get_chroma_client()
+    if client is None:
+        return None
+
+    return Chroma(
+        client=client,
+        collection_name="intelliclaim_docs",
+        embedding_function=OpenAIEmbeddings(model="text-embedding-3-small"),
+    )
+
+
 class RAGService:
     """Retrieval-Augmented Generation service for document Q&A."""
 
     # ----------------------------------------------------------------
-    # Document indexing
+    # Document indexing — LlamaIndex + OpenAI Embeddings + ChromaDB
     # ----------------------------------------------------------------
     async def index_document(self, doc_id: str, text: str, metadata: dict) -> bool:
-        """Index a document's text into ChromaDB for later retrieval.
+        """Index a document's text using LlamaIndex + ChromaVectorStore.
 
-        Splits the text into overlapping chunks and stores them with
-        metadata in the vector store.
+        Creates a LlamaIndex Document, splits it into nodes, generates
+        OpenAI embeddings, and persists vectors into ChromaDB.
 
         Args:
             doc_id: Unique document identifier.
@@ -71,43 +90,79 @@ class RAGService:
             logger.warning("Skipping indexing for doc %s — empty text", doc_id)
             return False
 
+        if not settings.has_openai_key:
+            # In demo mode, fall back to raw Chroma upsert (no embeddings)
+            return self._index_demo(doc_id, text, metadata)
+
         try:
-            collection = _get_collection()
-            if collection is None:
-                logger.warning("ChromaDB collection unavailable; skipping indexing")
+            from llama_index.core import Document, VectorStoreIndex, StorageContext
+            from llama_index.vector_stores.chroma import ChromaVectorStore
+            from llama_index.embeddings.openai import OpenAIEmbedding
+            import chromadb
+
+            # Build the LlamaIndex Chroma vector store wrapper
+            chroma_client = _get_chroma_client()
+            if chroma_client is None:
                 return False
 
-            # Chunk the text into ~500-char overlapping segments
-            chunks = self._chunk_text(text, chunk_size=500, overlap=50)
+            chroma_collection = chroma_client.get_or_create_collection(
+                name="intelliclaim_docs",
+                metadata={"hnsw:space": "cosine"},
+            )
+            vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+            storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
-            ids = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
-            metadatas = [{**metadata, "doc_id": doc_id, "chunk_index": i} for i in range(len(chunks))]
+            # Create LlamaIndex Document with enriched metadata
+            doc = Document(text=text, metadata={**metadata, "doc_id": doc_id})
 
-            # Upsert into ChromaDB (it will compute default embeddings)
-            collection.upsert(
-                ids=ids,
-                documents=chunks,
-                metadatas=metadatas,
+            # Build the index — this triggers OpenAI embedding generation
+            index = VectorStoreIndex.from_documents(
+                [doc],
+                storage_context=storage_context,
+                embed_model=OpenAIEmbedding(model="text-embedding-3-small"),
+                show_progress=False,
             )
 
-            logger.info("Indexed %d chunks for document %s", len(chunks), doc_id)
+            logger.info("LlamaIndex indexed document %s into %d nodes", doc_id, len(index.docstore.docs))
             return True
 
         except Exception as e:
-            logger.error("Failed to index document %s: %s", doc_id, str(e))
+            logger.error("LlamaIndex indexing failed for %s: %s", doc_id, str(e))
+            return False
+
+    def _index_demo(self, doc_id: str, text: str, metadata: dict) -> bool:
+        """Demo-mode fallback: raw Chroma upsert without embeddings."""
+        try:
+            collection = _get_chroma_collection()
+            if collection is None:
+                return False
+
+            chunks = self._chunk_text(text, chunk_size=500, overlap=50)
+            ids = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
+            metadatas = [{**metadata, "doc_id": doc_id, "chunk_index": i} for i in range(len(chunks))]
+
+            collection.upsert(ids=ids, documents=chunks, metadatas=metadatas)
+            logger.info("Demo-indexed %d chunks for document %s", len(chunks), doc_id)
+            return True
+        except Exception as e:
+            logger.error("Demo indexing failed for %s: %s", doc_id, str(e))
             return False
 
     # ----------------------------------------------------------------
-    # Query / Q&A
+    # Query — LangChain LCEL retrieval chain + OpenAI Embeddings
     # ----------------------------------------------------------------
     async def query(self, question: str, top_k: int = 5) -> dict[str, Any]:
-        """Answer a natural-language question using indexed documents.
+        """Answer a natural-language question using LangChain + ChromaDB.
 
-        Uses LangChain with OpenAI when an API key is set; otherwise
-        returns mock results.
+        Uses a LangChain LCEL chain:
+            retriever (Chroma + OpenAI Embeddings) → context formatting
+            → ChatPromptTemplate → ChatOpenAI (GPT-4o) → StrOutputParser
+
+        Falls back to mock responses when OpenAI keys are not configured.
 
         Args:
-            question: The user's question.
+            question: The user's natural-language question.
+            top_k: Number of source chunks to retrieve.
 
         Returns:
             Dict with 'answer' (str) and 'source_documents' (list).
@@ -121,70 +176,78 @@ class RAGService:
         return self._mock_query(question)
 
     async def _query_with_langchain(self, question: str, top_k: int = 5) -> dict[str, Any]:
-        """Execute a RAG query using LangChain + ChromaDB + OpenAI.
+        """Execute a RAG query using a LangChain LCEL chain.
 
-        Args:
-            question: Natural-language question.
-
-        Returns:
-            Dict with answer and source_documents.
+        Components used:
+        - OpenAIEmbeddings (text-embedding-3-small) for vector retrieval
+        - Chroma vector store (via LangChain wrapper) for document retrieval
+        - ChatPromptTemplate for system prompt
+        - ChatOpenAI (GPT-4o) for generation
+        - StrOutputParser for clean output
         """
-        collection = _get_collection()
-        if collection is None or collection.count() == 0:
+        from langchain_core.prompts import ChatPromptTemplate
+        from langchain_core.runnables import RunnablePassthrough
+        from langchain_core.output_parsers import StrOutputParser
+        from langchain_openai import ChatOpenAI
+
+        vectorstore = _get_langchain_vectorstore()
+        if vectorstore is None or vectorstore._collection.count() == 0:
             return {
                 "answer": "No documents have been indexed yet. Please upload and index some documents first.",
                 "source_documents": [],
             }
 
-        # Retrieve relevant chunks from ChromaDB
-        results = collection.query(
-            query_texts=[question],
-            n_results=min(top_k, collection.count()),
+        # LangChain retriever backed by Chroma + OpenAI Embeddings
+        retriever = vectorstore.as_retriever(search_kwargs={"k": top_k})
+
+        # Retrieve documents to build sources list
+        docs = retriever.invoke(question)
+        if not docs:
+            return {
+                "answer": "No relevant documents were found for your question.",
+                "source_documents": [],
+            }
+
+        # Format docs for the prompt context
+        def _format_docs(docs):
+            return "\n\n---\n\n".join([d.page_content for d in docs])
+
+        # Build sources metadata
+        sources = [
+            {
+                "doc_id": doc.metadata.get("doc_id", "unknown"),
+                "text_snippet": doc.page_content[:200],
+                "score": getattr(doc, "score", 0.0),
+            }
+            for doc in docs
+        ]
+
+        # LangChain LCEL chain
+        prompt = ChatPromptTemplate.from_messages([
+            (
+                "system",
+                "You are an AI assistant for an insurance claim processing system called IntelliClaim. "
+                "Answer the user's question based ONLY on the provided context from indexed documents. "
+                "If the context does not contain enough information, say so clearly. "
+                "Be concise and accurate.",
+            ),
+            (
+                "human",
+                "Context:\n{context}\n\nQuestion: {question}",
+            ),
+        ])
+
+        llm = ChatOpenAI(model="gpt-4o", temperature=0.1, max_tokens=500)
+
+        chain = (
+            {"context": retriever | _format_docs, "question": RunnablePassthrough()}
+            | prompt
+            | llm
+            | StrOutputParser()
         )
 
-        # Build context from retrieved chunks
-        context_parts: list[str] = []
-        sources: list[dict] = []
-        if results and results["documents"] and results["documents"][0]:
-            for i, doc_text in enumerate(results["documents"][0]):
-                context_parts.append(doc_text)
-                meta = results["metadatas"][0][i] if results["metadatas"] else {}
-                distance = results["distances"][0][i] if results["distances"] else 0
-                sources.append({
-                    "doc_id": meta.get("doc_id", "unknown"),
-                    "text_snippet": doc_text[:200],
-                    "score": round(1 - distance, 4) if isinstance(distance, (int, float)) else 0,
-                })
-
-        context = "\n\n---\n\n".join(context_parts)
-
-        # Call OpenAI with the context
-        from openai import AsyncOpenAI
-        client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-
-        response = await client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an AI assistant for an insurance claim processing system called IntelliClaim. "
-                        "Answer the user's question based ONLY on the provided context from indexed documents. "
-                        "If the context does not contain enough information, say so clearly. "
-                        "Be concise and accurate."
-                    ),
-                },
-                {
-                    "role": "user",
-                    "content": f"Context:\n{context}\n\nQuestion: {question}",
-                },
-            ],
-            temperature=0.1,
-            max_tokens=500,
-        )
-
-        answer = response.choices[0].message.content.strip()
-        logger.info("RAG query answered: %s", question[:80])
+        answer = chain.invoke(question)
+        logger.info("LangChain RAG answered: %s", question[:80])
 
         return {
             "answer": answer,
@@ -192,17 +255,9 @@ class RAGService:
         }
 
     def _mock_query(self, question: str) -> dict[str, Any]:
-        """Generate a mock RAG response for demo mode.
-
-        Args:
-            question: The user's question.
-
-        Returns:
-            Mock answer and source documents.
-        """
+        """Generate a mock RAG response for demo mode."""
         question_lower = question.lower()
 
-        # Provide contextually relevant mock answers
         if any(kw in question_lower for kw in ["cost", "amount", "charge", "expensive", "billing"]):
             answer = (
                 "Based on the indexed documents, the average treatment cost across claims "
@@ -262,13 +317,9 @@ class RAGService:
     # Stats
     # ----------------------------------------------------------------
     async def get_index_stats(self) -> dict[str, Any]:
-        """Return statistics about the indexed documents.
-
-        Returns:
-            Dict with indexed_chunks count and collection info.
-        """
+        """Return statistics about the indexed documents."""
         try:
-            collection = _get_collection()
+            collection = _get_chroma_collection()
             if collection is None:
                 return {"indexed_chunks": 0, "status": "unavailable"}
             count = collection.count()
@@ -282,16 +333,7 @@ class RAGService:
     # ----------------------------------------------------------------
     @staticmethod
     def _chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
-        """Split text into overlapping chunks.
-
-        Args:
-            text: The full text to split.
-            chunk_size: Target size of each chunk in characters.
-            overlap: Number of overlapping characters between chunks.
-
-        Returns:
-            List of text chunks.
-        """
+        """Split text into overlapping chunks."""
         if len(text) <= chunk_size:
             return [text]
 
@@ -300,7 +342,6 @@ class RAGService:
         while start < len(text):
             end = start + chunk_size
             chunk = text[start:end]
-            # Try to break at a sentence boundary
             if end < len(text):
                 last_period = chunk.rfind(".")
                 last_newline = chunk.rfind("\n")

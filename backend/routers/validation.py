@@ -69,7 +69,7 @@ async def get_flagged_claims(
     return {"claims": claims, "total": total, "skip": skip, "limit": limit}
 
 
-@router.post("/validate/batch")
+@router.post("/batch-validate")
 async def batch_validate(request: BatchValidateRequest):
     """Validate multiple claims in batch."""
     db = get_database()
