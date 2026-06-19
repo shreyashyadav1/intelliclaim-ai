@@ -68,7 +68,7 @@ async def upload_document(file: UploadFile = File(...)):
 
         # Extract text
         try:
-            extracted_text = ocr.extract_text(file_path, file_type)
+            extracted_text = await ocr.extract_text(file_path, file_type)
         except Exception as e:
             logger.warning(f"OCR extraction failed: {e}")
             extracted_text = ""

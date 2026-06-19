@@ -100,7 +100,7 @@ class RAGService:
     # ----------------------------------------------------------------
     # Query / Q&A
     # ----------------------------------------------------------------
-    async def query(self, question: str) -> dict[str, Any]:
+    async def query(self, question: str, top_k: int = 5) -> dict[str, Any]:
         """Answer a natural-language question using indexed documents.
 
         Uses LangChain with OpenAI when an API key is set; otherwise
@@ -114,13 +114,13 @@ class RAGService:
         """
         if settings.has_openai_key:
             try:
-                return await self._query_with_langchain(question)
+                return await self._query_with_langchain(question, top_k)
             except Exception as e:
                 logger.warning("LangChain query failed, returning mock: %s", str(e))
 
         return self._mock_query(question)
 
-    async def _query_with_langchain(self, question: str) -> dict[str, Any]:
+    async def _query_with_langchain(self, question: str, top_k: int = 5) -> dict[str, Any]:
         """Execute a RAG query using LangChain + ChromaDB + OpenAI.
 
         Args:
@@ -139,7 +139,7 @@ class RAGService:
         # Retrieve relevant chunks from ChromaDB
         results = collection.query(
             query_texts=[question],
-            n_results=min(5, collection.count()),
+            n_results=min(top_k, collection.count()),
         )
 
         # Build context from retrieved chunks
