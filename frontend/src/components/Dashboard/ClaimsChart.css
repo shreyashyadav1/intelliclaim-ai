@@ -1,0 +1,50 @@
+.claims-chart {
+  padding: 24px;
+}
+
+.claims-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.claims-chart-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.claims-chart-period {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  background: var(--bg-glass);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.claims-chart-body {
+  width: 100%;
+}
+
+.chart-tooltip {
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-lg);
+}
+
+.chart-tooltip-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.chart-tooltip-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-accent);
+}

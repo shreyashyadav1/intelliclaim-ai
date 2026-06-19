@@ -1,0 +1,131 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(10, 14, 26, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.header-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-search {
+  position: relative;
+}
+
+.header-search-input {
+  width: 260px;
+  padding: 9px 14px 9px 38px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: all 0.25s;
+}
+
+.header-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.header-search-input:focus {
+  border-color: var(--border-accent);
+  background: var(--bg-hover);
+  box-shadow: var(--accent-glow);
+  width: 320px;
+}
+
+.header-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.header-icon-btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  position: relative;
+  transition: all 0.2s;
+}
+
+.header-icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.header-notification-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background: var(--status-danger);
+  border-radius: 50%;
+  border: 2px solid var(--bg-secondary);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+.header-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.header-avatar:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--accent-glow);
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 16px 16px 64px;
+  }
+  .header-search {
+    display: none;
+  }
+}

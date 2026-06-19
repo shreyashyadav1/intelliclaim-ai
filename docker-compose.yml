@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: intelliclaim-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: intelliclaim
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: intelliclaim-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+      - uploads_data:/app/uploads
+      - chroma_data:/app/chroma_data
+    depends_on:
+      - mongodb
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: intelliclaim-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  mongodb_data:
+  uploads_data:
+  chroma_data:

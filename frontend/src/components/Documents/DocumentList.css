@@ -1,0 +1,96 @@
+.document-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.document-list-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.document-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.document-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.document-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(99, 102, 241, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.document-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.document-card-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.document-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.document-card-size,
+.document-card-date {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.document-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.doc-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.doc-action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.doc-action-btn--accent:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent-primary);
+}
+
+.doc-action-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--status-danger);
+}

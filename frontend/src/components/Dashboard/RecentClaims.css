@@ -1,0 +1,100 @@
+.recent-claims {
+  padding: 24px;
+}
+
+.recent-claims-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.recent-claims-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.recent-claims-view-all {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-accent);
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.recent-claims-view-all:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.recent-claims-table-wrapper {
+  overflow-x: auto;
+}
+
+.recent-claims-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recent-claims-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.recent-claims-table td {
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.recent-claims-row {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.recent-claims-row:hover {
+  background: var(--bg-hover);
+}
+
+.recent-claims-row:hover td {
+  color: var(--text-primary);
+}
+
+.claim-number-cell {
+  font-weight: 600;
+  color: var(--text-accent) !important;
+  font-family: monospace;
+  font-size: 0.85rem !important;
+}
+
+.diagnosis-cell {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.amount-cell {
+  font-weight: 500;
+  font-family: monospace;
+  color: var(--text-primary) !important;
+}
+
+.risk-score-badge {
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+}
