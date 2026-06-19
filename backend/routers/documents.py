@@ -157,7 +157,7 @@ async def delete_document(document_id: str):
 
     # Remove file from storage
     try:
-        storage.delete_file(doc["storage_path"])
+        await storage.delete_file(doc["storage_path"])
     except Exception as e:
         logger.warning(f"Failed to delete file: {e}")
 

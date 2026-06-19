@@ -13,6 +13,7 @@ Two-layer validation architecture:
 
 import json
 import logging
+import re
 from datetime import datetime
 from typing import Any
 
@@ -274,8 +275,8 @@ class ValidationService:
             return False
 
         query = {
-            "patient_name": {"$regex": patient_name, "$options": "i"},
-            "diagnosis": {"$regex": diagnosis[:30], "$options": "i"},
+            "patient_name": {"$regex": re.escape(patient_name), "$options": "i"},
+            "diagnosis": {"$regex": re.escape(diagnosis[:30]), "$options": "i"},
         }
         if claim_id:
             query["_id"] = {"$ne": claim_id}
