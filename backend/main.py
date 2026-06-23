@@ -70,3 +70,24 @@ async def health_check():
         "gemini_configured": settings.has_gemini_key,
         "ai_provider": "openai" if settings.has_openai_key else ("gemini" if settings.has_gemini_key else "none"),
     }
+
+
+@app.get("/api/health/gemini", tags=["System"])
+async def gemini_test():
+    """Test Gemini API connectivity and surface any errors."""
+    if not settings.has_gemini_key:
+        return {"status": "no_key"}
+    try:
+        from google import genai
+        from google.genai import types
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        r = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents='Reply with exactly: {"ok": true}',
+            config=types.GenerateContentConfig(
+                temperature=0, response_mime_type="application/json"
+            ),
+        )
+        return {"status": "ok", "response": r.text}
+    except Exception as e:
+        return {"status": "error", "error": str(e), "type": type(e).__name__}
