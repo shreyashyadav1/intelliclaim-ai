@@ -133,11 +133,11 @@ class RAGService:
             return False
 
     async def _index_with_gemini(self, doc_id: str, text: str, metadata: dict) -> bool:
-        """Index document using Google text-embedding-004 via google-generativeai."""
+        """Index document using Google text-embedding-004 (google-genai SDK)."""
         try:
-            import google.generativeai as genai
+            from google import genai
 
-            genai.configure(api_key=settings.GEMINI_API_KEY)
+            client = genai.Client(api_key=settings.GEMINI_API_KEY)
             collection = _get_chroma_collection()
             if collection is None:
                 return False
@@ -146,12 +146,11 @@ class RAGService:
             ids = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
             metadatas = [{**metadata, "doc_id": doc_id, "chunk_index": i} for i in range(len(chunks))]
 
-            result = genai.embed_content(
-                model="models/text-embedding-004",
-                content=chunks,
-                task_type="retrieval_document",
+            result = client.models.embed_content(
+                model="text-embedding-004",
+                contents=chunks,
             )
-            chunk_embeddings = result["embedding"]
+            chunk_embeddings = [e.values for e in result.embeddings]
 
             collection.upsert(ids=ids, documents=chunks, embeddings=chunk_embeddings, metadatas=metadatas)
             logger.info("Gemini-indexed %d chunks for document %s", len(chunks), doc_id)
@@ -288,10 +287,11 @@ class RAGService:
         }
 
     async def _query_with_gemini(self, question: str, top_k: int = 5) -> dict[str, Any]:
-        """RAG query using google-generativeai: embed query → Chroma → Gemini generation."""
-        import google.generativeai as genai
+        """RAG query using google-genai SDK: embed query → Chroma → Gemini generation."""
+        from google import genai
+        from google.genai import types
 
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
         collection = _get_chroma_collection()
         if collection is None or collection.count() == 0:
@@ -301,12 +301,11 @@ class RAGService:
             }
 
         # Embed the question
-        query_result = genai.embed_content(
-            model="models/text-embedding-004",
-            content=question,
-            task_type="retrieval_query",
+        query_result = client.models.embed_content(
+            model="text-embedding-004",
+            contents=question,
         )
-        query_embedding = query_result["embedding"]
+        query_embedding = query_result.embeddings[0].values
 
         # Retrieve from ChromaDB
         results = collection.query(
@@ -332,17 +331,16 @@ class RAGService:
             for doc, meta, dist in zip(documents, metadatas, distances)
         ]
 
-        # Generate answer with Gemini
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            generation_config=genai.types.GenerationConfig(temperature=0.1, max_output_tokens=500),
-            system_instruction=(
-                "You are an AI assistant for IntelliClaim, an insurance claim processing system. "
-                "Answer based ONLY on the provided context. Be concise and accurate."
-            ),
+        prompt = (
+            "You are an AI assistant for IntelliClaim, an insurance claim processing system. "
+            "Answer based ONLY on the provided context. Be concise and accurate.\n\n"
+            f"Context:\n{context}\n\nQuestion: {question}"
         )
-        prompt = f"Context:\n{context}\n\nQuestion: {question}"
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0.1, max_output_tokens=500),
+        )
 
         logger.info("Gemini RAG answered: %s", question[:80])
         return {"answer": response.text, "source_documents": sources}

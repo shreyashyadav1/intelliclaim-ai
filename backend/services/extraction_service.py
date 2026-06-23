@@ -204,17 +204,10 @@ class ExtractionService:
 
     async def _extract_with_gemini(self, text: str, document_class: str) -> dict[str, Any]:
         """Extract claim fields using Google Gemini 1.5 Flash (free tier)."""
-        import google.generativeai as genai
+        from google import genai
+        from google.genai import types
 
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            generation_config=genai.types.GenerationConfig(
-                temperature=0,
-                response_mime_type="application/json",
-            ),
-        )
-
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
         prompt = (
             f"You are an expert insurance claim data extractor. Document type: {document_class}.\n"
             "Extract all available fields and return a JSON object with these keys "
@@ -224,9 +217,16 @@ class ExtractionService:
             f"Document text:\n{text[:4000]}"
         )
 
-        response = model.generate_content(prompt)
-        extracted = json.loads(response.text)
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0,
+                response_mime_type="application/json",
+            ),
+        )
 
+        extracted = json.loads(response.text)
         total_fields = 11
         filled_fields = sum(1 for v in extracted.values() if v is not None and v != "")
         extracted["confidence_score"] = round(filled_fields / total_fields, 2)

@@ -239,24 +239,26 @@ class ValidationService:
     async def _ai_validate_with_gemini(self, claim: dict) -> dict[str, Any]:
         """AI validation using Google Gemini 1.5 Flash (free tier)."""
         try:
-            import google.generativeai as genai
+            from google import genai
+            from google.genai import types
 
-            genai.configure(api_key=settings.GEMINI_API_KEY)
-            model = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
-                generation_config=genai.types.GenerationConfig(
+            client = genai.Client(api_key=settings.GEMINI_API_KEY)
+            claim_summary = self._build_claim_summary(claim)
+            prompt = (
+                "You are an expert insurance fraud analyst. Review the claim and return a JSON "
+                "object with: risk_flags (array of {type, description, severity: low/medium/high, "
+                "confidence: 0.0-1.0}), ai_risk_score (0-100), summary (string).\n\n"
+                f"Review this insurance claim:\n\n{claim_summary}"
+            )
+
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
                     temperature=0.2,
                     response_mime_type="application/json",
                 ),
-                system_instruction=(
-                    "You are an expert insurance fraud analyst. Review the claim and return a JSON "
-                    "object with: risk_flags (array of {type, description, severity: low/medium/high, "
-                    "confidence: 0.0-1.0}), ai_risk_score (0-100), summary (string)."
-                ),
             )
-
-            claim_summary = self._build_claim_summary(claim)
-            response = model.generate_content(f"Review this insurance claim:\n\n{claim_summary}")
             result = json.loads(response.text)
 
             ai_flags = result.get("risk_flags", [])
