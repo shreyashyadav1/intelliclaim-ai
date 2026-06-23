@@ -67,27 +67,26 @@ async def health_check():
         "service": "IntelliClaim AI API",
         "version": "1.0.0",
         "openai_configured": settings.has_openai_key,
-        "gemini_configured": settings.has_gemini_key,
-        "ai_provider": "openai" if settings.has_openai_key else ("gemini" if settings.has_gemini_key else "none"),
+        "groq_configured": settings.has_groq_key,
+        "ai_provider": "openai" if settings.has_openai_key else ("groq" if settings.has_groq_key else "none"),
     }
 
 
-@app.get("/api/health/gemini", tags=["System"])
-async def gemini_test():
-    """Test Gemini API connectivity and surface any errors."""
-    if not settings.has_gemini_key:
+@app.get("/api/health/groq", tags=["System"])
+async def groq_test():
+    """Test Groq API connectivity."""
+    if not settings.has_groq_key:
         return {"status": "no_key"}
     try:
-        from google import genai
-        from google.genai import types
-        client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        r = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents='Reply with exactly: {"ok": true}',
-            config=types.GenerateContentConfig(
-                temperature=0, response_mime_type="application/json"
-            ),
+        from groq import Groq
+        client = Groq(api_key=settings.GROQ_API_KEY)
+        r = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": 'Reply with exactly: {"ok": true}'}],
+            temperature=0,
+            response_format={"type": "json_object"},
+            max_tokens=10,
         )
-        return {"status": "ok", "response": r.text}
+        return {"status": "ok", "response": r.choices[0].message.content}
     except Exception as e:
         return {"status": "error", "error": str(e), "type": type(e).__name__}

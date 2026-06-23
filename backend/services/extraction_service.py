@@ -137,13 +137,13 @@ class ExtractionService:
             try:
                 return await self._extract_with_openai(text, document_class)
             except Exception as e:
-                logger.warning("OpenAI extraction failed, trying Gemini: %s", str(e))
+                logger.warning("OpenAI extraction failed, trying Groq: %s", str(e))
 
-        if settings.has_gemini_key and text.strip():
+        if settings.has_groq_key and text.strip():
             try:
-                return await self._extract_with_gemini(text, document_class)
+                return await self._extract_with_groq(text, document_class)
             except Exception as e:
-                logger.warning("Gemini extraction failed, returning mock data: %s", str(e))
+                logger.warning("Groq extraction failed, returning mock data: %s", str(e))
 
         return self._generate_mock_data(document_class)
 
@@ -202,12 +202,11 @@ class ExtractionService:
         )
         return extracted
 
-    async def _extract_with_gemini(self, text: str, document_class: str) -> dict[str, Any]:
-        """Extract claim fields using Google Gemini 1.5 Flash (free tier)."""
-        from google import genai
-        from google.genai import types
+    async def _extract_with_groq(self, text: str, document_class: str) -> dict[str, Any]:
+        """Extract claim fields using Groq Llama (free tier)."""
+        from groq import Groq
 
-        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        client = Groq(api_key=settings.GROQ_API_KEY)
         prompt = (
             f"You are an expert insurance claim data extractor. Document type: {document_class}.\n"
             "Extract all available fields and return a JSON object with these keys "
@@ -217,20 +216,19 @@ class ExtractionService:
             f"Document text:\n{text[:4000]}"
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=0,
-                response_mime_type="application/json",
-            ),
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            response_format={"type": "json_object"},
+            max_tokens=1024,
         )
 
-        extracted = json.loads(response.text)
+        extracted = json.loads(response.choices[0].message.content)
         total_fields = 11
         filled_fields = sum(1 for v in extracted.values() if v is not None and v != "")
         extracted["confidence_score"] = round(filled_fields / total_fields, 2)
-        logger.info("Gemini extraction complete — %d/%d fields", filled_fields, total_fields)
+        logger.info("Groq extraction complete — %d/%d fields", filled_fields, total_fields)
         return extracted
 
     def _generate_mock_data(self, document_class: str) -> dict[str, Any]:

@@ -15,8 +15,8 @@ class Settings(BaseSettings):
     # OpenAI
     OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API key for GPT-4o")
 
-    # Google Gemini
-    GEMINI_API_KEY: Optional[str] = Field(default=None, description="Google Gemini API key (free tier)")
+    # Groq
+    GROQ_API_KEY: Optional[str] = Field(default=None, description="Groq API key (free tier)")
 
     # MongoDB
     MONGODB_URI: str = Field(default="mongodb://localhost:27017", description="MongoDB connection URI")
@@ -63,9 +63,9 @@ class Settings(BaseSettings):
         return self.OPENAI_API_KEY is not None and len(self.OPENAI_API_KEY) > 0
 
     @property
-    def has_gemini_key(self) -> bool:
-        """Check if Google Gemini API key is configured."""
-        return self.GEMINI_API_KEY is not None and len(self.GEMINI_API_KEY) > 0
+    def has_groq_key(self) -> bool:
+        """Check if Groq API key is configured."""
+        return self.GROQ_API_KEY is not None and len(self.GROQ_API_KEY) > 0
 
 
 settings = Settings()

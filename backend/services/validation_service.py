@@ -163,7 +163,7 @@ class ValidationService:
 
         Returns a dict with risk_flags, ai_risk_score, summary, avg_confidence.
         """
-        if not settings.has_openai_key and not settings.has_gemini_key:
+        if not settings.has_openai_key and not settings.has_groq_key:
             return {
                 "risk_flags": [],
                 "ai_risk_score": 0.0,
@@ -171,8 +171,8 @@ class ValidationService:
                 "avg_confidence": 0.0,
             }
 
-        if settings.has_gemini_key and not settings.has_openai_key:
-            return await self._ai_validate_with_gemini(claim)
+        if settings.has_groq_key and not settings.has_openai_key:
+            return await self._ai_validate_with_groq(claim)
 
         try:
             from openai import AsyncOpenAI
@@ -236,13 +236,12 @@ class ValidationService:
                 "avg_confidence": 0.0,
             }
 
-    async def _ai_validate_with_gemini(self, claim: dict) -> dict[str, Any]:
-        """AI validation using Google Gemini 1.5 Flash (free tier)."""
+    async def _ai_validate_with_groq(self, claim: dict) -> dict[str, Any]:
+        """AI validation using Groq Llama (free tier)."""
         try:
-            from google import genai
-            from google.genai import types
+            from groq import Groq
 
-            client = genai.Client(api_key=settings.GEMINI_API_KEY)
+            client = Groq(api_key=settings.GROQ_API_KEY)
             claim_summary = self._build_claim_summary(claim)
             prompt = (
                 "You are an expert insurance fraud analyst. Review the claim and return a JSON "
@@ -251,15 +250,14 @@ class ValidationService:
                 f"Review this insurance claim:\n\n{claim_summary}"
             )
 
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.2,
-                    response_mime_type="application/json",
-                ),
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.2,
+                response_format={"type": "json_object"},
+                max_tokens=1024,
             )
-            result = json.loads(response.text)
+            result = json.loads(response.choices[0].message.content)
 
             ai_flags = result.get("risk_flags", [])
             avg_confidence = (
@@ -268,7 +266,7 @@ class ValidationService:
             )
 
             logger.info(
-                "Gemini validation complete for claim %s — %d flags, score=%.1f",
+                "Groq validation complete for claim %s — %d flags, score=%.1f",
                 claim.get("claim_number", "unknown"), len(ai_flags),
                 result.get("ai_risk_score", 0.0),
             )
@@ -280,7 +278,7 @@ class ValidationService:
             }
 
         except Exception as e:
-            logger.warning("Gemini validation failed: %s", str(e))
+            logger.warning("Groq validation failed: %s", str(e))
             return {
                 "risk_flags": [],
                 "ai_risk_score": 0.0,
