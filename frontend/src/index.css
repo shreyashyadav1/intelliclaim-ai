@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Backgrounds */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1a2235;
-  --bg-card: rgba(17, 24, 39, 0.7);
+  /* Backgrounds — financial dashboard palette (ui-ux-pro-max) */
+  --bg-primary: #070d1a;
+  --bg-secondary: #0e1223;
+  --bg-tertiary: #162036;
+  --bg-card: #0e1223;
   --bg-glass: rgba(255, 255, 255, 0.03);
-  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-hover: rgba(51, 65, 85, 0.3);
 
   /* Accents */
   --accent-primary: #6366f1;
@@ -28,10 +28,10 @@
   --status-info: #3b82f6;
   --status-pending: #f59e0b;
 
-  /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --border-accent: rgba(99, 102, 241, 0.3);
+  /* Borders — slate palette for visible card edges (ui-ux-pro-max) */
+  --border-subtle: rgba(51, 65, 85, 0.5);
+  --border-default: #334155;
+  --border-accent: rgba(99, 102, 241, 0.4);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -129,12 +129,10 @@ img {
 /* Glass Card Utility */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .glass-card:hover {

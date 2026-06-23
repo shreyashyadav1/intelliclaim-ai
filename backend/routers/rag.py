@@ -10,11 +10,10 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from db.connection import get_database
-from services.rag_service import RAGService
+from services.rag_service import rag_service
 
 logger = logging.getLogger("intelliclaim.rag")
 router = APIRouter()
-rag_service = RAGService()
 
 
 class QueryRequest(BaseModel):
@@ -30,7 +29,7 @@ async def rag_query(request: QueryRequest):
         result = await rag_service.query(request.question, top_k=request.top_k)
         return result
     except Exception as e:
-        logger.error(f"RAG query failed: {e}")
+        logger.error("RAG query failed: %s", e)
         raise HTTPException(status_code=500, detail=f"RAG query failed: {str(e)}")
 
 
@@ -54,7 +53,7 @@ async def index_document(document_id: str):
         success = await rag_service.index_document(document_id, doc["extracted_text"], metadata)
         return {"success": success, "document_id": document_id}
     except Exception as e:
-        logger.error(f"Indexing failed for {document_id}: {e}")
+        logger.error("Indexing failed for %s: %s", document_id, e)
         raise HTTPException(status_code=500, detail=f"Indexing failed: {str(e)}")
 
 
@@ -77,7 +76,7 @@ async def index_all_documents():
             await rag_service.index_document(doc["_id"], doc["extracted_text"], metadata)
             indexed += 1
         except Exception as e:
-            logger.warning(f"Failed to index {doc['_id']}: {e}")
+            logger.warning("Failed to index %s: %s", doc["_id"], e)
             errors += 1
 
     return {"indexed": indexed, "errors": errors, "total": len(docs)}
@@ -90,5 +89,5 @@ async def get_rag_stats():
         stats = await rag_service.get_index_stats()
         return stats
     except Exception as e:
-        logger.error(f"Failed to get RAG stats: {e}")
+        logger.error("Failed to get RAG stats: %s", e)
         return {"indexed_documents": 0, "status": "unavailable"}

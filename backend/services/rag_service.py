@@ -186,7 +186,7 @@ class RAGService:
         - StrOutputParser for clean output
         """
         from langchain_core.prompts import ChatPromptTemplate
-        from langchain_core.runnables import RunnablePassthrough
+        from langchain_core.runnables import RunnablePassthrough, RunnableLambda
         from langchain_core.output_parsers import StrOutputParser
         from langchain_openai import ChatOpenAI
 
@@ -200,7 +200,7 @@ class RAGService:
         # LangChain retriever backed by Chroma + OpenAI Embeddings
         retriever = vectorstore.as_retriever(search_kwargs={"k": top_k})
 
-        # Retrieve documents to build sources list
+        # Retrieve once — reused for both the chain context and sources metadata
         docs = retriever.invoke(question)
         if not docs:
             return {
@@ -208,11 +208,8 @@ class RAGService:
                 "source_documents": [],
             }
 
-        # Format docs for the prompt context
-        def _format_docs(docs):
-            return "\n\n---\n\n".join([d.page_content for d in docs])
+        context = "\n\n---\n\n".join(d.page_content for d in docs)
 
-        # Build sources metadata
         sources = [
             {
                 "doc_id": doc.metadata.get("doc_id", "unknown"),
@@ -222,7 +219,7 @@ class RAGService:
             for doc in docs
         ]
 
-        # LangChain LCEL chain
+        # LangChain LCEL chain — context is pre-built to avoid double retrieval
         prompt = ChatPromptTemplate.from_messages([
             (
                 "system",
@@ -240,7 +237,7 @@ class RAGService:
         llm = ChatOpenAI(model="gpt-4o", temperature=0.1, max_tokens=500)
 
         chain = (
-            {"context": retriever | _format_docs, "question": RunnablePassthrough()}
+            {"context": RunnableLambda(lambda _: context), "question": RunnablePassthrough()}
             | prompt
             | llm
             | StrOutputParser()

@@ -33,12 +33,14 @@
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .search-chat-empty p {
   color: var(--text-secondary);
   margin-bottom: 28px;
   max-width: 400px;
+  font-size: 0.95rem;
 }
 
 .suggested-questions {
@@ -51,10 +53,10 @@
 
 .suggested-btn {
   padding: 10px 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 0.85rem;
   transition: all 0.2s;
   text-align: left;

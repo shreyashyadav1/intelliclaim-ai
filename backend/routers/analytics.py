@@ -8,11 +8,10 @@ import logging
 
 from fastapi import APIRouter, Query
 
-from services.analytics_service import AnalyticsService
+from services.analytics_service import analytics_service as analytics
 
 logger = logging.getLogger("intelliclaim.analytics")
 router = APIRouter()
-analytics = AnalyticsService()
 
 
 @router.get("/analytics/overview")
@@ -21,7 +20,7 @@ async def get_overview():
     try:
         return await analytics.get_overview()
     except Exception as e:
-        logger.error(f"Analytics overview failed: {e}")
+        logger.error("Analytics overview failed: %s", e)
         # Return demo data on failure
         return {
             "total_claims": 1247,
@@ -40,7 +39,7 @@ async def get_claims_trend(days: int = Query(30, ge=7, le=365)):
     try:
         return await analytics.get_claims_trend(days)
     except Exception as e:
-        logger.error(f"Claims trend failed: {e}")
+        logger.error("Claims trend failed: %s", e)
         # Return demo data
         import random
         from datetime import datetime, timedelta
@@ -57,7 +56,7 @@ async def get_risk_distribution():
     try:
         return await analytics.get_risk_distribution()
     except Exception as e:
-        logger.error(f"Risk distribution failed: {e}")
+        logger.error("Risk distribution failed: %s", e)
         return [
             {"range": "Low (0-29)", "count": 742, "min": 0, "max": 30},
             {"range": "Medium (30-59)", "count": 328, "min": 30, "max": 60},
@@ -72,7 +71,7 @@ async def get_recent_claims(limit: int = Query(10, ge=1, le=50)):
     try:
         return await analytics.get_recent_claims(limit)
     except Exception as e:
-        logger.error(f"Recent claims failed: {e}")
+        logger.error("Recent claims failed: %s", e)
         # Return demo data
         demo_claims = [
             {"id": f"clm-{i}", "claim_number": f"CLM-2026-{10000+i}", "policy_number": f"POL-2026-{50000+i}", "patient_name": name, "diagnosis": diag, "treatment_cost": cost, "hospital_name": hospital, "status": status, "risk_score": risk, "created_at": "2026-06-15T10:00:00Z"}

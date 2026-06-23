@@ -9,12 +9,11 @@ import logging
 from fastapi import APIRouter, HTTPException
 
 from db.connection import get_database
-from services.extraction_service import ExtractionService
+from services.extraction_service import extraction_service as extractor
 from utils.helpers import generate_id, utc_now
 
 logger = logging.getLogger("intelliclaim.extraction")
 router = APIRouter()
-extractor = ExtractionService()
 
 
 @router.post("/extract/{document_id}")
@@ -35,8 +34,8 @@ async def extract_document(document_id: str):
             document_class=doc.get("document_class", "other"),
         )
 
-        extracted = extraction_result.get("extracted_data", {})
         confidence = extraction_result.get("confidence_score", 0.0)
+        extracted = {k: v for k, v in extraction_result.items() if k != "confidence_score"}
 
         # Check if claim already exists for this document
         existing_claim_id = doc.get("claim_id")
@@ -45,7 +44,7 @@ async def extract_document(document_id: str):
             update_data = {**extracted, "extraction_confidence": confidence, "updated_at": utc_now()}
             await db.claims.update_one({"_id": existing_claim_id}, {"$set": update_data})
             claim_id = existing_claim_id
-            logger.info(f"Updated claim {claim_id} from document {document_id}")
+            logger.info("Updated claim %s from document %s", claim_id, document_id)
         else:
             # Create new claim
             claim_id = generate_id()
@@ -67,7 +66,7 @@ async def extract_document(document_id: str):
                 {"_id": document_id},
                 {"$set": {"claim_id": claim_id, "updated_at": utc_now()}},
             )
-            logger.info(f"Created claim {claim_id} from document {document_id}")
+            logger.info("Created claim %s from document %s", claim_id, document_id)
 
         return {
             "claim_id": claim_id,
@@ -78,7 +77,7 @@ async def extract_document(document_id: str):
         }
 
     except Exception as e:
-        logger.error(f"Extraction failed for document {document_id}: {e}")
+        logger.error("Extraction failed for document %s: %s", document_id, e)
         raise HTTPException(status_code=500, detail=f"Extraction failed: {str(e)}")
 
 

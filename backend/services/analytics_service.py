@@ -83,7 +83,6 @@ class AnalyticsService:
 
         # Fill in missing dates with 0
         trend = []
-        current = start_date
         result_map = {r["_id"]: r["count"] for r in results}
         for i in range(days):
             date_str = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
@@ -126,3 +125,7 @@ class AnalyticsService:
             claim["id"] = claim.pop("_id")
 
         return claims
+
+
+# Module-level singleton
+analytics_service = AnalyticsService()

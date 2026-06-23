@@ -33,9 +33,10 @@ def parse_pdf(file_path: str) -> str:
         import fitz  # PyMuPDF
 
         doc = fitz.open(str(path))
+        page_count = len(doc)
         text_parts: list[str] = []
 
-        for page_num in range(len(doc)):
+        for page_num in range(page_count):
             page = doc.load_page(page_num)
             page_text = page.get_text("text")
             if page_text.strip():
@@ -43,7 +44,7 @@ def parse_pdf(file_path: str) -> str:
 
         doc.close()
         full_text = "\n\n".join(text_parts)
-        logger.info("Extracted %d characters from PDF (%d pages): %s", len(full_text), len(doc), file_path)
+        logger.info("Extracted %d characters from PDF (%d pages): %s", len(full_text), page_count, file_path)
         return full_text
 
     except ImportError:

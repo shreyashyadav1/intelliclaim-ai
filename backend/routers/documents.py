@@ -11,14 +11,12 @@ from fastapi import APIRouter, File, UploadFile, HTTPException, Query
 from bson import ObjectId
 
 from db.connection import get_database
-from services.storage_service import StorageService
-from services.ocr_service import OCRService
+from services.storage_service import storage_service as storage
+from services.ocr_service import ocr_service as ocr
 from utils.helpers import generate_id, utc_now
 
 logger = logging.getLogger("intelliclaim.documents")
 router = APIRouter()
-storage = StorageService()
-ocr = OCRService()
 
 
 @router.post("/documents/upload")
@@ -70,14 +68,14 @@ async def upload_document(file: UploadFile = File(...)):
         try:
             extracted_text = await ocr.extract_text(file_path, file_type)
         except Exception as e:
-            logger.warning(f"OCR extraction failed: {e}")
+            logger.warning("OCR extraction failed: %s", e)
             extracted_text = ""
 
         # Classify document
         try:
             document_class = await ocr.classify_document(extracted_text)
         except Exception as e:
-            logger.warning(f"Classification failed: {e}")
+            logger.warning("Classification failed: %s", e)
             document_class = "other"
 
         # Update document record
@@ -93,7 +91,7 @@ async def upload_document(file: UploadFile = File(...)):
             },
         )
 
-        logger.info(f"Document uploaded: {file.filename} -> {document_class}")
+        logger.info("Document uploaded: %s -> %s", file.filename, document_class)
         return {
             "id": doc_id,
             "filename": file.filename,
@@ -106,7 +104,7 @@ async def upload_document(file: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Upload failed: {e}")
+        logger.error("Upload failed: %s", e)
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 
@@ -159,7 +157,7 @@ async def delete_document(document_id: str):
     try:
         await storage.delete_file(doc["storage_path"])
     except Exception as e:
-        logger.warning(f"Failed to delete file: {e}")
+        logger.warning("Failed to delete file: %s", e)
 
     await db.documents.delete_one({"_id": document_id})
     return {"message": "Document deleted", "id": document_id}

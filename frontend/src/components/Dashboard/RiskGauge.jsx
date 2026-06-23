@@ -53,7 +53,7 @@ export default function RiskGauge({ score = 32.4 }) {
     const start = polarToCartesian(cx, cy, r, startAngle);
     const end = polarToCartesian(cx, cy, r, endAngle);
     const largeArcFlag = startAngle - endAngle > 180 ? 1 : 0;
-    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`;
+    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`;
   };
 
   const bgPath = arcPath(cx, cy, radius, 180, 0);

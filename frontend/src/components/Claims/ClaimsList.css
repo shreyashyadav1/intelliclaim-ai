@@ -98,8 +98,8 @@
 .claims-table td {
   padding: 14px 16px;
   font-size: 0.9rem;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .claims-table-row {
@@ -113,6 +113,7 @@
 
 .claims-table-row:hover td {
   color: var(--text-primary);
+  background: var(--bg-hover);
 }
 
 .mono-cell {
@@ -139,7 +140,7 @@
 
 .date-cell {
   white-space: nowrap;
-  color: var(--text-tertiary) !important;
+  color: var(--text-secondary) !important;
   font-size: 0.85rem !important;
 }
 

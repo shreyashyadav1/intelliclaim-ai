@@ -11,12 +11,11 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 
 from db.connection import get_database
-from services.validation_service import ValidationService
+from services.validation_service import validation_service as validator
 from utils.helpers import utc_now
 
 logger = logging.getLogger("intelliclaim.validation")
 router = APIRouter()
-validator = ValidationService()
 
 
 class BatchValidateRequest(BaseModel):

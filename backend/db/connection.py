@@ -68,7 +68,7 @@ async def _create_indexes() -> None:
 
         # Claims indexes
         claims = db["claims"]
-        await claims.create_index("claim_number", unique=True, sparse=True)
+        await claims.create_index("claim_number", unique=True)
         await claims.create_index("policy_number")
         await claims.create_index("status")
         await claims.create_index("risk_score")

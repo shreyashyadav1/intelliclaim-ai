@@ -67,11 +67,11 @@ export default function ValidationPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <AlertTriangle size={18} style={{ color: getRiskColor(claim.risk_score) }} />
                 <span style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-accent)' }}>{claim.claim_number}</span>
-                <span style={{ color: 'var(--text-secondary)' }}>{claim.patient_name}</span>
+                <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{claim.patient_name}</span>
                 <Badge variant={claim.status}>{claim.status}</Badge>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>${claim.treatment_cost?.toLocaleString()}</span>
+                <span style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-primary)' }}>${claim.treatment_cost?.toLocaleString()}</span>
                 <span
                   style={{
                     color: getRiskColor(claim.risk_score),
@@ -95,9 +95,9 @@ export default function ValidationPage() {
                       fontSize: '0.82rem',
                       padding: '4px 10px',
                       borderRadius: 'var(--radius-sm)',
-                      background: 'rgba(239, 68, 68, 0.08)',
-                      border: '1px solid rgba(239, 68, 68, 0.15)',
-                      color: 'var(--text-secondary)',
+                      background: 'rgba(239, 68, 68, 0.15)',
+                      border: '1px solid rgba(239, 68, 68, 0.35)',
+                      color: '#fca5a5',
                     }}
                   >
                     {flag}
