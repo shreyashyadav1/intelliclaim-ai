@@ -82,7 +82,7 @@ async def groq_test():
         client = Groq(api_key=settings.GROQ_API_KEY)
         r = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": 'Reply with exactly: {"ok": true}'}],
+            messages=[{"role": "user", "content": 'Reply with this json exactly: {"ok": true}'}],
             temperature=0,
             response_format={"type": "json_object"},
             max_tokens=10,
