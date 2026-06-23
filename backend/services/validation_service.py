@@ -239,34 +239,26 @@ class ValidationService:
     async def _ai_validate_with_gemini(self, claim: dict) -> dict[str, Any]:
         """AI validation using Google Gemini 1.5 Flash (free tier)."""
         try:
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            from langchain_core.messages import HumanMessage, SystemMessage
+            import google.generativeai as genai
 
-            llm = ChatGoogleGenerativeAI(
-                model="gemini-1.5-flash",
-                google_api_key=settings.GEMINI_API_KEY,
-                temperature=0.2,
+            genai.configure(api_key=settings.GEMINI_API_KEY)
+            model = genai.GenerativeModel(
+                model_name="gemini-1.5-flash",
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.2,
+                    response_mime_type="application/json",
+                ),
+                system_instruction=(
+                    "You are an expert insurance fraud analyst. Review the claim and return a JSON "
+                    "object with: risk_flags (array of {type, description, severity: low/medium/high, "
+                    "confidence: 0.0-1.0}), ai_risk_score (0-100), summary (string)."
+                ),
             )
 
             claim_summary = self._build_claim_summary(claim)
-            messages = [
-                SystemMessage(content=(
-                    "You are an expert insurance fraud analyst. Review this claim and return ONLY "
-                    "a valid JSON object with: risk_flags (array of objects with type, description, "
-                    "severity (low/medium/high), confidence (0.0-1.0)), ai_risk_score (0-100), "
-                    "summary (string). No markdown, no explanation — raw JSON only."
-                )),
-                HumanMessage(content=f"Review this claim:\n\n{claim_summary}"),
-            ]
+            response = model.generate_content(f"Review this insurance claim:\n\n{claim_summary}")
+            result = json.loads(response.text)
 
-            response = llm.invoke(messages)
-            content = response.content.strip()
-            if content.startswith("```"):
-                content = content.split("```")[1]
-                if content.startswith("json"):
-                    content = content[4:]
-
-            result = json.loads(content.strip())
             ai_flags = result.get("risk_flags", [])
             avg_confidence = (
                 sum(f.get("confidence", 0.0) for f in ai_flags) / len(ai_flags)

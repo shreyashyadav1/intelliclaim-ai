@@ -51,29 +51,18 @@ def _get_chroma_collection():
 
 
 def _get_langchain_vectorstore():
-    """Return a LangChain Chroma vector store, using OpenAI or Gemini embeddings."""
+    """Return a LangChain Chroma vector store with OpenAI embeddings."""
     from langchain_community.vectorstores import Chroma
+    from langchain_openai import OpenAIEmbeddings
 
     client = _get_chroma_client()
     if client is None:
         return None
 
-    if settings.has_openai_key:
-        from langchain_openai import OpenAIEmbeddings
-        embedding_fn = OpenAIEmbeddings(model="text-embedding-3-small")
-    elif settings.has_gemini_key:
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings
-        embedding_fn = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
-            google_api_key=settings.GEMINI_API_KEY,
-        )
-    else:
-        return None
-
     return Chroma(
         client=client,
         collection_name="intelliclaim_docs",
-        embedding_function=embedding_fn,
+        embedding_function=OpenAIEmbeddings(model="text-embedding-3-small"),
     )
 
 
@@ -144,14 +133,11 @@ class RAGService:
             return False
 
     async def _index_with_gemini(self, doc_id: str, text: str, metadata: dict) -> bool:
-        """Index document using Google Gemini embeddings (text-embedding-004)."""
+        """Index document using Google text-embedding-004 via google-generativeai."""
         try:
-            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+            import google.generativeai as genai
 
-            embeddings = GoogleGenerativeAIEmbeddings(
-                model="models/text-embedding-004",
-                google_api_key=settings.GEMINI_API_KEY,
-            )
+            genai.configure(api_key=settings.GEMINI_API_KEY)
             collection = _get_chroma_collection()
             if collection is None:
                 return False
@@ -159,7 +145,13 @@ class RAGService:
             chunks = self._chunk_text(text, chunk_size=500, overlap=50)
             ids = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
             metadatas = [{**metadata, "doc_id": doc_id, "chunk_index": i} for i in range(len(chunks))]
-            chunk_embeddings = embeddings.embed_documents(chunks)
+
+            result = genai.embed_content(
+                model="models/text-embedding-004",
+                content=chunks,
+                task_type="retrieval_document",
+            )
+            chunk_embeddings = result["embedding"]
 
             collection.upsert(ids=ids, documents=chunks, embeddings=chunk_embeddings, metadatas=metadatas)
             logger.info("Gemini-indexed %d chunks for document %s", len(chunks), doc_id)
@@ -296,67 +288,64 @@ class RAGService:
         }
 
     async def _query_with_gemini(self, question: str, top_k: int = 5) -> dict[str, Any]:
-        """RAG query using Gemini embeddings + Gemini 1.5 Flash for generation."""
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-        from langchain_community.vectorstores import Chroma
-        from langchain_core.prompts import ChatPromptTemplate
-        from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-        from langchain_core.output_parsers import StrOutputParser
+        """RAG query using google-generativeai: embed query → Chroma → Gemini generation."""
+        import google.generativeai as genai
 
-        client = _get_chroma_client()
-        if client is None:
-            return {"answer": "Vector store unavailable.", "source_documents": []}
+        genai.configure(api_key=settings.GEMINI_API_KEY)
 
-        embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
-            google_api_key=settings.GEMINI_API_KEY,
-        )
-        vectorstore = Chroma(
-            client=client,
-            collection_name="intelliclaim_docs",
-            embedding_function=embeddings,
-        )
-
-        if vectorstore._collection.count() == 0:
+        collection = _get_chroma_collection()
+        if collection is None or collection.count() == 0:
             return {
                 "answer": "No documents have been indexed yet. Please upload and index some documents first.",
                 "source_documents": [],
             }
 
-        docs = vectorstore.as_retriever(search_kwargs={"k": top_k}).invoke(question)
-        if not docs:
+        # Embed the question
+        query_result = genai.embed_content(
+            model="models/text-embedding-004",
+            content=question,
+            task_type="retrieval_query",
+        )
+        query_embedding = query_result["embedding"]
+
+        # Retrieve from ChromaDB
+        results = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=min(top_k, collection.count()),
+            include=["documents", "metadatas", "distances"],
+        )
+
+        documents = results["documents"][0] if results["documents"] else []
+        metadatas = results["metadatas"][0] if results["metadatas"] else []
+        distances = results["distances"][0] if results["distances"] else []
+
+        if not documents:
             return {"answer": "No relevant documents found.", "source_documents": []}
 
-        context = "\n\n---\n\n".join(d.page_content for d in docs)
+        context = "\n\n---\n\n".join(documents)
         sources = [
             {
-                "doc_id": doc.metadata.get("doc_id", "unknown"),
-                "text_snippet": doc.page_content[:200],
-                "score": getattr(doc, "score", 0.0),
+                "doc_id": meta.get("doc_id", "unknown"),
+                "text_snippet": doc[:200],
+                "score": round(1 - dist, 3),
             }
-            for doc in docs
+            for doc, meta, dist in zip(documents, metadatas, distances)
         ]
 
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
-            google_api_key=settings.GEMINI_API_KEY,
-            temperature=0.1,
-            max_output_tokens=500,
+        # Generate answer with Gemini
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            generation_config=genai.types.GenerationConfig(temperature=0.1, max_output_tokens=500),
+            system_instruction=(
+                "You are an AI assistant for IntelliClaim, an insurance claim processing system. "
+                "Answer based ONLY on the provided context. Be concise and accurate."
+            ),
         )
-        prompt = ChatPromptTemplate.from_messages([
-            ("system",
-             "You are an AI assistant for IntelliClaim, an insurance claim processing system. "
-             "Answer based ONLY on the provided context. Be concise and accurate."),
-            ("human", "Context:\n{context}\n\nQuestion: {question}"),
-        ])
-        chain = (
-            {"context": RunnableLambda(lambda _: context), "question": RunnablePassthrough()}
-            | prompt | llm | StrOutputParser()
-        )
+        prompt = f"Context:\n{context}\n\nQuestion: {question}"
+        response = model.generate_content(prompt)
 
-        answer = chain.invoke(question)
         logger.info("Gemini RAG answered: %s", question[:80])
-        return {"answer": answer, "source_documents": sources}
+        return {"answer": response.text, "source_documents": sources}
 
     def _mock_query(self, question: str) -> dict[str, Any]:
         """Generate a mock RAG response for demo mode."""

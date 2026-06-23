@@ -203,40 +203,29 @@ class ExtractionService:
         return extracted
 
     async def _extract_with_gemini(self, text: str, document_class: str) -> dict[str, Any]:
-        """Extract claim fields using Google Gemini (free tier)."""
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        from langchain_core.messages import HumanMessage, SystemMessage
+        """Extract claim fields using Google Gemini 1.5 Flash (free tier)."""
+        import google.generativeai as genai
 
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
-            google_api_key=settings.GEMINI_API_KEY,
-            temperature=0,
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        model = genai.GenerativeModel(
+            model_name="gemini-1.5-flash",
+            generation_config=genai.types.GenerationConfig(
+                temperature=0,
+                response_mime_type="application/json",
+            ),
         )
 
-        truncated = text[:4000]
-        messages = [
-            SystemMessage(content=(
-                "You are an expert insurance claim data extractor. "
-                f"Document type: {document_class}. "
-                "Extract all available fields and return ONLY a valid JSON object with these keys "
-                "(omit keys not found): policy_number, claim_number, patient_name, diagnosis, "
-                "treatment_cost (number), hospital_name, hospital_address, provider_id, "
-                "date_of_service, date_of_admission, date_of_discharge (dates as YYYY-MM-DD). "
-                "No markdown, no explanation — raw JSON only."
-            )),
-            HumanMessage(content=f"Extract from:\n\n{truncated}"),
-        ]
+        prompt = (
+            f"You are an expert insurance claim data extractor. Document type: {document_class}.\n"
+            "Extract all available fields and return a JSON object with these keys "
+            "(omit keys not found in the text): policy_number, claim_number, patient_name, "
+            "diagnosis, treatment_cost (number), hospital_name, hospital_address, provider_id, "
+            "date_of_service, date_of_admission, date_of_discharge (dates as YYYY-MM-DD).\n\n"
+            f"Document text:\n{text[:4000]}"
+        )
 
-        response = llm.invoke(messages)
-        content = response.content.strip()
-        # Strip markdown code fences if Gemini wraps the response
-        if content.startswith("```"):
-            content = content.split("```")[1]
-            if content.startswith("json"):
-                content = content[4:]
-
-        import json
-        extracted = json.loads(content.strip())
+        response = model.generate_content(prompt)
+        extracted = json.loads(response.text)
 
         total_fields = 11
         filled_fields = sum(1 for v in extracted.values() if v is not None and v != "")
