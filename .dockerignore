@@ -1,0 +1,12 @@
+backend/.env
+backend/venv
+backend/__pycache__
+backend/**/__pycache__
+backend/*.pyc
+backend/uploads/*
+backend/chroma_data/*
+backend/tests
+*.md
+.git
+.github
+frontend
