@@ -4,6 +4,7 @@ import ClaimsChart from '../components/Dashboard/ClaimsChart';
 import RiskGauge from '../components/Dashboard/RiskGauge';
 import RecentClaims from '../components/Dashboard/RecentClaims';
 import { analyticsApi } from '../services/api';
+import './DashboardPage.css';
 
 export default function DashboardPage() {
   const [overview, setOverview] = useState(null);
@@ -31,7 +32,7 @@ export default function DashboardPage() {
   return (
     <div className="page-enter" id="dashboard-page">
       <StatsCards data={overview} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, marginBottom: 20 }}>
+      <div className="dashboard-chart-grid">
         <ClaimsChart data={trend} />
         <RiskGauge score={overview?.avg_risk_score || 32.4} />
       </div>

@@ -1,0 +1,12 @@
+.dashboard-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}

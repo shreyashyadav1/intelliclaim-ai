@@ -128,4 +128,16 @@
   .header-search {
     display: none;
   }
+  .header-subtitle {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: 17px;
+  }
+  .header-right {
+    gap: 8px;
+  }
 }

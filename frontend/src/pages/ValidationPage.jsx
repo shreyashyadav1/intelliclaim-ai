@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AlertTriangle, Shield, RefreshCw } from 'lucide-react';
 import Badge from '../components/Shared/Badge';
 import { validationApi } from '../services/api';
+import './ValidationPage.css';
 
 const demoClaims = [
   { id: 'clm-4', claim_number: 'CLM-2026-10004', patient_name: 'James Williams', diagnosis: 'Lumbar Disc Herniation', treatment_cost: 67200, status: 'flagged', risk_score: 72, risk_flags: ['High treatment cost', 'Potential duplicate claim'] },
@@ -40,20 +41,15 @@ export default function ValidationPage() {
 
   return (
     <div className="page-enter" id="validation-page">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div className="validation-toolbar">
+        <div className="validation-toolbar-left">
           <Shield size={22} color="var(--accent-primary)" />
-          <h2 style={{ fontSize: '1.3rem', fontWeight: 600 }}>Risk & Validation</h2>
+          <h2 className="validation-title">Risk & Validation</h2>
           <Badge variant="danger">{claims.length} flagged</Badge>
         </div>
         <button
           onClick={fetchFlagged}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            padding: '8px 16px', borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-subtle)', color: 'var(--text-secondary)',
-            fontSize: '0.85rem', transition: 'all 0.2s'
-          }}
+          className="validation-refresh-btn"
           id="refresh-flagged-btn"
         >
           <RefreshCw size={14} /> Refresh
@@ -62,24 +58,21 @@ export default function ValidationPage() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {claims.map((claim) => (
-          <div key={claim.id} className="glass-card" style={{ padding: 20 }} id={`flagged-${claim.id}`}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <AlertTriangle size={18} style={{ color: getRiskColor(claim.risk_score) }} />
-                <span style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-accent)' }}>{claim.claim_number}</span>
-                <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{claim.patient_name}</span>
+          <div key={claim.id} className="glass-card flagged-claim-card" id={`flagged-${claim.id}`}>
+            <div className="flagged-claim-header">
+              <div className="flagged-claim-left">
+                <AlertTriangle size={18} style={{ color: getRiskColor(claim.risk_score), flexShrink: 0 }} />
+                <span className="flagged-claim-number">{claim.claim_number}</span>
+                <span className="flagged-claim-patient">{claim.patient_name}</span>
                 <Badge variant={claim.status}>{claim.status}</Badge>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-primary)' }}>${claim.treatment_cost?.toLocaleString()}</span>
+              <div className="flagged-claim-right">
+                <span className="flagged-claim-cost">${claim.treatment_cost?.toLocaleString()}</span>
                 <span
+                  className="flagged-risk-pill"
                   style={{
                     color: getRiskColor(claim.risk_score),
                     background: `${getRiskColor(claim.risk_score)}15`,
-                    padding: '4px 12px',
-                    borderRadius: 'var(--radius-sm)',
-                    fontWeight: 600,
-                    fontFamily: 'monospace',
                   }}
                 >
                   Risk: {claim.risk_score}
@@ -87,21 +80,9 @@ export default function ValidationPage() {
               </div>
             </div>
             {claim.risk_flags && claim.risk_flags.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              <div className="flagged-flags">
                 {claim.risk_flags.map((flag, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      fontSize: '0.82rem',
-                      padding: '4px 10px',
-                      borderRadius: 'var(--radius-sm)',
-                      background: 'rgba(239, 68, 68, 0.15)',
-                      border: '1px solid rgba(239, 68, 68, 0.35)',
-                      color: '#fca5a5',
-                    }}
-                  >
-                    {flag}
-                  </span>
+                  <span key={i} className="flagged-flag-tag">{flag}</span>
                 ))}
               </div>
             )}

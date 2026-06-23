@@ -1,0 +1,26 @@
+.layout-root {
+  display: flex;
+  min-height: 100vh;
+}
+
+.layout-content {
+  flex: 1;
+  margin-left: 260px;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.layout-main {
+  padding: 24px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .layout-content {
+    margin-left: 0;
+  }
+  .layout-main {
+    padding: 16px;
+  }
+}
