@@ -32,6 +32,17 @@ class Settings(BaseSettings):
     # ChromaDB
     CHROMA_PERSIST_DIR: str = Field(default="./chroma_data", description="ChromaDB persistence directory")
 
+    # CORS
+    ALLOWED_ORIGINS: list[str] = Field(
+        default=[
+            "http://localhost:5173",
+            "http://localhost:5177",
+            "http://127.0.0.1:5173",
+            "https://intelliclaim-ai.vercel.app",
+        ],
+        description="Allowed CORS origins",
+    )
+
     # Server
     BACKEND_HOST: str = Field(default="0.0.0.0", description="Backend host")
     BACKEND_PORT: int = Field(default=8000, description="Backend port")
