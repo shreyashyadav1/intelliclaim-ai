@@ -1,16 +1,48 @@
-# React + Vite
+# IntelliClaim AI — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 + Vite frontend for the IntelliClaim AI insurance document intelligence platform.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19.2.7 + Vite 8
+- React Router 7
+- Recharts (analytics charts)
+- Lucide React (icons)
+- Axios (API client)
 
-## React Compiler
+## Pages
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Route | Page | Description |
+|---|---|---|
+| `/` | Dashboard | Claims trend, risk breakdown, recent activity |
+| `/documents` | Documents | Upload PDFs/images, view OCR results |
+| `/claims` | Claims | CRUD, status management, filters |
+| `/rag-search` | AI Search | Natural-language RAG query interface |
+| `/validation` | Validation | Risk scores, fraud flags, AI review |
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev       # http://localhost:5173
+npm run build     # production build → dist/
+```
+
+## Environment
+
+```env
+VITE_API_URL=http://localhost:8000   # backend URL
+```
+
+For production, set `VITE_API_URL` to the Railway backend URL in Vercel's environment variables.
+
+## Deployment
+
+Deployed via Vercel. The root `vercel.json` configures the monorepo build:
+
+```json
+{
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist"
+}
+```

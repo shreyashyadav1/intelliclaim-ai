@@ -1,83 +1,141 @@
 # IntelliClaim AI
 
-**Insurance Document Intelligence Platform** — AI-powered claim processing, extraction, RAG search, and risk detection.
+**Insurance Document Intelligence Platform** — AI-powered claim processing, OCR extraction, RAG search, and fraud risk detection.
 
-![React](https://img.shields.io/badge/React-19.2.7-blue?logo=react) ![FastAPI](https://img.shields.io/badge/FastAPI-0.137.2-green?logo=fastapi) ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-black?logo=openai) ![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green?logo=mongodb) ![Docker](https://img.shields.io/badge/Docker-Compose-blue?logo=docker) ![LangChain](https://img.shields.io/badge/LangChain-1.3.10-orange) ![LlamaIndex](https://img.shields.io/badge/LlamaIndex-0.14.22-purple)
+![React](https://img.shields.io/badge/React-19.2.7-blue?logo=react)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.137.2-green?logo=fastapi)
+![Groq](https://img.shields.io/badge/Groq-Llama_3.3_70B-orange?logo=groq)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-1.5.9-purple)
+![Vercel](https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel)
+![Railway](https://img.shields.io/badge/Backend-Railway-violet?logo=railway)
+
+---
+
+## Live Demo
+
+| | URL |
+|---|---|
+| **Frontend** | https://intelliclaim-ai.vercel.app |
+| **API Docs** | https://intelliclaim-ai-production.up.railway.app/docs |
+| **Health** | https://intelliclaim-ai-production.up.railway.app/api/health |
 
 ---
 
 ## Overview
 
-IntelliClaim AI is an end-to-end AI-powered insurance document intelligence platform that automates claim ingestion, document processing, and structured data extraction from medical reports, invoices, and insurance forms.
+IntelliClaim AI automates the full lifecycle of insurance claim processing — from raw PDF/image ingestion through OCR, AI-powered structured data extraction, semantic document search, and AI-assisted fraud risk scoring — all running on a completely free stack.
 
 ### What I Built
 
-- **Developed an end-to-end AI-powered insurance document intelligence platform** using React, FastAPI, OpenAI GPT-4o, MongoDB, and Docker, automating document ingestion, OCR processing, and structured claim data extraction from medical reports, invoices, and insurance forms.
+- **End-to-end AI document pipeline** using React, FastAPI, Groq (Llama 3.3 70B), MongoDB Atlas, and Docker. Processes PDFs and images with Tesseract OCR, classifies document types, and extracts 11 structured claim fields with confidence scoring.
 
-- **Engineered a Retrieval-Augmented Generation (RAG) system** using LangChain, LlamaIndex, ChromaDB, and OpenAI Embeddings, enabling semantic search and natural-language querying across insurance claim documents and historical records.
+- **Retrieval-Augmented Generation (RAG) system** using LangChain, LlamaIndex, ChromaDB, and fastembed (ONNX embeddings). Enables semantic search and natural-language querying across insurance claim documents and historical records.
 
-- **Built AI-assisted validation and risk-analysis workflows** leveraging GPT-4o function calling, OCR pipelines, and hybrid scoring models to identify missing information, duplicate submissions, suspicious billing patterns, and potential fraud indicators.
+- **AI-assisted validation and fraud detection** using Groq Llama with hybrid scoring: rule-based checks (missing fields, duplicate detection, billing thresholds, date logic) combined with AI risk scoring that produces structured flags, severity levels, and plain-English summaries.
 
-- **Architected scalable backend services** using asynchronous FastAPI APIs, modular service-oriented design, MongoDB aggregation analytics, and containerized deployment, supporting document indexing, claim processing, and operational reporting.
+- **Scalable async backend** using FastAPI with Motor (async MongoDB), modular service-oriented design, MongoDB aggregation analytics, and containerised deployment on Railway.
 
 ---
 
 ## Features
 
-- **📄 Intelligent Document Processing** — Upload PDFs/images, OCR extraction via PyMuPDF + pytesseract, AI-powered document classification (GPT-4o with keyword fallback)
-- **🤖 AI Data Extraction** — GPT-4o with function calling for structured claim field extraction; realistic demo data fallback when no API key is configured
-- **🔍 RAG Search** — LlamaIndex (VectorStoreIndex + ChromaVectorStore) for document indexing with OpenAI Embeddings; LangChain LCEL retrieval chain (Chroma retriever + ChatOpenAI + StrOutputParser) for natural-language Q&A
-- **⚠️ AI-Assisted Risk Detection** — Hybrid scoring model: rule-based checks (missing fields, duplicates, billing thresholds, date logic) + GPT-4o function calling for billing anomalies, diagnosis inconsistencies, and suspicious patterns
-- **📊 Analytics Dashboard** — MongoDB aggregation pipelines for claims trends, risk distribution, and real-time operational stats
+- **Document Processing** — Upload PDFs/images, OCR via PyMuPDF + Tesseract, keyword-based document classification
+- **AI Data Extraction** — Groq Llama 3.3 70B extracts 11 structured claim fields (policy number, patient name, diagnosis, treatment cost, dates, hospital, provider ID) with JSON response formatting
+- **RAG Search** — fastembed ONNX embeddings index documents into ChromaDB; LangChain LCEL chain handles natural-language Q&A over indexed claims
+- **AI Fraud Detection** — Hybrid rule-based + Groq AI risk scoring; produces risk score (0–100), risk level (low/medium/high), structured flags with severity, and AI summary
+- **Claims Management** — Full CRUD, status tracking (pending/approved/rejected), duplicate detection
+- **Analytics Dashboard** — MongoDB aggregation pipelines for 30-day claims trend, risk distribution, recent activity
+- **Mobile-Responsive UI** — Collapsible sidebar, stacked cards, horizontal-scroll tables
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   Browser / Mobile                       │
+│          React 19 + Vite  (Vercel CDN)                  │
+└────────────────────┬────────────────────────────────────┘
+                     │ HTTPS / REST
+┌────────────────────▼────────────────────────────────────┐
+│              FastAPI Backend  (Railway)                  │
+│                                                          │
+│  ┌──────────┐  ┌───────────┐  ┌────────┐  ┌─────────┐  │
+│  │   OCR    │  │Extraction │  │  RAG   │  │Validate │  │
+│  │PyMuPDF + │  │Groq Llama │  │fastemb.│  │Rule +   │  │
+│  │Tesseract │  │3.3 70B    │  │+Chroma │  │Groq AI  │  │
+│  └──────────┘  └───────────┘  └────────┘  └─────────┘  │
+│                                                          │
+│  ┌──────────────────────────┐  ┌──────────────────────┐ │
+│  │   MongoDB Atlas (Motor)  │  │  ChromaDB (persisted) │ │
+│  │   Claims, Documents      │  │  Vector embeddings    │ │
+│  └──────────────────────────┘  └──────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+                     │
+          ┌──────────▼──────────┐
+          │   Groq API (free)   │
+          │  llama-3.3-70b-     │
+          │  versatile          │
+          └─────────────────────┘
+```
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|------------|
-| **Frontend** | React 19.2.7, Vite 8.0.16, React Router 7.18.0, Recharts, Lucide Icons |
-| **Backend** | Python 3.13, FastAPI 0.137.2, Pydantic v2, Motor 3.7.1 (async MongoDB) |
-| **AI/ML** | OpenAI GPT-4o, LangChain 1.3.10, LlamaIndex 0.14.22, ChromaDB 1.5.9, OpenAI Embeddings (text-embedding-3-small) |
-| **Database** | MongoDB 7.0 (Atlas or Local) |
-| **Storage** | AWS S3 / Local filesystem |
-| **DevOps** | Docker, Docker Compose |
+|---|---|
+| **Frontend** | React 19.2.7, Vite 8, React Router 7, Recharts, Lucide Icons, Axios |
+| **Backend** | Python 3.13, FastAPI 0.137.2, Pydantic v2, Motor 3.7.1 |
+| **AI (primary)** | Groq SDK — `llama-3.3-70b-versatile` (free, no billing) |
+| **AI (fallback)** | LangChain 1.3.10, LlamaIndex 0.14.22 (OpenAI path, optional) |
+| **Embeddings** | fastembed 0.3.6 — BAAI/bge-small-en-v1.5 via ONNX (~23 MB) |
+| **Vector DB** | ChromaDB 1.5.9 (persistent) |
+| **Database** | MongoDB Atlas M0 (free tier) via Motor |
+| **OCR** | PyMuPDF 1.27 + pytesseract 0.3.13 |
+| **Deployment** | Vercel (frontend) + Railway Docker (backend) |
 
 ---
 
 ## Quick Start
 
 ### Prerequisites
-- Node.js ≥ 20.19
+- Node.js ≥ 20
 - Python ≥ 3.11
 - MongoDB (local or Atlas)
-- OpenAI API Key (optional — app works with demo data)
+- Groq API key — free at [console.groq.com](https://console.groq.com) (no credit card)
 
-### 1. Clone & Configure
+### 1. Clone
 
 ```bash
 git clone https://github.com/shreyashyadav1/intelliclaim-ai.git
 cd intelliclaim-ai
-cp .env.example backend/.env
-# Edit backend/.env with your API keys
 ```
 
-### 2. Backend Setup
+### 2. Backend
 
 ```bash
 cd backend
-python3.13 -m venv venv
-source venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+
+# Install Tesseract OCR (macOS)
+brew install tesseract
+# Ubuntu: sudo apt-get install tesseract-ocr
+
+# Create .env
+cp .env.example .env            # then fill in values (see below)
 
 # Seed demo data
 python seed_data.py
 
-# Start the API
+# Start API
 uvicorn main:app --reload --port 8000
 ```
 
-### 3. Frontend Setup
+### 3. Frontend
 
 ```bash
 cd frontend
@@ -85,68 +143,80 @@ npm install
 npm run dev
 ```
 
-### 4. Docker (Alternative)
+Open **http://localhost:5173**
 
-```bash
-docker-compose up -d
+---
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+```env
+# Required
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster0.xxxxx.mongodb.net/intelliclaim
+GROQ_API_KEY=gsk_...         # free at console.groq.com
+
+# Optional — enables OpenAI fallback path
+OPENAI_API_KEY=sk-...
+
+# Storage (defaults to local filesystem)
+STORAGE_TYPE=local
+LOCAL_STORAGE_PATH=./uploads
+
+# CORS — add your Vercel URL when deploying
+ALLOWED_ORIGINS=["http://localhost:5173","https://your-app.vercel.app"]
 ```
 
-Open **http://localhost:5173** (or the port shown by Vite).
+### Frontend (`frontend/.env`)
+
+```env
+VITE_API_URL=http://localhost:8000   # or Railway URL in production
+```
 
 ---
 
-## API Endpoints
+## Deployment
+
+### Backend → Railway
+
+1. Push this repo to GitHub
+2. Create new Railway project → Deploy from GitHub repo
+3. Railway detects the root `Dockerfile` automatically
+4. Set environment variables in Railway dashboard:
+   - `MONGODB_URI`
+   - `GROQ_API_KEY`
+5. Railway assigns a public URL — copy it
+
+### Frontend → Vercel
+
+1. Import the GitHub repo in Vercel
+2. Vercel uses `vercel.json` at the root (builds from `frontend/`)
+3. Set environment variable:
+   - `VITE_API_URL` = your Railway backend URL
+4. Deploy
+
+---
+
+## API Reference
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/documents/upload` | Upload & process document (OCR + classification) |
-| `GET`  | `/api/documents` | List documents |
-| `GET`  | `/api/claims` | List claims (with filters) |
-| `GET`  | `/api/claims/:id` | Claim detail |
-| `POST` | `/api/extract/:doc_id` | AI extraction (GPT-4o function calling) |
-| `POST` | `/api/rag/query` | RAG search (LangChain + ChromaDB + OpenAI Embeddings) |
-| `POST` | `/api/validate/:claim_id` | Risk validation (rule-based + AI-assisted) |
-| `POST` | `/api/batch-validate` | Batch validation |
-| `GET`  | `/api/analytics/overview` | Dashboard stats |
+|---|---|---|
+| `GET` | `/api/health` | Health check — AI provider, config status |
+| `POST` | `/api/documents/upload` | Upload PDF/image — OCR + classification |
+| `GET` | `/api/documents` | List all documents |
+| `POST` | `/api/extract/{doc_id}` | AI field extraction (Groq Llama) |
+| `GET` | `/api/claims` | List claims (filter by status, risk) |
+| `GET` | `/api/claims/{id}` | Claim detail |
+| `PUT` | `/api/claims/{id}` | Update claim status |
+| `DELETE` | `/api/claims/{id}` | Delete claim |
+| `POST` | `/api/rag/index/{doc_id}` | Index document for semantic search |
+| `POST` | `/api/rag/query` | Natural-language RAG query |
+| `GET` | `/api/rag/stats` | Vector index stats |
+| `POST` | `/api/validate/{claim_id}` | AI fraud risk validation |
+| `GET` | `/api/analytics/recent-claims` | Recent claims feed |
+| `GET` | `/api/analytics/claims-trend` | 30-day trend data |
 
----
-
-## Implementation Details
-
-This section maps each resume claim to the exact code implementation.
-
-### RAG System: LangChain + LlamaIndex + ChromaDB + OpenAI Embeddings
-
-| Component | Implementation | File |
-|-----------|---------------|------|
-| **LlamaIndex Document Indexing** | `VectorStoreIndex` + `ChromaVectorStore` + `OpenAIEmbedding` (text-embedding-3-small) | `services/rag_service.py` — `index_document()` |
-| **LangChain Retrieval Chain** | `Chroma` retriever (OpenAIEmbeddings) → `ChatPromptTemplate` → `ChatOpenAI` (GPT-4o) → `StrOutputParser` | `services/rag_service.py` — `_query_with_langchain()` |
-| **OpenAI Embeddings** | Explicit `OpenAIEmbeddings(model="text-embedding-3-small")` passed to both LlamaIndex and LangChain Chroma retriever | `services/rag_service.py` |
-
-### AI-Assisted Validation & Risk Analysis
-
-| Component | Implementation | File |
-|-----------|---------------|------|
-| **Rule-based checks** | Missing fields, duplicate detection (MongoDB), billing thresholds, date logic | `services/validation_service.py` — `_check_*()` methods |
-| **AI-assisted review** | GPT-4o function calling with `assess_claim_risk` tool schema | `services/validation_service.py` — `_ai_validate_claim()` |
-| **Hybrid scoring** | `rule_score + (ai_score × 0.4 × confidence)` | `services/validation_service.py` — `_calculate_risk_score()` |
-
-### Document Processing & Extraction
-
-| Component | Implementation | File |
-|-----------|---------------|------|
-| **OCR** | PyMuPDF for PDFs, pytesseract for images | `services/ocr_service.py` — `extract_text()` |
-| **Document Classification** | GPT-4o classifier with keyword-based fallback | `services/ocr_service.py` — `classify_document()` |
-| **Structured Extraction** | GPT-4o with function calling (`extract_claim_fields` tool) | `services/extraction_service.py` — `_extract_with_openai()` |
-
-### Backend Architecture
-
-| Component | Implementation | File |
-|-----------|---------------|------|
-| **Async FastAPI** | Lifespan hooks, async Motor, async routers | `main.py`, `db/connection.py` |
-| **Modular services** | OCR, Extraction, RAG, Validation, Analytics, Storage | `services/*.py` |
-| **MongoDB Analytics** | Aggregation pipelines for trends, risk distribution, overview | `services/analytics_service.py` |
-| **Containerization** | Docker + Docker Compose (3 services) | `docker-compose.yml`, `Dockerfile` |
+Full interactive docs: **https://intelliclaim-ai-production.up.railway.app/docs**
 
 ---
 
@@ -154,45 +224,82 @@ This section maps each resume claim to the exact code implementation.
 
 ```
 intelliclaim-ai/
-├── docker-compose.yml
-├── .env.example
+├── Dockerfile                    # Root Dockerfile for Railway
+├── railway.toml                  # Railway build config
+├── vercel.json                   # Vercel monorepo build config
 ├── backend/
-│   ├── main.py                 # FastAPI app (lifespan, CORS, routers)
-│   ├── config.py               # Settings (Pydantic v2)
-│   ├── seed_data.py            # Demo data seeder
-│   ├── models/                 # Pydantic models
-│   ├── routers/                # API endpoints (documents, claims, extraction, rag, analytics, validation)
-│   ├── services/               # Business logic
-│   │   ├── ocr_service.py      # OCR + document classification
-│   │   ├── extraction_service.py # GPT-4o structured extraction
-│   │   ├── rag_service.py        # LlamaIndex + LangChain RAG
-│   │   ├── validation_service.py # Rule-based + AI-assisted validation
+│   ├── main.py                   # FastAPI app — lifespan, CORS, routers
+│   ├── config.py                 # Pydantic v2 settings
+│   ├── requirements.txt
+│   ├── seed_data.py              # Demo data seeder
+│   ├── db/
+│   │   └── connection.py         # Motor async MongoDB
+│   ├── models/                   # Pydantic request/response models
+│   ├── routers/                  # API route handlers
+│   │   ├── documents.py
+│   │   ├── claims.py
+│   │   ├── extraction.py
+│   │   ├── rag.py
+│   │   ├── validation.py
+│   │   └── analytics.py
+│   ├── services/                 # Business logic
+│   │   ├── ocr_service.py        # PyMuPDF + Tesseract OCR
+│   │   ├── extraction_service.py # Groq structured extraction
+│   │   ├── rag_service.py        # fastembed + ChromaDB + LangChain/LlamaIndex
+│   │   ├── validation_service.py # Rule-based + Groq AI validation
 │   │   ├── analytics_service.py  # MongoDB aggregation pipelines
-│   │   └── storage_service.py    # File storage (local/S3)
-│   ├── db/                     # MongoDB connection (Motor)
-│   └── utils/                  # PDF parser, helpers
+│   │   └── storage_service.py    # File storage (local / S3)
+│   └── tests/                    # pytest suite (24 tests)
 └── frontend/
     ├── src/
-    │   ├── components/         # React components (Layout, etc.)
-    │   ├── pages/              # Route pages (Dashboard, Documents, Claims, RAG, Validation)
-    │   ├── services/           # API client (axios)
-    │   └── hooks/              # Custom hooks
+    │   ├── components/           # Layout, Sidebar, shared UI
+    │   ├── pages/                # Dashboard, Documents, Claims, RAGSearch, Validation
+    │   ├── services/             # Axios API client
+    │   └── hooks/                # Custom React hooks
     └── index.html
 ```
 
 ---
 
+## Implementation Highlights
+
+### Groq AI Extraction
+`services/extraction_service.py` — `_extract_with_groq()`
+
+Uses `llama-3.3-70b-versatile` with `response_format: json_object` to extract 11 structured fields from raw OCR text. Confidence score is computed as `filled_fields / 11`.
+
+### RAG Pipeline
+`services/rag_service.py`
+
+- **Indexing**: fastembed `TextEmbedding` (BAAI/bge-small-en-v1.5, ONNX) generates vectors → ChromaDB `upsert` with overlapping 500-char chunks
+- **Querying**: same fastembed model embeds the question → ChromaDB cosine similarity search → Groq Llama generates grounded answer from retrieved context
+- **OpenAI path** (if `OPENAI_API_KEY` set): LlamaIndex `VectorStoreIndex` + LangChain LCEL chain with `text-embedding-3-small`
+
+### Hybrid Fraud Scoring
+`services/validation_service.py`
+
+```
+composite_score = rule_score + (ai_score × 0.4 × ai_confidence)
+```
+
+Rule checks: missing fields, duplicate detection (MongoDB), billing thresholds ($50k / $150k), date logic, suspicious diagnosis keywords. Groq AI adds structured flags with type, severity, and confidence.
+
+---
+
 ## Skills Demonstrated
 
-- OpenAI API & GPT-4o structured extraction with function calling
-- LangChain LCEL retrieval chains (Chroma + OpenAI Embeddings + ChatOpenAI)
-- LlamaIndex vector indexing (VectorStoreIndex + ChromaVectorStore + OpenAIEmbedding)
-- FastAPI async backend architecture with Motor (async MongoDB)
-- React 19 with modern design patterns (Vite, React Router 7)
+- Groq SDK + LLM-powered structured JSON extraction
+- LangChain LCEL retrieval chains (Chroma + embeddings + LLM)
+- LlamaIndex vector indexing (VectorStoreIndex + ChromaVectorStore)
+- fastembed ONNX embeddings (no GPU, no PyTorch)
+- FastAPI async architecture with Motor (async MongoDB)
+- React 19 with Recharts, React Router 7, Lucide Icons
 - MongoDB aggregation pipelines for analytics
-- Docker containerization with multi-service Compose
-- AI-assisted validation workflows (GPT-4o function calling + hybrid scoring)
-- Premium UI/UX design
+- Docker containerisation + Railway deployment
+- Vercel monorepo deployment with custom build config
+- Mobile-responsive UI design
+
+---
 
 ## License
 
