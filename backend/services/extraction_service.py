@@ -137,7 +137,13 @@ class ExtractionService:
             try:
                 return await self._extract_with_openai(text, document_class)
             except Exception as e:
-                logger.warning("OpenAI extraction failed, returning mock data: %s", str(e))
+                logger.warning("OpenAI extraction failed, trying Gemini: %s", str(e))
+
+        if settings.has_gemini_key and text.strip():
+            try:
+                return await self._extract_with_gemini(text, document_class)
+            except Exception as e:
+                logger.warning("Gemini extraction failed, returning mock data: %s", str(e))
 
         return self._generate_mock_data(document_class)
 
@@ -194,6 +200,48 @@ class ExtractionService:
             "OpenAI extraction complete — %d/%d fields, confidence %.2f",
             filled_fields, total_fields, confidence,
         )
+        return extracted
+
+    async def _extract_with_gemini(self, text: str, document_class: str) -> dict[str, Any]:
+        """Extract claim fields using Google Gemini (free tier)."""
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        from langchain_core.messages import HumanMessage, SystemMessage
+
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-flash",
+            google_api_key=settings.GEMINI_API_KEY,
+            temperature=0,
+        )
+
+        truncated = text[:4000]
+        messages = [
+            SystemMessage(content=(
+                "You are an expert insurance claim data extractor. "
+                f"Document type: {document_class}. "
+                "Extract all available fields and return ONLY a valid JSON object with these keys "
+                "(omit keys not found): policy_number, claim_number, patient_name, diagnosis, "
+                "treatment_cost (number), hospital_name, hospital_address, provider_id, "
+                "date_of_service, date_of_admission, date_of_discharge (dates as YYYY-MM-DD). "
+                "No markdown, no explanation — raw JSON only."
+            )),
+            HumanMessage(content=f"Extract from:\n\n{truncated}"),
+        ]
+
+        response = llm.invoke(messages)
+        content = response.content.strip()
+        # Strip markdown code fences if Gemini wraps the response
+        if content.startswith("```"):
+            content = content.split("```")[1]
+            if content.startswith("json"):
+                content = content[4:]
+
+        import json
+        extracted = json.loads(content.strip())
+
+        total_fields = 11
+        filled_fields = sum(1 for v in extracted.values() if v is not None and v != "")
+        extracted["confidence_score"] = round(filled_fields / total_fields, 2)
+        logger.info("Gemini extraction complete — %d/%d fields", filled_fields, total_fields)
         return extracted
 
     def _generate_mock_data(self, document_class: str) -> dict[str, Any]:

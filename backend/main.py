@@ -67,4 +67,6 @@ async def health_check():
         "service": "IntelliClaim AI API",
         "version": "1.0.0",
         "openai_configured": settings.has_openai_key,
+        "gemini_configured": settings.has_gemini_key,
+        "ai_provider": "openai" if settings.has_openai_key else ("gemini" if settings.has_gemini_key else "none"),
     }

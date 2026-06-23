@@ -163,13 +163,16 @@ class ValidationService:
 
         Returns a dict with risk_flags, ai_risk_score, summary, avg_confidence.
         """
-        if not settings.has_openai_key:
+        if not settings.has_openai_key and not settings.has_gemini_key:
             return {
                 "risk_flags": [],
                 "ai_risk_score": 0.0,
-                "summary": "AI review not available (no OpenAI key configured).",
+                "summary": "AI review not available (no API key configured).",
                 "avg_confidence": 0.0,
             }
+
+        if settings.has_gemini_key and not settings.has_openai_key:
+            return await self._ai_validate_with_gemini(claim)
 
         try:
             from openai import AsyncOpenAI
@@ -226,6 +229,64 @@ class ValidationService:
 
         except Exception as e:
             logger.warning("AI validation failed: %s", str(e))
+            return {
+                "risk_flags": [],
+                "ai_risk_score": 0.0,
+                "summary": f"AI review unavailable: {str(e)}",
+                "avg_confidence": 0.0,
+            }
+
+    async def _ai_validate_with_gemini(self, claim: dict) -> dict[str, Any]:
+        """AI validation using Google Gemini 1.5 Flash (free tier)."""
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            from langchain_core.messages import HumanMessage, SystemMessage
+
+            llm = ChatGoogleGenerativeAI(
+                model="gemini-1.5-flash",
+                google_api_key=settings.GEMINI_API_KEY,
+                temperature=0.2,
+            )
+
+            claim_summary = self._build_claim_summary(claim)
+            messages = [
+                SystemMessage(content=(
+                    "You are an expert insurance fraud analyst. Review this claim and return ONLY "
+                    "a valid JSON object with: risk_flags (array of objects with type, description, "
+                    "severity (low/medium/high), confidence (0.0-1.0)), ai_risk_score (0-100), "
+                    "summary (string). No markdown, no explanation — raw JSON only."
+                )),
+                HumanMessage(content=f"Review this claim:\n\n{claim_summary}"),
+            ]
+
+            response = llm.invoke(messages)
+            content = response.content.strip()
+            if content.startswith("```"):
+                content = content.split("```")[1]
+                if content.startswith("json"):
+                    content = content[4:]
+
+            result = json.loads(content.strip())
+            ai_flags = result.get("risk_flags", [])
+            avg_confidence = (
+                sum(f.get("confidence", 0.0) for f in ai_flags) / len(ai_flags)
+                if ai_flags else 0.0
+            )
+
+            logger.info(
+                "Gemini validation complete for claim %s — %d flags, score=%.1f",
+                claim.get("claim_number", "unknown"), len(ai_flags),
+                result.get("ai_risk_score", 0.0),
+            )
+            return {
+                "risk_flags": ai_flags,
+                "ai_risk_score": result.get("ai_risk_score", 0.0),
+                "summary": result.get("summary", ""),
+                "avg_confidence": round(avg_confidence, 2),
+            }
+
+        except Exception as e:
+            logger.warning("Gemini validation failed: %s", str(e))
             return {
                 "risk_flags": [],
                 "ai_risk_score": 0.0,

@@ -51,18 +51,29 @@ def _get_chroma_collection():
 
 
 def _get_langchain_vectorstore():
-    """Return a LangChain Chroma vector store with explicit OpenAI embeddings."""
+    """Return a LangChain Chroma vector store, using OpenAI or Gemini embeddings."""
     from langchain_community.vectorstores import Chroma
-    from langchain_openai import OpenAIEmbeddings
 
     client = _get_chroma_client()
     if client is None:
         return None
 
+    if settings.has_openai_key:
+        from langchain_openai import OpenAIEmbeddings
+        embedding_fn = OpenAIEmbeddings(model="text-embedding-3-small")
+    elif settings.has_gemini_key:
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        embedding_fn = GoogleGenerativeAIEmbeddings(
+            model="models/text-embedding-004",
+            google_api_key=settings.GEMINI_API_KEY,
+        )
+    else:
+        return None
+
     return Chroma(
         client=client,
         collection_name="intelliclaim_docs",
-        embedding_function=OpenAIEmbeddings(model="text-embedding-3-small"),
+        embedding_function=embedding_fn,
     )
 
 
@@ -90,9 +101,11 @@ class RAGService:
             logger.warning("Skipping indexing for doc %s — empty text", doc_id)
             return False
 
-        if not settings.has_openai_key:
-            # In demo mode, fall back to raw Chroma upsert (no embeddings)
+        if not settings.has_openai_key and not settings.has_gemini_key:
             return self._index_demo(doc_id, text, metadata)
+
+        if settings.has_gemini_key and not settings.has_openai_key:
+            return await self._index_with_gemini(doc_id, text, metadata)
 
         try:
             from llama_index.core import Document, VectorStoreIndex, StorageContext
@@ -128,6 +141,31 @@ class RAGService:
 
         except Exception as e:
             logger.error("LlamaIndex indexing failed for %s: %s", doc_id, str(e))
+            return False
+
+    async def _index_with_gemini(self, doc_id: str, text: str, metadata: dict) -> bool:
+        """Index document using Google Gemini embeddings (text-embedding-004)."""
+        try:
+            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+            embeddings = GoogleGenerativeAIEmbeddings(
+                model="models/text-embedding-004",
+                google_api_key=settings.GEMINI_API_KEY,
+            )
+            collection = _get_chroma_collection()
+            if collection is None:
+                return False
+
+            chunks = self._chunk_text(text, chunk_size=500, overlap=50)
+            ids = [f"{doc_id}_chunk_{i}" for i in range(len(chunks))]
+            metadatas = [{**metadata, "doc_id": doc_id, "chunk_index": i} for i in range(len(chunks))]
+            chunk_embeddings = embeddings.embed_documents(chunks)
+
+            collection.upsert(ids=ids, documents=chunks, embeddings=chunk_embeddings, metadatas=metadatas)
+            logger.info("Gemini-indexed %d chunks for document %s", len(chunks), doc_id)
+            return True
+        except Exception as e:
+            logger.error("Gemini indexing failed for %s: %s", doc_id, str(e))
             return False
 
     def _index_demo(self, doc_id: str, text: str, metadata: dict) -> bool:
@@ -171,7 +209,13 @@ class RAGService:
             try:
                 return await self._query_with_langchain(question, top_k)
             except Exception as e:
-                logger.warning("LangChain query failed, returning mock: %s", str(e))
+                logger.warning("LangChain/OpenAI query failed, trying Gemini: %s", str(e))
+
+        if settings.has_gemini_key:
+            try:
+                return await self._query_with_gemini(question, top_k)
+            except Exception as e:
+                logger.warning("Gemini query failed, returning mock: %s", str(e))
 
         return self._mock_query(question)
 
@@ -250,6 +294,69 @@ class RAGService:
             "answer": answer,
             "source_documents": sources,
         }
+
+    async def _query_with_gemini(self, question: str, top_k: int = 5) -> dict[str, Any]:
+        """RAG query using Gemini embeddings + Gemini 1.5 Flash for generation."""
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+        from langchain_community.vectorstores import Chroma
+        from langchain_core.prompts import ChatPromptTemplate
+        from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+        from langchain_core.output_parsers import StrOutputParser
+
+        client = _get_chroma_client()
+        if client is None:
+            return {"answer": "Vector store unavailable.", "source_documents": []}
+
+        embeddings = GoogleGenerativeAIEmbeddings(
+            model="models/text-embedding-004",
+            google_api_key=settings.GEMINI_API_KEY,
+        )
+        vectorstore = Chroma(
+            client=client,
+            collection_name="intelliclaim_docs",
+            embedding_function=embeddings,
+        )
+
+        if vectorstore._collection.count() == 0:
+            return {
+                "answer": "No documents have been indexed yet. Please upload and index some documents first.",
+                "source_documents": [],
+            }
+
+        docs = vectorstore.as_retriever(search_kwargs={"k": top_k}).invoke(question)
+        if not docs:
+            return {"answer": "No relevant documents found.", "source_documents": []}
+
+        context = "\n\n---\n\n".join(d.page_content for d in docs)
+        sources = [
+            {
+                "doc_id": doc.metadata.get("doc_id", "unknown"),
+                "text_snippet": doc.page_content[:200],
+                "score": getattr(doc, "score", 0.0),
+            }
+            for doc in docs
+        ]
+
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-flash",
+            google_api_key=settings.GEMINI_API_KEY,
+            temperature=0.1,
+            max_output_tokens=500,
+        )
+        prompt = ChatPromptTemplate.from_messages([
+            ("system",
+             "You are an AI assistant for IntelliClaim, an insurance claim processing system. "
+             "Answer based ONLY on the provided context. Be concise and accurate."),
+            ("human", "Context:\n{context}\n\nQuestion: {question}"),
+        ])
+        chain = (
+            {"context": RunnableLambda(lambda _: context), "question": RunnablePassthrough()}
+            | prompt | llm | StrOutputParser()
+        )
+
+        answer = chain.invoke(question)
+        logger.info("Gemini RAG answered: %s", question[:80])
+        return {"answer": answer, "source_documents": sources}
 
     def _mock_query(self, question: str) -> dict[str, Any]:
         """Generate a mock RAG response for demo mode."""

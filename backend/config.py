@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     # OpenAI
     OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API key for GPT-4o")
 
+    # Google Gemini
+    GEMINI_API_KEY: Optional[str] = Field(default=None, description="Google Gemini API key (free tier)")
+
     # MongoDB
     MONGODB_URI: str = Field(default="mongodb://localhost:27017", description="MongoDB connection URI")
     MONGODB_DB_NAME: str = Field(default="intelliclaim", description="MongoDB database name")
@@ -58,6 +61,11 @@ class Settings(BaseSettings):
     def has_openai_key(self) -> bool:
         """Check if OpenAI API key is configured."""
         return self.OPENAI_API_KEY is not None and len(self.OPENAI_API_KEY) > 0
+
+    @property
+    def has_gemini_key(self) -> bool:
+        """Check if Google Gemini API key is configured."""
+        return self.GEMINI_API_KEY is not None and len(self.GEMINI_API_KEY) > 0
 
 
 settings = Settings()

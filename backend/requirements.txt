@@ -18,3 +18,4 @@ Pillow==12.2.0
 boto3==1.43.34
 python-dotenv==1.2.2
 httpx==0.28.1
+langchain-google-genai==2.1.5
