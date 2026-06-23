@@ -82,7 +82,7 @@ async def gemini_test():
         from google.genai import types
         client = genai.Client(api_key=settings.GEMINI_API_KEY)
         r = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash",
             contents='Reply with exactly: {"ok": true}',
             config=types.GenerateContentConfig(
                 temperature=0, response_mime_type="application/json"

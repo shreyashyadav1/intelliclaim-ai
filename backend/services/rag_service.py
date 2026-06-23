@@ -337,7 +337,7 @@ class RAGService:
             f"Context:\n{context}\n\nQuestion: {question}"
         )
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash",
             contents=prompt,
             config=types.GenerateContentConfig(temperature=0.1, max_output_tokens=500),
         )
