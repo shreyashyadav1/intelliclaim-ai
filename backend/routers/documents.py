@@ -5,6 +5,8 @@ Endpoints for document upload, listing, retrieval, and deletion.
 """
 
 import logging
+import os
+import re
 from typing import Optional
 
 from fastapi import APIRouter, File, UploadFile, HTTPException, Query
@@ -17,6 +19,17 @@ from utils.helpers import generate_id, utc_now
 
 logger = logging.getLogger("intelliclaim.documents")
 router = APIRouter()
+
+_ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".tiff"}
+_MAX_FILENAME_LEN = 100
+_MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+
+
+def _sanitize_filename(filename: str) -> str:
+    name = re.sub(r"[^\w\-_\.]", "_", filename)
+    ext = os.path.splitext(name)[1].lower()
+    stem = name[: _MAX_FILENAME_LEN - len(ext)]
+    return stem + ext
 
 
 @router.post("/documents/upload")
@@ -33,6 +46,23 @@ async def upload_document(file: UploadFile = File(...)):
     if content_type not in allowed_types:
         raise HTTPException(status_code=400, detail=f"Unsupported file type: {content_type}")
 
+    # Validate file extension matches declared content-type
+    original_filename = file.filename or "upload"
+    ext = os.path.splitext(original_filename)[1].lower()
+    if ext not in _ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"Unsupported file extension: {ext}")
+
+    # Validate file size
+    content = await file.read()
+    if len(content) == 0:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty")
+    if len(content) > _MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File too large (max 50 MB)")
+    await file.seek(0)
+
+    # Sanitize filename to prevent path disclosure in errors
+    safe_filename = _sanitize_filename(original_filename)
+
     try:
         db = get_database()
 
@@ -43,7 +73,11 @@ async def upload_document(file: UploadFile = File(...)):
             file_type = "image"
 
         # Save file
-        file_path = await storage.save_file(file, subdir="documents")
+        try:
+            file_path = await storage.save_file(file, subdir="documents")
+        except Exception as e:
+            logger.error("File save failed: %s", e)
+            raise HTTPException(status_code=400, detail="Invalid file or filename")
         file_size = file.size or 0
 
         doc_id = generate_id()
@@ -51,7 +85,7 @@ async def upload_document(file: UploadFile = File(...)):
         # Create initial document record
         doc_record = {
             "_id": doc_id,
-            "filename": file.filename,
+            "filename": safe_filename,
             "file_type": file_type,
             "file_size": file_size,
             "storage_path": file_path,
@@ -91,10 +125,10 @@ async def upload_document(file: UploadFile = File(...)):
             },
         )
 
-        logger.info("Document uploaded: %s -> %s", file.filename, document_class)
+        logger.info("Document uploaded: %s -> %s", safe_filename, document_class)
         return {
             "id": doc_id,
-            "filename": file.filename,
+            "filename": safe_filename,
             "file_type": file_type,
             "document_class": document_class,
             "processing_status": "processed",
@@ -105,7 +139,7 @@ async def upload_document(file: UploadFile = File(...)):
         raise
     except Exception as e:
         logger.error("Upload failed: %s", e)
-        raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Upload failed")
 
 
 @router.get("/documents")
