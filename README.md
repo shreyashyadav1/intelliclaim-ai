@@ -22,6 +22,22 @@
 
 ---
 
+## Screenshots
+
+| Dashboard | AI Search |
+|:---------:|:---------:|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![AI Search](docs/screenshots/rag-search.png) |
+
+| Documents | Validation |
+|:---------:|:----------:|
+| ![Documents](docs/screenshots/documents.png) | ![Validation](docs/screenshots/validation.png) |
+
+| Claims | Mobile |
+|:------:|:------:|
+| ![Claims](docs/screenshots/claims.png) | ![Mobile](docs/screenshots/dashboard-mobile.png) |
+
+---
+
 ## Overview
 
 IntelliClaim AI automates the full lifecycle of insurance claim processing — from raw PDF/image ingestion through OCR, AI-powered structured data extraction, semantic document search, and AI-assisted fraud risk scoring — all running on a completely free stack.
