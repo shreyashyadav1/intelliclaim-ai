@@ -333,3 +333,117 @@
 .skeleton-line.w-25 { width: 25%; }
 .skeleton-line.h-lg { height: 24px; }
 .skeleton-line.h-xl { height: 40px; }
+
+/* Loading / empty / error states */
+.state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.state-message .loading-spinner {
+  width: 28px;
+  height: 28px;
+}
+
+.state-message-icon {
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.state-message-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.state-message-body {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  max-width: 440px;
+}
+
+.state-message-body a {
+  color: var(--text-accent);
+  font-weight: 500;
+}
+
+.state-message--error .state-message-icon,
+.state-message--error .state-message-title {
+  color: var(--status-danger);
+}
+
+.state-message-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-accent);
+  color: var(--text-accent);
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.state-message-retry:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* Inline notices */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.notice > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.notice-message {
+  flex: 1;
+  min-width: 0;
+}
+
+.notice--success {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+}
+
+.notice--error {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+}
+
+.notice--info {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+}
+
+.notice-dismiss {
+  display: flex;
+  padding: 2px;
+  border-radius: 4px;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.notice-dismiss:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.06);
+}
