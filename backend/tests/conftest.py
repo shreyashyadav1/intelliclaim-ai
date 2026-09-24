@@ -1,42 +1,54 @@
 """
-IntelliClaim AI — Test Configuration & Fixtures
+IntelliClaim AI - shared test fixtures.
 
-Provides:
-- async_client: httpx.AsyncClient for async API testing with a test DB
-- seed_test_db: fixture that seeds known test data before each test
+- test_db: a fresh MongoDB database seeded with known documents and claims.
+- async_client: an httpx.AsyncClient wired to the FastAPI app and test_db.
+
+MongoDB is taken from TEST_MONGODB_URI (default mongodb://localhost:27017).
 """
 
-import asyncio
-from typing import AsyncGenerator
+import os
 
-import pytest
-import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
+# Environment variables take precedence over backend/.env, so blanking the
+# provider keys here guarantees the suite never reaches a real AI provider,
+# whatever a developer keeps in their local .env file.
+os.environ.update(
+    {
+        "GROQ_API_KEY": "",
+        "OPENAI_API_KEY": "",
+        "MOCK_LLM": "false",
+        "ADMIN_API_KEY": "",
+    }
+)
 
-import sys, os
-sys.path.insert(0, os.path.dirname(__file__) + "/..")
+from collections.abc import AsyncGenerator  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
 
-from main import app
-from motor.motor_asyncio import AsyncIOMotorClient
+import pytest_asyncio  # noqa: E402
+from httpx import ASGITransport, AsyncClient  # noqa: E402
+from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 
-TEST_DB_NAME = "intelliclaim_test"
-TEST_MONGO_URI = "mongodb://localhost:27017"
+from main import app  # noqa: E402
+
+TEST_MONGO_URI = os.environ.get("TEST_MONGODB_URI", "mongodb://localhost:27017")
+TEST_DB_NAME = f"intelliclaim_test_{os.getpid()}"
 
 
-@pytest_asyncio.fixture(scope="function")
+def _dt(value: str) -> datetime:
+    return datetime.fromisoformat(value).replace(tzinfo=UTC)
+
+
+@pytest_asyncio.fixture
 async def test_db():
     """Create a fresh Motor client per test to avoid event-loop binding issues."""
     client = AsyncIOMotorClient(TEST_MONGO_URI, serverSelectionTimeoutMS=5000)
     db = client[TEST_DB_NAME]
-
-    # Verify connectivity
     await client.admin.command("ping")
 
-    # Clear collections
     await db.claims.delete_many({})
     await db.documents.delete_many({})
+    await db.claims.create_index("claim_number", unique=True)
 
-    # Seed test documents
     await db.documents.insert_many([
         {
             "_id": "doc-test-001",
@@ -45,11 +57,14 @@ async def test_db():
             "file_size": 1024,
             "storage_path": "./uploads/documents/doc-test-001.pdf",
             "document_class": "invoice",
-            "extracted_text": "Patient: John Doe. Policy: POL-001. Diagnosis: Appendicitis. Treatment Cost: $28,500. Date: 2024-01-15.",
+            "extracted_text": (
+                "Patient: John Doe. Policy: POL-001. Diagnosis: Appendicitis. "
+                "Treatment Cost: $28,500. Date: 2024-01-15."
+            ),
             "claim_id": None,
             "processing_status": "processed",
-            "created_at": "2024-01-15T10:00:00Z",
-            "updated_at": "2024-01-15T10:00:00Z",
+            "created_at": _dt("2024-01-15T10:00:00"),
+            "updated_at": _dt("2024-01-15T10:00:00"),
         },
         {
             "_id": "doc-test-002",
@@ -58,15 +73,17 @@ async def test_db():
             "file_size": 2048,
             "storage_path": "./uploads/documents/doc-test-002.pdf",
             "document_class": "claim_form",
-            "extracted_text": "Claim Number: CLM-001. Patient: Jane Smith. Policy: POL-002. Diagnosis: Type 2 Diabetes. Hospital: Metro General.",
+            "extracted_text": (
+                "Claim Number: CLM-001. Patient: Jane Smith. Policy: POL-002. "
+                "Diagnosis: Type 2 Diabetes. Hospital: Metro General."
+            ),
             "claim_id": "claim-test-001",
             "processing_status": "processed",
-            "created_at": "2024-01-16T11:00:00Z",
-            "updated_at": "2024-01-16T11:00:00Z",
+            "created_at": _dt("2024-01-16T11:00:00"),
+            "updated_at": _dt("2024-01-16T11:00:00"),
         },
     ])
 
-    # Seed test claims
     await db.claims.insert_many([
         {
             "_id": "claim-test-001",
@@ -86,8 +103,8 @@ async def test_db():
             "risk_flags": [],
             "document_ids": ["doc-test-002"],
             "extraction_confidence": 0.91,
-            "created_at": "2024-01-16T11:00:00Z",
-            "updated_at": "2024-01-16T11:00:00Z",
+            "created_at": _dt("2024-01-16T11:00:00"),
+            "updated_at": _dt("2024-01-16T11:00:00"),
         },
         {
             "_id": "claim-test-002",
@@ -105,32 +122,28 @@ async def test_db():
             "status": "flagged",
             "risk_score": 65.0,
             "risk_flags": ["Treatment cost exceeds $50,000 threshold"],
-            "document_ids": ["doc-test-001"],
+            "document_ids": [],
             "extraction_confidence": 0.85,
-            "created_at": "2024-01-15T10:00:00Z",
-            "updated_at": "2024-01-15T10:00:00Z",
+            "created_at": _dt("2024-01-15T10:00:00"),
+            "updated_at": _dt("2024-01-15T10:00:00"),
         },
     ])
 
     yield db
 
-    # Cleanup
     await client.drop_database(TEST_DB_NAME)
     client.close()
 
 
 @pytest_asyncio.fixture
-async def async_client(test_db) -> AsyncGenerator[AsyncClient, None]:
-    """Provide an httpx AsyncClient with DB overridden to the test database."""
-    # Monkeypatch the module-level _database variable
+async def async_client(test_db) -> AsyncGenerator[AsyncClient]:
+    """Provide an httpx AsyncClient with the app's database pointed at test_db."""
     import db.connection as db_conn
+
     original_db = db_conn._database
     db_conn._database = test_db
 
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test",
-    ) as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         yield client
 
     db_conn._database = original_db

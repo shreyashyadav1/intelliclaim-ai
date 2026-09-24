@@ -20,7 +20,7 @@ async def test_validate_single_claim(async_client):
     assert "flags" in data
     assert "is_duplicate" in data
     assert "ai_review" in data
-    assert data["ai_review"]["ai_summary"] == "AI review not available (no OpenAI key configured)."
+    assert data["ai_review"]["ai_summary"] == "AI review not available (no API key configured)."
 
 
 @pytest.mark.asyncio
