@@ -6,30 +6,20 @@ Endpoints for document upload, listing, retrieval, and deletion.
 
 import logging
 import os
-import re
 from typing import Optional
 
 from fastapi import APIRouter, File, UploadFile, HTTPException, Query
-from bson import ObjectId
 
 from db.connection import get_database
 from services.storage_service import storage_service as storage
 from services.ocr_service import ocr_service as ocr
-from utils.helpers import generate_id, utc_now
+from utils.helpers import generate_id, sanitize_filename, utc_now
 
 logger = logging.getLogger("intelliclaim.documents")
 router = APIRouter()
 
 _ALLOWED_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".tiff"}
-_MAX_FILENAME_LEN = 100
 _MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
-
-
-def _sanitize_filename(filename: str) -> str:
-    name = re.sub(r"[^\w\-_\.]", "_", filename)
-    ext = os.path.splitext(name)[1].lower()
-    stem = name[: _MAX_FILENAME_LEN - len(ext)]
-    return stem + ext
 
 
 @router.post("/documents/upload")
@@ -61,7 +51,7 @@ async def upload_document(file: UploadFile = File(...)):
     await file.seek(0)
 
     # Sanitize filename to prevent path disclosure in errors
-    safe_filename = _sanitize_filename(original_filename)
+    safe_filename = sanitize_filename(original_filename)
 
     try:
         db = get_database()

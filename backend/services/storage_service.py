@@ -2,7 +2,7 @@
 IntelliClaim AI - File Storage Service
 
 Handles saving, retrieving, and deleting uploaded files on the local
-filesystem (with structure ready for S3 extension).
+filesystem.
 """
 
 import logging
@@ -62,28 +62,6 @@ class StorageService:
         finally:
             await file.seek(0)
 
-    async def get_file(self, path: str) -> bytes:
-        """Read file contents from the local filesystem.
-
-        Args:
-            path: Relative or absolute path to the file.
-
-        Returns:
-            The raw file bytes.
-
-        Raises:
-            FileNotFoundError: If the file does not exist.
-        """
-        file_path = Path(path)
-        if not file_path.exists():
-            raise FileNotFoundError(f"File not found: {path}")
-
-        with open(file_path, "rb") as f:
-            data = f.read()
-
-        logger.info("Read file: %s (%d bytes)", path, len(data))
-        return data
-
     async def delete_file(self, path: str) -> bool:
         """Delete a file from the local filesystem.
 
@@ -105,20 +83,6 @@ class StorageService:
         except Exception as e:
             logger.error("Failed to delete file %s: %s", path, str(e))
             return False
-
-    def get_file_size(self, path: str) -> int:
-        """Get the size of a file in bytes.
-
-        Args:
-            path: Path to the file.
-
-        Returns:
-            File size in bytes, or 0 if file not found.
-        """
-        file_path = Path(path)
-        if file_path.exists():
-            return file_path.stat().st_size
-        return 0
 
 
 # Module-level singleton
