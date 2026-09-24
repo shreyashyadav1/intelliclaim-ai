@@ -5,11 +5,11 @@ Pydantic v2 models for insurance claim data throughout the application lifecycle
 create, read, update, and database representation.
 """
 
-from datetime import datetime, timezone
+from datetime import date, datetime
 from enum import Enum
-from typing import Optional
+from typing import Annotated, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import AfterValidator, BaseModel, Field, StringConstraints
 
 from utils.helpers import generate_id, utc_now
 
@@ -73,21 +73,37 @@ class ClaimInDB(ClaimBase):
     }
 
 
+def _require_iso_date(value: str) -> str:
+    try:
+        return date.fromisoformat(value).isoformat()
+    except ValueError as exc:
+        raise ValueError("Dates must use the YYYY-MM-DD format") from exc
+
+
+_Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=300)]
+_IsoDate = Annotated[str, StringConstraints(strip_whitespace=True), AfterValidator(_require_iso_date)]
+_FlagText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=500)]
+
+
 class ClaimUpdate(BaseModel):
-    """Schema for partial claim updates (all fields optional)."""
-    policy_number: Optional[str] = None
-    claim_number: Optional[str] = None
-    patient_name: Optional[str] = None
-    diagnosis: Optional[str] = None
-    treatment_cost: Optional[float] = None
-    hospital_name: Optional[str] = None
-    hospital_address: Optional[str] = None
-    provider_id: Optional[str] = None
-    date_of_service: Optional[str] = None
-    date_of_admission: Optional[str] = None
-    date_of_discharge: Optional[str] = None
-    status: Optional[ClaimStatus] = None
-    risk_score: Optional[float] = None
-    risk_flags: Optional[list[str]] = None
-    document_ids: Optional[list[str]] = None
-    extraction_confidence: Optional[float] = None
+    """Fields a client may change through PUT /api/claims/{id}. All optional.
+
+    Unknown keys (including _id, id and timestamps) are ignored. Document links
+    are not editable here: they are maintained by extraction and deletes, which
+    keep claims.document_ids and documents.claim_id consistent.
+    """
+    policy_number: _Text | None = None
+    claim_number: _Text | None = None
+    patient_name: _Text | None = None
+    diagnosis: _Text | None = None
+    treatment_cost: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    hospital_name: _Text | None = None
+    hospital_address: _Text | None = None
+    provider_id: _Text | None = None
+    date_of_service: _IsoDate | None = None
+    date_of_admission: _IsoDate | None = None
+    date_of_discharge: _IsoDate | None = None
+    status: ClaimStatus | None = None
+    risk_score: float | None = Field(default=None, ge=0, le=100, allow_inf_nan=False)
+    risk_flags: list[_FlagText] | None = Field(default=None, max_length=50)
+    extraction_confidence: float | None = Field(default=None, ge=0, le=1, allow_inf_nan=False)

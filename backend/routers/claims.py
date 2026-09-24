@@ -5,24 +5,28 @@ Endpoints for CRUD operations on insurance claims.
 """
 
 import logging
-from typing import Optional
+import re
 
 from fastapi import APIRouter, HTTPException, Query
+from pymongo.errors import DuplicateKeyError
 
 from db.connection import get_database
+from models.claim import ClaimUpdate
 from utils.helpers import utc_now
 
 logger = logging.getLogger("intelliclaim.claims")
 router = APIRouter()
+
+_SEARCH_FIELDS = ("claim_number", "policy_number", "patient_name", "diagnosis")
 
 
 @router.get("/claims")
 async def list_claims(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
-    status: Optional[str] = None,
-    risk_level: Optional[str] = None,
-    search: Optional[str] = None,
+    status: str | None = None,
+    risk_level: str | None = None,
+    search: str | None = Query(None, max_length=100),
 ):
     """List claims with optional filters and pagination."""
     db = get_database()
@@ -39,13 +43,10 @@ async def list_claims(
         elif risk_level == "high":
             query["risk_score"] = {"$gte": 60}
 
-    if search:
-        query["$or"] = [
-            {"claim_number": {"$regex": search, "$options": "i"}},
-            {"policy_number": {"$regex": search, "$options": "i"}},
-            {"patient_name": {"$regex": search, "$options": "i"}},
-            {"diagnosis": {"$regex": search, "$options": "i"}},
-        ]
+    if search and search.strip():
+        # Escape the input so it is matched literally rather than run as a regex.
+        pattern = {"$regex": re.escape(search.strip()), "$options": "i"}
+        query["$or"] = [{field: pattern} for field in _SEARCH_FIELDS]
 
     cursor = db.claims.find(query).sort("created_at", -1).skip(skip).limit(limit)
     claims = await cursor.to_list(length=limit)
@@ -69,18 +70,25 @@ async def get_claim(claim_id: str):
 
 
 @router.put("/claims/{claim_id}")
-async def update_claim(claim_id: str, updates: dict):
-    """Update a claim's fields."""
+async def update_claim(claim_id: str, updates: ClaimUpdate):
+    """Update a claim's fields. Only fields defined on ClaimUpdate are accepted."""
     db = get_database()
-    existing = await db.claims.find_one({"_id": claim_id})
+    existing = await db.claims.find_one({"_id": claim_id}, {"_id": 1})
     if not existing:
         raise HTTPException(status_code=404, detail="Claim not found")
 
-    # Filter out None values and _id/id
-    clean_updates = {k: v for k, v in updates.items() if v is not None and k not in ("_id", "id")}
-    clean_updates["updated_at"] = utc_now()
+    changes = updates.model_dump(mode="json", exclude_unset=True, exclude_none=True)
+    if not changes:
+        raise HTTPException(status_code=400, detail="No updatable fields were provided")
+    changes["updated_at"] = utc_now()
 
-    await db.claims.update_one({"_id": claim_id}, {"$set": clean_updates})
+    try:
+        await db.claims.update_one({"_id": claim_id}, {"$set": changes})
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Claim number {changes['claim_number']} is already used by another claim",
+        ) from None
 
     updated = await db.claims.find_one({"_id": claim_id})
     updated["id"] = updated.pop("_id")
