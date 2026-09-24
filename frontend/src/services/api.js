@@ -131,10 +131,26 @@ export const analyticsApi = {
 };
 
 /* ── Validation ── */
+
+/** Maximum number of claim IDs POST /batch-validate accepts per request. */
+export const BATCH_VALIDATE_LIMIT = 100;
+
 export const validationApi = {
   validate: (claimId) => api.post(`/validate/${claimId}`, null, SLOW_REQUEST),
   getFlagged: (params) => api.get('/validate/flagged', { params }),
-  batchValidate: (claimIds) => api.post('/validate/batch', { claim_ids: claimIds }),
+  /**
+   * Validates claims through POST /batch-validate, sending sequential requests of at
+   * most BATCH_VALIDATE_LIMIT IDs. Resolves to `{ results, total_validated }`.
+   */
+  batchValidate: async (claimIds) => {
+    const results = [];
+    for (let start = 0; start < claimIds.length; start += BATCH_VALIDATE_LIMIT) {
+      const chunk = claimIds.slice(start, start + BATCH_VALIDATE_LIMIT);
+      const response = await api.post('/batch-validate', { claim_ids: chunk }, BULK_REQUEST);
+      results.push(...(response.results ?? []));
+    }
+    return { results, total_validated: results.length };
+  },
 };
 
 export default api;
