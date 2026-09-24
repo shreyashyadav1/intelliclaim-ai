@@ -1,89 +1,86 @@
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, XCircle, Flag, User, Stethoscope, Building2, DollarSign, AlertTriangle, FileText } from 'lucide-react';
+import { AlertTriangle, Building2, CheckCircle, DollarSign, Flag, Stethoscope, User, XCircle } from 'lucide-react';
+import { formatCurrency, formatDate, formatScore, riskColor } from '../../utils/format';
 import Badge from '../Shared/Badge';
+import Notice from '../Shared/Notice';
 import './ClaimDetail.css';
 
-const demoClaim = {
-  id: 'clm-4',
-  claim_number: 'CLM-2026-10004',
-  policy_number: 'POL-2026-50004',
-  patient_name: 'James Williams',
-  diagnosis: 'Lumbar Disc Herniation (M51.16)',
-  treatment_cost: 67200,
-  hospital_name: 'Spine Care Institute',
-  hospital_address: '1250 Medical Dr, Chicago, IL 60601',
-  provider_id: 'NPI-1234567890',
-  date_of_service: '2026-05-28',
-  date_of_admission: '2026-05-27',
-  date_of_discharge: '2026-06-02',
-  status: 'flagged',
-  risk_score: 72,
-  risk_flags: ['Treatment cost exceeds $50,000 threshold', 'Potential duplicate claim detected'],
-  document_ids: ['doc-4'],
-  extraction_confidence: 0.92,
-  created_at: '2026-06-12T11:45:00Z',
-};
+const STATUS_ACTIONS = [
+  { status: 'approved', label: 'Approve', icon: CheckCircle, tone: 'success', id: 'approve-claim-btn' },
+  { status: 'rejected', label: 'Reject', icon: XCircle, tone: 'danger', id: 'reject-claim-btn' },
+  { status: 'flagged', label: 'Flag', icon: Flag, tone: 'warning', id: 'flag-claim-btn' },
+];
 
-function getRiskColor(score) {
-  if (score >= 60) return '#ef4444';
-  if (score >= 30) return '#f59e0b';
-  return '#10b981';
+function Field({ label, value, format, mono = false }) {
+  const missing = value === null || value === undefined || value === '';
+  return (
+    <div className="card-field">
+      <span className="field-label">{label}</span>
+      <span className={`field-value ${mono ? 'mono' : ''}`}>{missing ? 'N/A' : format ? format(value) : value}</span>
+    </div>
+  );
 }
 
-export default function ClaimDetail({ claim, onUpdateStatus }) {
-  const navigate = useNavigate();
-  const data = claim || demoClaim;
+export default function ClaimDetail({ claim, pendingStatus, statusError, onUpdateStatus, onDismissStatusError }) {
+  const confidence = claim.extraction_confidence;
+  const hasConfidence = typeof confidence === 'number';
+  const flags = claim.risk_flags ?? [];
+  const color = riskColor(claim.risk_score);
 
   return (
-    <div className="claim-detail page-enter" id="claim-detail">
-      <button className="claim-detail-back" onClick={() => navigate('/claims')} id="back-to-claims">
-        <ArrowLeft size={18} /> Back to Claims
-      </button>
-
+    <div className="claim-detail" id="claim-detail">
       <div className="claim-detail-header glass-card">
         <div className="claim-detail-header-left">
-          <h2>{data.claim_number}</h2>
-          <Badge variant={data.status}>{data.status}</Badge>
+          <h2>{claim.claim_number || 'Unnumbered claim'}</h2>
+          <Badge variant={claim.status}>{claim.status}</Badge>
         </div>
         <div className="claim-detail-actions">
-          <button className="action-btn action-btn--success" onClick={() => onUpdateStatus?.(data.id, 'approved')} id="approve-claim-btn">
-            <CheckCircle size={16} /> Approve
-          </button>
-          <button className="action-btn action-btn--danger" onClick={() => onUpdateStatus?.(data.id, 'rejected')} id="reject-claim-btn">
-            <XCircle size={16} /> Reject
-          </button>
-          <button className="action-btn action-btn--warning" onClick={() => onUpdateStatus?.(data.id, 'flagged')} id="flag-claim-btn">
-            <Flag size={16} /> Flag
-          </button>
+          {STATUS_ACTIONS.map(({ status, label, icon: Icon, tone, id }) => (
+            <button
+              key={status}
+              type="button"
+              className={`action-btn action-btn--${tone}`}
+              onClick={() => onUpdateStatus(status)}
+              disabled={Boolean(pendingStatus) || claim.status === status}
+              id={id}
+            >
+              <Icon size={16} /> {pendingStatus === status ? 'Saving…' : label}
+            </button>
+          ))}
         </div>
       </div>
+
+      {statusError && (
+        <Notice tone="error" onDismiss={onDismissStatusError}>
+          {statusError}
+        </Notice>
+      )}
 
       <div className="claim-detail-grid">
         <div className="claim-info-card glass-card">
           <div className="card-section-header">
             <User size={16} /> Patient Information
           </div>
-          <div className="card-field"><span className="field-label">Name</span><span className="field-value">{data.patient_name}</span></div>
-          <div className="card-field"><span className="field-label">Policy #</span><span className="field-value mono">{data.policy_number}</span></div>
-          <div className="card-field"><span className="field-label">Service Date</span><span className="field-value">{data.date_of_service || 'N/A'}</span></div>
+          <Field label="Name" value={claim.patient_name} />
+          <Field label="Policy #" value={claim.policy_number} mono />
+          <Field label="Service Date" value={claim.date_of_service} format={formatDate} />
         </div>
 
         <div className="claim-info-card glass-card">
           <div className="card-section-header">
             <Stethoscope size={16} /> Treatment Details
           </div>
-          <div className="card-field"><span className="field-label">Diagnosis</span><span className="field-value">{data.diagnosis}</span></div>
-          <div className="card-field"><span className="field-label">Admission</span><span className="field-value">{data.date_of_admission || 'N/A'}</span></div>
-          <div className="card-field"><span className="field-label">Discharge</span><span className="field-value">{data.date_of_discharge || 'N/A'}</span></div>
+          <Field label="Diagnosis" value={claim.diagnosis} />
+          <Field label="Admission" value={claim.date_of_admission} format={formatDate} />
+          <Field label="Discharge" value={claim.date_of_discharge} format={formatDate} />
         </div>
 
         <div className="claim-info-card glass-card">
           <div className="card-section-header">
             <Building2 size={16} /> Hospital Information
           </div>
-          <div className="card-field"><span className="field-label">Hospital</span><span className="field-value">{data.hospital_name}</span></div>
-          <div className="card-field"><span className="field-label">Address</span><span className="field-value">{data.hospital_address || 'N/A'}</span></div>
-          <div className="card-field"><span className="field-label">Provider ID</span><span className="field-value mono">{data.provider_id || 'N/A'}</span></div>
+          <Field label="Hospital" value={claim.hospital_name} />
+          <Field label="Address" value={claim.hospital_address} />
+          <Field label="Provider ID" value={claim.provider_id} mono />
         </div>
 
         <div className="claim-info-card glass-card">
@@ -92,36 +89,44 @@ export default function ClaimDetail({ claim, onUpdateStatus }) {
           </div>
           <div className="card-field">
             <span className="field-label">Treatment Cost</span>
-            <span className="field-value cost">${data.treatment_cost?.toLocaleString()}</span>
+            <span className="field-value cost">{formatCurrency(claim.treatment_cost)}</span>
           </div>
           <div className="card-field">
             <span className="field-label">AI Confidence</span>
-            <div className="confidence-bar-wrapper">
-              <div className="confidence-bar"><div className="confidence-fill" style={{ width: `${(data.extraction_confidence || 0) * 100}%` }} /></div>
-              <span className="confidence-pct">{((data.extraction_confidence || 0) * 100).toFixed(0)}%</span>
-            </div>
+            {hasConfidence ? (
+              <div className="confidence-bar-wrapper">
+                <div className="confidence-bar">
+                  <div className="confidence-fill" style={{ width: `${confidence * 100}%` }} />
+                </div>
+                <span className="confidence-pct">{(confidence * 100).toFixed(0)}%</span>
+              </div>
+            ) : (
+              <span className="field-value">N/A</span>
+            )}
           </div>
         </div>
       </div>
 
-      {data.risk_flags && data.risk_flags.length > 0 && (
-        <div className="risk-assessment glass-card">
-          <div className="card-section-header">
-            <AlertTriangle size={16} style={{ color: getRiskColor(data.risk_score) }} /> Risk Assessment
-            <span className="risk-score-display" style={{ color: getRiskColor(data.risk_score) }}>
-              Score: {data.risk_score}
-            </span>
-          </div>
+      <div className="risk-assessment glass-card">
+        <div className="card-section-header">
+          <AlertTriangle size={16} style={{ color }} /> Risk Assessment
+          <span className="risk-score-display" style={{ color }}>
+            Score: {formatScore(claim.risk_score)}
+          </span>
+        </div>
+        {flags.length > 0 ? (
           <div className="risk-flags-list">
-            {data.risk_flags.map((flag, i) => (
-              <div key={i} className="risk-flag-item">
-                <AlertTriangle size={14} style={{ color: getRiskColor(data.risk_score) }} />
+            {flags.map((flag, index) => (
+              <div key={index} className="risk-flag-item">
+                <AlertTriangle size={14} style={{ color }} />
                 <span>{flag}</span>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="risk-assessment-empty">No risk flags recorded for this claim.</p>
+        )}
+      </div>
     </div>
   );
 }

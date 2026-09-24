@@ -55,6 +55,15 @@
   border: 1px solid transparent;
 }
 
+.action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.action-btn:disabled:hover {
+  background: none;
+}
+
 .action-btn--success {
   color: var(--status-success);
   border-color: rgba(16, 185, 129, 0.3);
@@ -198,6 +207,11 @@
   border: 1px solid rgba(239, 68, 68, 0.1);
   font-size: 0.9rem;
   color: var(--text-secondary);
+}
+
+.risk-assessment-empty {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
 }
 
 @media (max-width: 768px) {
