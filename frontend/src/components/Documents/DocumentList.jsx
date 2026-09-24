@@ -1,4 +1,4 @@
-import { Brain, Eye, FileText, Image, Loader, Trash2 } from 'lucide-react';
+import { Brain, DatabaseZap, Eye, FileText, Image, Loader, RefreshCw, Trash2 } from 'lucide-react';
 import { getErrorMessage } from '../../services/api';
 import { formatDate, formatFileSize, humanize } from '../../utils/format';
 import Badge from '../Shared/Badge';
@@ -12,7 +12,7 @@ const CLASS_BADGES = {
   discharge_summary: 'pending',
 };
 
-function DocumentCard({ doc, busyAction, onView, onDelete, onExtract }) {
+function DocumentCard({ doc, busyAction, indexed, onView, onDelete, onExtract, onIndex }) {
   const failed = doc.processing_status === 'failed';
   const processed = doc.processing_status === 'processed';
 
@@ -32,6 +32,7 @@ function DocumentCard({ doc, busyAction, onView, onDelete, onExtract }) {
             </Badge>
           )}
           {!failed && !processed && <Badge variant="pending">{humanize(doc.processing_status)}</Badge>}
+          {indexed && <Badge variant="success">indexed</Badge>}
           <span className="document-card-size">{formatFileSize(doc.file_size)}</span>
           <span className="document-card-date">{formatDate(doc.created_at)}</span>
         </div>
@@ -60,6 +61,16 @@ function DocumentCard({ doc, busyAction, onView, onDelete, onExtract }) {
           {busyAction === 'extracting' ? <Loader size={16} className="doc-action-spinner" /> : <Brain size={16} />}
         </button>
         <button
+          className="doc-action-btn doc-action-btn--accent"
+          onClick={() => onIndex(doc)}
+          disabled={!processed || Boolean(busyAction)}
+          title={processed ? 'Index for AI search' : 'Only processed documents can be indexed'}
+          aria-label={`Index ${doc.filename} for search`}
+          id={`index-${doc.id}`}
+        >
+          {busyAction === 'indexing' ? <Loader size={16} className="doc-action-spinner" /> : <DatabaseZap size={16} />}
+        </button>
+        <button
           className="doc-action-btn doc-action-btn--danger"
           onClick={() => onDelete(doc)}
           disabled={Boolean(busyAction)}
@@ -74,7 +85,20 @@ function DocumentCard({ doc, busyAction, onView, onDelete, onExtract }) {
   );
 }
 
-export default function DocumentList({ documents, total, error, onRetry, busy = {}, onView, onDelete, onExtract }) {
+export default function DocumentList({
+  documents,
+  total,
+  error,
+  onRetry,
+  busy = {},
+  indexedIds,
+  indexingAll = false,
+  onView,
+  onDelete,
+  onExtract,
+  onIndex,
+  onIndexAll,
+}) {
   let content;
   if (error) {
     content = (
@@ -104,9 +128,11 @@ export default function DocumentList({ documents, total, error, onRetry, busy = 
             key={doc.id}
             doc={doc}
             busyAction={busy[doc.id]}
+            indexed={indexedIds?.has(doc.id) ?? false}
             onView={onView}
             onDelete={onDelete}
             onExtract={onExtract}
+            onIndex={onIndex}
           />
         ))}
       </div>
@@ -117,6 +143,17 @@ export default function DocumentList({ documents, total, error, onRetry, busy = 
     <div className="document-list" id="document-list">
       <div className="document-list-header">
         <h3>Documents{documents ? ` (${total ?? documents.length})` : ''}</h3>
+        <button
+          type="button"
+          className="document-list-action"
+          onClick={onIndexAll}
+          disabled={indexingAll || !documents?.length}
+          title="Rebuild the AI search index from every processed document"
+          id="index-all-btn"
+        >
+          <RefreshCw size={14} className={indexingAll ? 'doc-action-spinner' : ''} />
+          {indexingAll ? 'Re-indexing…' : 'Re-index all'}
+        </button>
       </div>
       {content}
       {documents && total > documents.length && (

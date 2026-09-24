@@ -84,7 +84,7 @@ export default function DocumentViewer({ document, loading, error, extracting, o
 
         <div className="doc-viewer-footer">
           <button
-            className="btn btn-primary"
+            className="btn btn-primary btn-md"
             onClick={() => onExtract(document)}
             disabled={!processed || extracting}
             id="extract-data-btn"

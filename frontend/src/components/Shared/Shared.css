@@ -88,6 +88,13 @@
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
 .btn-loading {
   pointer-events: none;
   opacity: 0.7;

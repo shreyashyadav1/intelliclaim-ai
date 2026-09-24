@@ -129,3 +129,25 @@
   font-size: 0.85rem;
   color: var(--text-tertiary);
 }
+
+.document-list-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.document-list-action:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.document-list-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
