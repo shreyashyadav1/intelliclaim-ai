@@ -11,10 +11,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
+from pymongo.errors import ConnectionFailure
 
 from config import HEALTH_CHECK_PARAMS, settings
 from db.connection import close_db, connect_db
+from middleware import SecurityHeadersMiddleware, UnhandledErrorMiddleware
 from routers import analytics, claims, documents, extraction, rag, validation
 from services import llm
 
@@ -48,19 +49,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        return response
-
-
+# Middleware added last runs first: CORS wraps everything, so error responses
+# produced further in (including unexpected 500s) still carry CORS headers.
+app.add_middleware(UnhandledErrorMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
-
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -74,6 +66,12 @@ app.add_middleware(
 async def llm_error_handler(request: Request, exc: llm.LLMError) -> JSONResponse:
     """503 when no AI provider is configured, 502 when the provider fails."""
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
+@app.exception_handler(ConnectionFailure)
+async def database_unavailable_handler(request: Request, exc: ConnectionFailure) -> JSONResponse:
+    logger.error("Database unavailable during %s %s: %s", request.method, request.url.path, exc)
+    return JSONResponse(status_code=503, content={"detail": "The database is unavailable. Please try again later."})
 
 
 app.include_router(documents.router, prefix="/api", tags=["Documents"])
