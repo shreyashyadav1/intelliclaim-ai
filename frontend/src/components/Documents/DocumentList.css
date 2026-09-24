@@ -94,3 +94,38 @@
   background: rgba(239, 68, 68, 0.1);
   color: var(--status-danger);
 }
+
+.document-card--failed {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.document-card-error {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  word-break: break-word;
+}
+
+.doc-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.doc-action-btn:disabled:hover {
+  background: none;
+  color: var(--text-secondary);
+}
+
+.doc-action-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.document-list-state:hover {
+  transform: none;
+}
+
+.document-list-footnote {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}

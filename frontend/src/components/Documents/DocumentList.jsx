@@ -1,72 +1,129 @@
-import { FileText, Image, Trash2, Eye, Brain } from 'lucide-react';
+import { Brain, Eye, FileText, Image, Loader, Trash2 } from 'lucide-react';
+import { getErrorMessage } from '../../services/api';
+import { formatDate, formatFileSize, humanize } from '../../utils/format';
 import Badge from '../Shared/Badge';
+import { EmptyState, ErrorState, LoadingState } from '../Shared/StateMessage';
 import './DocumentList.css';
 
-const demoDocuments = [
-  { id: 'doc-1', filename: 'medical_report_johnson.pdf', file_type: 'pdf', document_class: 'medical_report', file_size: 245000, processing_status: 'processed', created_at: '2026-06-15T10:00:00Z' },
-  { id: 'doc-2', filename: 'invoice_chen_diabetes.pdf', file_type: 'pdf', document_class: 'invoice', file_size: 128000, processing_status: 'processed', created_at: '2026-06-14T09:30:00Z' },
-  { id: 'doc-3', filename: 'claim_form_rodriguez.pdf', file_type: 'pdf', document_class: 'claim_form', file_size: 312000, processing_status: 'processed', created_at: '2026-06-13T14:20:00Z' },
-  { id: 'doc-4', filename: 'discharge_summary_williams.pdf', file_type: 'pdf', document_class: 'discharge_summary', file_size: 198000, processing_status: 'processed', created_at: '2026-06-12T11:45:00Z' },
-  { id: 'doc-5', filename: 'xray_scan_thompson.jpg', file_type: 'image', document_class: 'medical_report', file_size: 890000, processing_status: 'processed', created_at: '2026-06-11T08:15:00Z' },
-  { id: 'doc-6', filename: 'billing_statement_davis.pdf', file_type: 'pdf', document_class: 'invoice', file_size: 156000, processing_status: 'processed', created_at: '2026-06-10T16:00:00Z' },
-];
-
-const classColors = {
+const CLASS_BADGES = {
   medical_report: 'info',
   invoice: 'warning',
   claim_form: 'success',
   discharge_summary: 'pending',
-  other: 'default',
 };
 
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1048576).toFixed(1) + ' MB';
+function DocumentCard({ doc, busyAction, onView, onDelete, onExtract }) {
+  const failed = doc.processing_status === 'failed';
+  const processed = doc.processing_status === 'processed';
+
+  return (
+    <div className={`document-card glass-card ${failed ? 'document-card--failed' : ''}`} id={`doc-${doc.id}`}>
+      <div className="document-card-icon">
+        {doc.file_type === 'image' ? <Image size={24} /> : <FileText size={24} />}
+      </div>
+      <div className="document-card-info">
+        <h4 className="document-card-name" title={doc.filename}>{doc.filename}</h4>
+        <div className="document-card-meta">
+          {failed ? (
+            <Badge variant="danger">Processing failed</Badge>
+          ) : (
+            <Badge variant={CLASS_BADGES[doc.document_class] ?? 'info'}>
+              {humanize(doc.document_class) || 'unclassified'}
+            </Badge>
+          )}
+          {!failed && !processed && <Badge variant="pending">{humanize(doc.processing_status)}</Badge>}
+          <span className="document-card-size">{formatFileSize(doc.file_size)}</span>
+          <span className="document-card-date">{formatDate(doc.created_at)}</span>
+        </div>
+        {failed && (
+          <p className="document-card-error">{doc.error_message || 'The document could not be processed.'}</p>
+        )}
+      </div>
+      <div className="document-card-actions">
+        <button
+          className="doc-action-btn"
+          onClick={() => onView(doc)}
+          title="View"
+          aria-label={`View ${doc.filename}`}
+          id={`view-${doc.id}`}
+        >
+          <Eye size={16} />
+        </button>
+        <button
+          className="doc-action-btn doc-action-btn--accent"
+          onClick={() => onExtract(doc)}
+          disabled={!processed || Boolean(busyAction)}
+          title={processed ? 'Extract claim data' : 'Only processed documents can be extracted'}
+          aria-label={`Extract claim data from ${doc.filename}`}
+          id={`extract-${doc.id}`}
+        >
+          {busyAction === 'extracting' ? <Loader size={16} className="doc-action-spinner" /> : <Brain size={16} />}
+        </button>
+        <button
+          className="doc-action-btn doc-action-btn--danger"
+          onClick={() => onDelete(doc)}
+          disabled={Boolean(busyAction)}
+          title="Delete"
+          aria-label={`Delete ${doc.filename}`}
+          id={`delete-${doc.id}`}
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+    </div>
+  );
 }
 
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-export default function DocumentList({ documents, onView, onDelete, onExtract }) {
-  const docs = documents && documents.length > 0 ? documents : demoDocuments;
+export default function DocumentList({ documents, total, error, onRetry, busy = {}, onView, onDelete, onExtract }) {
+  let content;
+  if (error) {
+    content = (
+      <div className="glass-card document-list-state">
+        <ErrorState title="Couldn't load documents" message={getErrorMessage(error)} onRetry={onRetry} />
+      </div>
+    );
+  } else if (!documents) {
+    content = (
+      <div className="glass-card document-list-state">
+        <LoadingState label="Loading documents…" />
+      </div>
+    );
+  } else if (documents.length === 0) {
+    content = (
+      <div className="glass-card document-list-state">
+        <EmptyState icon={FileText} title="No documents yet">
+          Upload a PDF or image above to run OCR and classification.
+        </EmptyState>
+      </div>
+    );
+  } else {
+    content = (
+      <div className="document-grid">
+        {documents.map((doc) => (
+          <DocumentCard
+            key={doc.id}
+            doc={doc}
+            busyAction={busy[doc.id]}
+            onView={onView}
+            onDelete={onDelete}
+            onExtract={onExtract}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="document-list" id="document-list">
       <div className="document-list-header">
-        <h3>Documents ({docs.length})</h3>
+        <h3>Documents{documents ? ` (${total ?? documents.length})` : ''}</h3>
       </div>
-      <div className="document-grid">
-        {docs.map((doc) => (
-          <div key={doc.id} className="document-card glass-card" id={`doc-${doc.id}`}>
-            <div className="document-card-icon">
-              {doc.file_type === 'image' ? <Image size={24} /> : <FileText size={24} />}
-            </div>
-            <div className="document-card-info">
-              <h4 className="document-card-name" title={doc.filename}>{doc.filename}</h4>
-              <div className="document-card-meta">
-                <Badge variant={classColors[doc.document_class] || 'default'}>
-                  {doc.document_class?.replace(/_/g, ' ')}
-                </Badge>
-                <span className="document-card-size">{formatSize(doc.file_size)}</span>
-                <span className="document-card-date">{formatDate(doc.created_at)}</span>
-              </div>
-            </div>
-            <div className="document-card-actions">
-              <button className="doc-action-btn" onClick={() => onView?.(doc)} title="View" id={`view-${doc.id}`}>
-                <Eye size={16} />
-              </button>
-              <button className="doc-action-btn doc-action-btn--accent" onClick={() => onExtract?.(doc)} title="Extract Data" id={`extract-${doc.id}`}>
-                <Brain size={16} />
-              </button>
-              <button className="doc-action-btn doc-action-btn--danger" onClick={() => onDelete?.(doc.id)} title="Delete" id={`delete-${doc.id}`}>
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {content}
+      {documents && total > documents.length && (
+        <p className="document-list-footnote">
+          Showing the {documents.length} most recent of {total} documents.
+        </p>
+      )}
     </div>
   );
 }

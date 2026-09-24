@@ -1,5 +1,6 @@
 .extraction-results {
   padding: 20px;
+  margin-bottom: 28px;
 }
 
 .extraction-results:hover {
@@ -10,11 +11,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.extraction-title h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-subtle);
+}
+
+.extraction-title-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .extraction-confidence {
@@ -22,18 +35,40 @@
   font-weight: 600;
 }
 
-.extraction-fields {
+.extraction-dismiss {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  transition: all 0.2s;
+}
+
+.extraction-dismiss:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.extraction-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  word-break: break-word;
+}
+
+.extraction-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 4px 24px;
 }
 
 .extraction-field {
   display: grid;
-  grid-template-columns: 140px 1fr 80px;
+  grid-template-columns: 140px 1fr;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
+  padding: 6px 0;
 }
 
 .extraction-field-label {
@@ -47,17 +82,18 @@
   font-size: 0.9rem;
   color: var(--text-primary);
   font-weight: 500;
+  word-break: break-word;
 }
 
-.extraction-field-bar {
-  height: 4px;
-  background: var(--bg-tertiary);
-  border-radius: 2px;
-  overflow: hidden;
+.extraction-field-value--missing {
+  color: var(--text-tertiary);
+  font-weight: 400;
+  font-style: italic;
 }
 
-.extraction-field-bar-fill {
-  height: 100%;
-  background: var(--accent-gradient);
-  border-radius: 2px;
+.extraction-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
 }
