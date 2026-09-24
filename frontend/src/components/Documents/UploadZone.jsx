@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload, FileText, CheckCircle, AlertCircle, Loader } from 'lucide-react';
-import { documentsApi } from '../../services/api';
+import { documentsApi, getErrorMessage } from '../../services/api';
 import './UploadZone.css';
 
 export default function UploadZone({ onUploadComplete }) {
@@ -27,7 +27,7 @@ export default function UploadZone({ onUploadComplete }) {
       setResult(response);
       onUploadComplete?.();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Upload failed');
+      setError(getErrorMessage(err));
       // Demo fallback
       setResult({
         id: 'demo-' + Date.now(),
