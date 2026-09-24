@@ -7,6 +7,7 @@ listed in the repository's .env.example.
 """
 
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -14,6 +15,22 @@ from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parent
+
+
+@dataclass(frozen=True)
+class GenerationParams:
+    """Sampling parameters for one kind of LLM call."""
+
+    temperature: float
+    max_tokens: int
+
+
+# Per-task generation parameters, shared by every provider.
+EXTRACTION_PARAMS = GenerationParams(temperature=0.0, max_tokens=1024)
+VALIDATION_PARAMS = GenerationParams(temperature=0.2, max_tokens=1024)
+RAG_ANSWER_PARAMS = GenerationParams(temperature=0.1, max_tokens=500)
+CLASSIFICATION_PARAMS = GenerationParams(temperature=0.0, max_tokens=20)
+HEALTH_CHECK_PARAMS = GenerationParams(temperature=0.0, max_tokens=10)
 
 
 class Settings(BaseSettings):
@@ -28,8 +45,16 @@ class Settings(BaseSettings):
 
     # AI providers
     GROQ_API_KEY: str | None = Field(default=None, description="Groq API key")
+    GROQ_MODEL: str = Field(default="llama-3.3-70b-versatile", description="Groq chat model")
     OPENAI_API_KEY: str | None = Field(
         default=None, description="OpenAI API key; when set, OpenAI is tried before Groq"
+    )
+    OPENAI_MODEL: str = Field(default="gpt-4o", description="OpenAI chat model")
+    LLM_TIMEOUT_SECONDS: float = Field(default=20.0, gt=0, description="Per-request timeout for AI providers")
+    LLM_MAX_RETRIES: int = Field(default=1, ge=0, le=5, description="Retries for failed AI provider requests")
+    MOCK_LLM: bool = Field(
+        default=False,
+        description="Return clearly labelled mock AI output instead of calling a provider (demos and tests)",
     )
 
     # MongoDB
@@ -88,6 +113,22 @@ class Settings(BaseSettings):
     def has_groq_key(self) -> bool:
         """Check if Groq API key is configured."""
         return bool(self.GROQ_API_KEY and self.GROQ_API_KEY.strip())
+
+    @property
+    def llm_configured(self) -> bool:
+        """True when at least one real AI provider has an API key."""
+        return self.has_openai_key or self.has_groq_key
+
+    @property
+    def ai_provider(self) -> str:
+        """The provider that AI features use first: mock, openai, groq or none."""
+        if self.MOCK_LLM:
+            return "mock"
+        if self.has_openai_key:
+            return "openai"
+        if self.has_groq_key:
+            return "groq"
+        return "none"
 
 
 settings = Settings()

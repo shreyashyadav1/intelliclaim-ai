@@ -5,14 +5,18 @@ Main application module with CORS, router registration, and lifecycle events.
 """
 
 import logging
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from config import settings
-from db.connection import connect_db, close_db
+from config import HEALTH_CHECK_PARAMS, settings
+from db.connection import close_db, connect_db
+from routers import analytics, claims, documents, extraction, rag, validation
+from services import llm
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,13 +33,17 @@ async def lifespan(app: FastAPI):
     logger.info("Database connected successfully.")
     yield
     logger.info("Shutting down IntelliClaim AI API...")
+    await llm.close_clients()
     await close_db()
     logger.info("Database connection closed.")
 
 
 app = FastAPI(
     title="IntelliClaim AI API",
-    description="Insurance Document Intelligence Platform - AI-powered claim processing, extraction, RAG search, and risk detection.",
+    description=(
+        "Insurance Document Intelligence Platform - AI-powered claim processing, "
+        "extraction, RAG search, and risk detection."
+    ),
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -61,8 +69,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Import and register routers
-from routers import documents, claims, extraction, rag, analytics, validation
+
+@app.exception_handler(llm.LLMError)
+async def llm_error_handler(request: Request, exc: llm.LLMError) -> JSONResponse:
+    """503 when no AI provider is configured, 502 when the provider fails."""
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
 
 app.include_router(documents.router, prefix="/api", tags=["Documents"])
 app.include_router(claims.router, prefix="/api", tags=["Claims"])
@@ -86,20 +98,24 @@ async def health_check():
 
 
 @app.get("/api/health/groq", tags=["System"])
-async def groq_test():
-    """Test Groq API connectivity."""
-    if not settings.has_groq_key:
-        return {"status": "no_key"}
-    try:
-        from groq import Groq
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        r = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": 'Reply with this json exactly: {"ok": true}'}],
-            temperature=0,
-            response_format={"type": "json_object"},
-            max_tokens=10,
-        )
-        return {"status": "ok", "response": r.choices[0].message.content}
-    except Exception as e:
-        return {"status": "error", "error": str(e), "type": type(e).__name__}
+async def groq_health():
+    """Check Groq connectivity with a minimal JSON-mode completion."""
+    if settings.MOCK_LLM:
+        return {
+            "status": "skipped",
+            "source": "mock",
+            "model": settings.GROQ_MODEL,
+            "message": "MOCK_LLM is enabled, so Groq was not called.",
+        }
+    started = time.perf_counter()
+    content = await llm.groq_chat(
+        [{"role": "user", "content": 'Reply with this JSON exactly: {"ok": true}'}],
+        HEALTH_CHECK_PARAMS,
+        json_mode=True,
+    )
+    return {
+        "status": "ok",
+        "model": settings.GROQ_MODEL,
+        "latency_ms": round((time.perf_counter() - started) * 1000),
+        "response": content,
+    }

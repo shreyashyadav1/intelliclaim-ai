@@ -21,14 +21,21 @@ os.environ.update(
     }
 )
 
+import json  # noqa: E402
 from collections.abc import AsyncGenerator  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
+from types import SimpleNamespace  # noqa: E402
 
+import groq  # noqa: E402
+import httpx  # noqa: E402
+import pytest  # noqa: E402
 import pytest_asyncio  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 
+from config import settings  # noqa: E402
 from main import app  # noqa: E402
+from services import llm  # noqa: E402
 
 TEST_MONGO_URI = os.environ.get("TEST_MONGODB_URI", "mongodb://localhost:27017")
 TEST_DB_NAME = f"intelliclaim_test_{os.getpid()}"
@@ -36,6 +43,86 @@ TEST_DB_NAME = f"intelliclaim_test_{os.getpid()}"
 
 def _dt(value: str) -> datetime:
     return datetime.fromisoformat(value).replace(tzinfo=UTC)
+
+
+# --- AI provider fakes ----------------------------------------------------------
+
+
+class FakeGroq:
+    """Stands in for groq.AsyncGroq. Queue replies with respond(); inspect calls."""
+
+    def __init__(self) -> None:
+        self._replies: list = []
+        self.calls: list[dict] = []
+        self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
+
+    def respond(self, *replies) -> "FakeGroq":
+        """Queue replies: dicts are sent as JSON text, exceptions are raised."""
+        for reply in replies:
+            self._replies.append(json.dumps(reply) if isinstance(reply, dict) else reply)
+        return self
+
+    async def _create(self, **kwargs):
+        self.calls.append(kwargs)
+        if not self._replies:
+            raise AssertionError("FakeGroq received a request with no reply queued")
+        reply = self._replies.pop(0)
+        if isinstance(reply, BaseException):
+            raise reply
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=reply))])
+
+    async def close(self) -> None:
+        pass
+
+
+def groq_connection_error() -> groq.APIConnectionError:
+    return groq.APIConnectionError(request=httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions"))
+
+
+def groq_rate_limit_error() -> groq.RateLimitError:
+    request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+    return groq.RateLimitError("rate limited", response=httpx.Response(429, request=request), body=None)
+
+
+@pytest.fixture(autouse=True)
+def ai_client_guard(monkeypatch) -> SimpleNamespace:
+    """Fail loudly if any code path tries to build a real provider client.
+
+    Returns the original factories for the tests that check how they are built.
+    """
+    originals = SimpleNamespace(groq=llm._create_groq_client, openai=llm._create_openai_client)
+
+    def _forbidden():
+        raise AssertionError("Tests must not create real AI provider clients; use the fake_groq fixture")
+
+    monkeypatch.setattr(llm, "_create_groq_client", _forbidden)
+    monkeypatch.setattr(llm, "_create_openai_client", _forbidden)
+    monkeypatch.setattr(llm, "_groq_client", None)
+    monkeypatch.setattr(llm, "_openai_client", None)
+    return originals
+
+
+@pytest.fixture
+def fake_groq(monkeypatch) -> FakeGroq:
+    """Configure a Groq key and route all Groq calls to a FakeGroq instance."""
+    fake = FakeGroq()
+    monkeypatch.setattr(settings, "GROQ_API_KEY", "test-groq-key")
+    monkeypatch.setattr(llm, "_groq_client", fake)
+    return fake
+
+
+@pytest.fixture
+def groq_errors() -> SimpleNamespace:
+    """Factories for the exceptions the Groq SDK raises."""
+    return SimpleNamespace(connection=groq_connection_error, rate_limit=groq_rate_limit_error)
+
+
+@pytest.fixture
+def mock_llm(monkeypatch) -> None:
+    monkeypatch.setattr(settings, "MOCK_LLM", True)
+
+
+# --- Database -----------------------------------------------------------------------
 
 
 @pytest_asyncio.fixture
