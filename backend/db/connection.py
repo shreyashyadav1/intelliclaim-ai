@@ -6,7 +6,7 @@ hooks for FastAPI startup/shutdown and index creation.
 """
 
 import logging
-from typing import Optional
+import re
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
@@ -15,8 +15,24 @@ from config import settings
 logger = logging.getLogger(__name__)
 
 # Module-level connection state
-_client: Optional[AsyncIOMotorClient] = None
-_database: Optional[AsyncIOMotorDatabase] = None
+_client: AsyncIOMotorClient | None = None
+_database: AsyncIOMotorDatabase | None = None
+
+# scheme://[userinfo@]hosts[/database][?options]
+_URI_PATTERN = re.compile(r"^(?P<scheme>[a-z][a-z0-9+.\-]*://)(?:(?P<userinfo>[^@/]*)@)?(?P<rest>[^?]*)")
+
+
+def redact_mongo_uri(uri: str) -> str:
+    """Return the URI with credentials masked and query options removed, for logging.
+
+    Options are dropped as well because some of them (e.g. TLS key passwords
+    or AWS session tokens) can carry secrets.
+    """
+    match = _URI_PATTERN.match(uri or "")
+    if match is None:
+        return "<unparseable MongoDB URI>"
+    userinfo = "***@" if match.group("userinfo") is not None else ""
+    return f"{match.group('scheme')}{userinfo}{match.group('rest')}"
 
 
 def get_database() -> AsyncIOMotorDatabase:
@@ -39,7 +55,7 @@ async def connect_db() -> None:
     """
     global _client, _database
 
-    logger.info("Connecting to MongoDB at %s …", settings.MONGODB_URI)
+    logger.info("Connecting to MongoDB at %s", redact_mongo_uri(settings.MONGODB_URI))
     _client = AsyncIOMotorClient(
         settings.MONGODB_URI,
         serverSelectionTimeoutMS=5000,
