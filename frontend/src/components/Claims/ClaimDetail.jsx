@@ -1,7 +1,8 @@
-import { AlertTriangle, Building2, CheckCircle, DollarSign, Flag, Stethoscope, User, XCircle } from 'lucide-react';
+import { AlertTriangle, Building2, CheckCircle, DollarSign, Flag, ShieldCheck, Stethoscope, User, XCircle } from 'lucide-react';
 import { formatCurrency, formatDate, formatScore, riskColor } from '../../utils/format';
 import Badge from '../Shared/Badge';
 import Notice from '../Shared/Notice';
+import ValidationSummary from './ValidationSummary';
 import './ClaimDetail.css';
 
 const STATUS_ACTIONS = [
@@ -20,7 +21,17 @@ function Field({ label, value, format, mono = false }) {
   );
 }
 
-export default function ClaimDetail({ claim, pendingStatus, statusError, onUpdateStatus, onDismissStatusError }) {
+export default function ClaimDetail({
+  claim,
+  pendingStatus,
+  statusError,
+  onUpdateStatus,
+  onDismissStatusError,
+  validation,
+  onValidate,
+  onDismissValidationError,
+}) {
+  const busy = Boolean(pendingStatus) || validation.running;
   const confidence = claim.extraction_confidence;
   const hasConfidence = typeof confidence === 'number';
   const flags = claim.risk_flags ?? [];
@@ -40,18 +51,32 @@ export default function ClaimDetail({ claim, pendingStatus, statusError, onUpdat
               type="button"
               className={`action-btn action-btn--${tone}`}
               onClick={() => onUpdateStatus(status)}
-              disabled={Boolean(pendingStatus) || claim.status === status}
+              disabled={busy || claim.status === status}
               id={id}
             >
               <Icon size={16} /> {pendingStatus === status ? 'Saving…' : label}
             </button>
           ))}
+          <button
+            type="button"
+            className="action-btn action-btn--accent"
+            onClick={onValidate}
+            disabled={busy}
+            id="validate-claim-btn"
+          >
+            <ShieldCheck size={16} /> {validation.running ? 'Validating…' : 'Validate'}
+          </button>
         </div>
       </div>
 
       {statusError && (
         <Notice tone="error" onDismiss={onDismissStatusError}>
           {statusError}
+        </Notice>
+      )}
+      {validation.error && (
+        <Notice tone="error" onDismiss={onDismissValidationError}>
+          Validation failed: {validation.error}
         </Notice>
       )}
 
@@ -114,7 +139,9 @@ export default function ClaimDetail({ claim, pendingStatus, statusError, onUpdat
             Score: {formatScore(claim.risk_score)}
           </span>
         </div>
-        {flags.length > 0 ? (
+        {validation.result ? (
+          <ValidationSummary result={validation.result} />
+        ) : flags.length > 0 ? (
           <div className="risk-flags-list">
             {flags.map((flag, index) => (
               <div key={index} className="risk-flag-item">
@@ -124,7 +151,10 @@ export default function ClaimDetail({ claim, pendingStatus, statusError, onUpdat
             ))}
           </div>
         ) : (
-          <p className="risk-assessment-empty">No risk flags recorded for this claim.</p>
+          <p className="risk-assessment-empty">
+            No risk flags recorded. Run validation to score this claim against the billing, date,
+            duplicate and AI review checks.
+          </p>
         )}
       </div>
     </div>

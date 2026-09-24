@@ -15,10 +15,12 @@ export default function Badge({
   pulse = false,
   icon: Icon,
   className = '',
+  title,
 }) {
   return (
     <span
       id={id}
+      title={title}
       className={`badge ${variantMap[variant] || 'badge-info'} ${pulse ? 'badge-pulse' : ''} ${className}`}
     >
       {Icon && <Icon size={11} />}
