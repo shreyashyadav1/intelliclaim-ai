@@ -1,42 +1,31 @@
-import { useState, useEffect } from 'react';
 import StatsCards from '../components/Dashboard/StatsCards';
 import ClaimsChart from '../components/Dashboard/ClaimsChart';
 import RiskGauge from '../components/Dashboard/RiskGauge';
 import RecentClaims from '../components/Dashboard/RecentClaims';
+import { useApiQuery } from '../hooks/useApiQuery';
 import { analyticsApi } from '../services/api';
 import './DashboardPage.css';
 
-export default function DashboardPage() {
-  const [overview, setOverview] = useState(null);
-  const [trend, setTrend] = useState(null);
-  const [recentClaims, setRecentClaims] = useState(null);
+const TREND_DAYS = 30;
+const RECENT_CLAIMS_LIMIT = 7;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [ov, tr, rc] = await Promise.allSettled([
-          analyticsApi.getOverview(),
-          analyticsApi.getClaimsTrend(30),
-          analyticsApi.getRecentClaims(10),
-        ]);
-        if (ov.status === 'fulfilled') setOverview(ov.value);
-        if (tr.status === 'fulfilled') setTrend(tr.value);
-        if (rc.status === 'fulfilled') setRecentClaims(rc.value);
-      } catch {
-        // Demo data will be used by components
-      }
-    };
-    fetchData();
-  }, []);
+const loadOverview = () => analyticsApi.getOverview();
+const loadTrend = () => analyticsApi.getClaimsTrend(TREND_DAYS);
+const loadRecentClaims = () => analyticsApi.getRecentClaims(RECENT_CLAIMS_LIMIT);
+
+export default function DashboardPage() {
+  const overview = useApiQuery(loadOverview);
+  const trend = useApiQuery(loadTrend);
+  const recentClaims = useApiQuery(loadRecentClaims);
 
   return (
     <div className="page-enter" id="dashboard-page">
-      <StatsCards data={overview} />
+      <StatsCards data={overview.data} error={overview.error} onRetry={overview.refetch} />
       <div className="dashboard-chart-grid">
-        <ClaimsChart data={trend} />
-        <RiskGauge score={overview?.avg_risk_score || 32.4} />
+        <ClaimsChart data={trend.data} error={trend.error} onRetry={trend.refetch} days={TREND_DAYS} />
+        <RiskGauge data={overview.data} error={overview.error} onRetry={overview.refetch} />
       </div>
-      <RecentClaims data={recentClaims} />
+      <RecentClaims data={recentClaims.data} error={recentClaims.error} onRetry={recentClaims.refetch} />
     </div>
   );
 }
