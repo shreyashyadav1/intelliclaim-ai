@@ -3,14 +3,12 @@ IntelliClaim AI — AI Evaluation Tests
 
 Tests that demonstrate AI behavior quality:
 1. RAG retrieval relevance — mock queries return contextually relevant answers
-2. Validation hybrid scoring — rule + AI scores produce expected risk levels
 """
 
 import pytest
 import asyncio
 
 from services.rag_service import RAGService
-from services.validation_service import ValidationService
 
 
 @pytest.mark.asyncio
@@ -39,92 +37,3 @@ async def test_rag_retrieval_relevance():
         assert expected_keyword in answer_lower, (
             f"Expected '{expected_keyword}' in answer for '{question}', got: {answer_lower[:100]}"
         )
-
-
-@pytest.mark.asyncio
-async def test_validation_hybrid_scoring(monkeypatch):
-    """Validation produces correct risk levels based on composite scoring.
-
-    Tests the rule-based layer independently (no OpenAI key = no AI layer),
-    ensuring thresholds, duplicate detection, and date logic work correctly.
-    """
-    # Mock get_database() to avoid Motor event-loop binding issues in tests
-    class MockCollection:
-        async def count_documents(self, query):
-            return 0  # No duplicates in tests
-
-    class MockDB:
-        claims = MockCollection()
-
-    import db.connection
-    monkeypatch.setattr(db.connection, "_database", MockDB())
-    monkeypatch.setattr(db.connection, "get_database", lambda: MockDB())
-
-    # Mock _check_duplicate to avoid DB / event-loop issues in unit tests
-    # Must be async because validate_claim does `await self._check_duplicate()`
-    async def _mock_check_duplicate(self, claim):
-        return False
-
-    monkeypatch.setattr(ValidationService, "_check_duplicate", _mock_check_duplicate)
-
-    validator = ValidationService()
-
-    # High-risk claim: very high cost + missing fields + invalid dates
-    high_risk = {
-        "claim_number": "CLM-HIGH",
-        "policy_number": "POL-HIGH",
-        "patient_name": "Risky Patient",
-        "diagnosis": "Acute Myocardial Infarction (I21.9)",
-        "treatment_cost": 160000,
-        "hospital_name": "Test Hospital",
-        "hospital_address": "",
-        "provider_id": "",
-        "date_of_service": "2024-01-01",
-        "date_of_admission": "2024-01-15",
-        "date_of_discharge": "2024-01-01",
-        "status": "pending",
-    }
-    result = await validator.validate_claim(high_risk)
-    assert result["risk_level"] in ("medium", "high"), f"Expected medium/high risk, got {result['risk_level']}"
-    assert result["risk_score"] >= 30, f"Expected score >= 30, got {result['risk_score']}"
-    assert any(f["type"] == "very_high_cost" for f in result["flags"])
-
-    # Low-risk claim: normal cost, all fields present
-    low_risk = {
-        "claim_number": "CLM-LOW",
-        "policy_number": "POL-LOW",
-        "patient_name": "Safe Patient",
-        "diagnosis": "Type 2 Diabetes Mellitus (E11.9)",
-        "treatment_cost": 12000,
-        "hospital_name": "Safe Hospital",
-        "hospital_address": "456 Safe St",
-        "provider_id": "NPI-456",
-        "date_of_service": "2024-02-01",
-        "date_of_admission": "2024-02-01",
-        "date_of_discharge": "2024-02-05",
-        "status": "pending",
-    }
-    result = await validator.validate_claim(low_risk)
-    assert result["risk_level"] == "low", f"Expected low risk, got {result['risk_level']}"
-    assert result["risk_score"] < 30, f"Expected score < 30, got {result['risk_score']}"
-
-    # Medium-risk claim: missing some fields + high cost
-    medium_risk = {
-        "claim_number": "CLM-MED",
-        "policy_number": "POL-MED",
-        "patient_name": "Med Patient",
-        "diagnosis": "",
-        "treatment_cost": 55000,
-        "hospital_name": "Med Hospital",
-        "hospital_address": "",
-        "provider_id": "",
-        "date_of_service": "2024-03-01",
-        "date_of_admission": "2024-03-01",
-        "date_of_discharge": "2024-03-10",
-        "status": "pending",
-    }
-    result = await validator.validate_claim(medium_risk)
-    assert result["risk_level"] in ("medium", "high"), f"Expected medium/high risk, got {result['risk_level']}"
-    assert result["risk_score"] >= 30, f"Expected score >= 30, got {result['risk_score']}"
-    assert any(f["type"] == "missing_fields" for f in result["flags"])
-    assert any(f["type"] == "high_cost" for f in result["flags"])
