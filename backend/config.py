@@ -56,6 +56,9 @@ class Settings(BaseSettings):
         default=False,
         description="Return clearly labelled mock AI output instead of calling a provider (demos and tests)",
     )
+    EXTRACTION_MAX_INPUT_CHARS: int = Field(
+        default=4000, ge=500, description="Characters of document text sent to the model for extraction"
+    )
 
     # MongoDB
     MONGODB_URI: str = Field(default="mongodb://localhost:27017", description="MongoDB connection URI")

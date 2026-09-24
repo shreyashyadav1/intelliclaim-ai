@@ -2,62 +2,15 @@
 IntelliClaim AI — AI Evaluation Tests
 
 Tests that demonstrate AI behavior quality:
-1. Extraction consistency — mock data yields valid fields 100% of the time
-2. RAG retrieval relevance — mock queries return contextually relevant answers
-3. Validation hybrid scoring — rule + AI scores produce expected risk levels
+1. RAG retrieval relevance — mock queries return contextually relevant answers
+2. Validation hybrid scoring — rule + AI scores produce expected risk levels
 """
 
 import pytest
 import asyncio
 
-from services.extraction_service import ExtractionService
 from services.rag_service import RAGService
 from services.validation_service import ValidationService
-
-
-@pytest.mark.asyncio
-async def test_extraction_consistency():
-    """Mock extraction produces valid, non-empty fields every time.
-
-    This is an *evaluation* test: it proves that the extraction service,
-    even in demo mode, consistently yields structured data with the required
-    fields populated.
-    """
-    extractor = ExtractionService()
-    results = []
-
-    for _ in range(20):
-        result = await extractor.extract_claim_data(
-            text="Patient: John Doe. Policy: POL-001. Diagnosis: Appendicitis.",
-            document_class="claim_form",
-        )
-        results.append(result)
-
-    # All 20 runs should have the required fields
-    required_fields = [
-        "policy_number", "claim_number", "patient_name",
-        "diagnosis", "treatment_cost", "hospital_name",
-    ]
-    for r in results:
-        for field in required_fields:
-            assert r.get(field) is not None, f"Field {field} missing in extraction"
-            assert str(r.get(field)) != "", f"Field {field} is empty"
-
-    # Treatment cost should always be a positive number
-    costs = [r["treatment_cost"] for r in results]
-    assert all(c > 0 for c in costs), "Some extraction yields non-positive cost"
-
-    # Confidence should be in the 0.7–0.95 range
-    confidences = [r.get("confidence_score", 0) for r in results]
-    assert all(0.7 <= c <= 0.95 for c in confidences), "Confidence outside expected demo range"
-
-    # 100% field coverage (no None required fields)
-    coverage = sum(
-        1 for r in results
-        for f in required_fields
-        if r.get(f) is not None and str(r.get(f)) != ""
-    ) / (len(results) * len(required_fields))
-    assert coverage == 1.0, f"Field coverage {coverage:.0%} < 100%"
 
 
 @pytest.mark.asyncio

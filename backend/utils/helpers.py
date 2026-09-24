@@ -4,12 +4,15 @@ IntelliClaim AI - Helper Utilities
 General-purpose helper functions used across the application.
 """
 
+import math
 import re
 import uuid
 from datetime import UTC, datetime
 from pathlib import PurePath
 
 MAX_FILENAME_LENGTH = 100
+
+_AMOUNT_PATTERN = re.compile(r"^[-+]?\d+(?:\.\d+)?$")
 
 
 def generate_id() -> str:
@@ -54,6 +57,26 @@ def sanitize_filename(filename: str, max_length: int = MAX_FILENAME_LENGTH) -> s
         else:
             filename = filename[:max_length]
     return filename
+
+
+def parse_amount(value: object) -> float | None:
+    """Parse a number or a currency string such as "$28,500.00" or "28500 USD".
+
+    Returns None for anything that is not a finite number, including booleans,
+    so callers never compare strings with thresholds.
+    """
+    if isinstance(value, bool) or value is None:
+        return None
+    if isinstance(value, int | float):
+        number = float(value)
+    elif isinstance(value, str):
+        cleaned = re.sub(r"(?i)\b(usd|dollars?)\b|[$,\s]", "", value)
+        if not _AMOUNT_PATTERN.match(cleaned):
+            return None
+        number = float(cleaned)
+    else:
+        return None
+    return number if math.isfinite(number) else None
 
 
 def utc_now() -> datetime:

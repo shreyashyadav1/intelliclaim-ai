@@ -80,6 +80,8 @@ async def update_claim(claim_id: str, updates: ClaimUpdate):
     changes = updates.model_dump(mode="json", exclude_unset=True, exclude_none=True)
     if not changes:
         raise HTTPException(status_code=400, detail="No updatable fields were provided")
+    if "claim_number" in changes:
+        changes["claim_number_is_placeholder"] = False
     changes["updated_at"] = utc_now()
 
     try:
