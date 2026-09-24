@@ -1,5 +1,6 @@
-import { useLocation } from 'react-router-dom';
-import { Search, Bell } from 'lucide-react';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import './Header.css';
 
 const pageTitles = {
@@ -12,8 +13,18 @@ const pageTitles = {
 
 export default function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [query, setQuery] = useState('');
   const basePath = '/' + (location.pathname.split('/')[1] || '');
   const page = pageTitles[basePath] || pageTitles['/'];
+
+  // Searches run on the Claims page, which queries GET /claims?search=...
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const term = query.trim();
+    navigate(term ? `/claims?${new URLSearchParams({ search: term })}` : '/claims');
+    setQuery('');
+  };
 
   return (
     <header className="header" role="banner">
@@ -23,35 +34,18 @@ export default function Header() {
       </div>
 
       <div className="header-right">
-        <div className="header-search">
-          <Search size={16} className="header-search-icon" />
+        <form className="header-search" role="search" onSubmit={handleSearch}>
+          <Search size={16} className="header-search-icon" aria-hidden="true" />
           <input
             id="header-search-input"
             className="header-search-input"
             type="search"
-            placeholder="Search claims, documents..."
-            aria-label="Search"
+            placeholder="Search claims..."
+            aria-label="Search claims"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
           />
-        </div>
-
-        <button
-          id="header-notifications-btn"
-          className="header-icon-btn"
-          aria-label="Notifications"
-        >
-          <Bell size={18} />
-          <span className="header-notification-badge" />
-        </button>
-
-        <div
-          id="header-avatar"
-          className="header-avatar"
-          role="button"
-          tabIndex={0}
-          aria-label="User profile"
-        >
-          SY
-        </div>
+        </form>
       </div>
     </header>
   );

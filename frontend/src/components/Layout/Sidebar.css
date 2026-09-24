@@ -101,16 +101,6 @@
   flex-shrink: 0;
 }
 
-.sidebar-link-badge {
-  margin-left: auto;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 10px;
-  font-weight: 600;
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--status-danger);
-}
-
 .sidebar-bottom {
   padding: 16px 20px;
   border-top: 1px solid var(--border-subtle);
@@ -125,22 +115,6 @@
 .sidebar-version {
   font-size: 11px;
   color: var(--text-tertiary);
-}
-
-.sidebar-settings-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  color: var(--text-tertiary);
-  transition: all 0.2s;
-}
-
-.sidebar-settings-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
 }
 
 .sidebar-backdrop {
