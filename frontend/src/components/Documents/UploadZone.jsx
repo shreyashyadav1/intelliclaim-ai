@@ -5,6 +5,25 @@ import { documentsApi, getErrorMessage } from '../../services/api';
 import { humanize } from '../../utils/format';
 import './UploadZone.css';
 
+// Mirrors the backend's upload validation (POST /documents/upload).
+const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
+const ACCEPTED_TYPES = {
+  'application/pdf': ['.pdf'],
+  'image/png': ['.png'],
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/tiff': ['.tif', '.tiff'],
+};
+
+function describeRejection({ file, errors }) {
+  const codes = errors.map((error) => error.code);
+  if (codes.includes('too-many-files')) return 'Upload one document at a time.';
+  if (codes.includes('file-too-large')) return `${file.name} is larger than the 50 MB limit.`;
+  if (codes.includes('file-invalid-type')) {
+    return `${file.name} is not a supported file type. Use a PDF, PNG, JPG or TIFF file.`;
+  }
+  return errors[0]?.message ?? `${file.name} cannot be uploaded.`;
+}
+
 function UploadResult({ result, onReset }) {
   const failed = result.processing_status === 'failed';
   return (
@@ -41,7 +60,12 @@ export default function UploadZone({ onUploadComplete }) {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  const onDrop = useCallback(async (acceptedFiles) => {
+  const onDrop = useCallback(async (acceptedFiles, fileRejections) => {
+    if (fileRejections.length > 0) {
+      setResult(null);
+      setError(describeRejection(fileRejections[0]));
+      return;
+    }
     const [file] = acceptedFiles;
     if (!file) return;
 
@@ -57,7 +81,7 @@ export default function UploadZone({ onUploadComplete }) {
       setResult(response);
       onUploadComplete?.(response);
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(`Upload failed: ${getErrorMessage(err)}`);
     } finally {
       setUploading(false);
     }
@@ -65,12 +89,10 @@ export default function UploadZone({ onUploadComplete }) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      'application/pdf': ['.pdf'],
-      'image/png': ['.png'],
-      'image/jpeg': ['.jpg', '.jpeg'],
-    },
+    accept: ACCEPTED_TYPES,
+    maxSize: MAX_UPLOAD_BYTES,
     maxFiles: 1,
+    multiple: false,
     disabled: uploading,
   });
 
@@ -108,7 +130,7 @@ export default function UploadZone({ onUploadComplete }) {
             <p className="upload-title">
               {isDragActive ? 'Drop your file here' : 'Drag & drop a document'}
             </p>
-            <p className="upload-subtitle">or click to browse — PDF, PNG, JPG</p>
+            <p className="upload-subtitle">or click to browse — PDF, PNG, JPG or TIFF, up to 50 MB</p>
           </div>
         )}
       </div>
@@ -117,7 +139,7 @@ export default function UploadZone({ onUploadComplete }) {
 
       {error && (
         <div className="upload-error" role="alert">
-          <AlertCircle size={16} /> Upload failed: {error}
+          <AlertCircle size={16} /> {error}
         </div>
       )}
     </div>
