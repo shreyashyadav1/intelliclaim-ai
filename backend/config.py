@@ -40,10 +40,11 @@ HEALTH_CHECK_PARAMS = GenerationParams(temperature=0.0, max_tokens=512)
 EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
 # Search index chunking (LlamaIndex SentenceSplitter, in tokens; changing it also
-# requires re-indexing) and hybrid retrieval fusion. backend/evals/README.md
-# records the measurements behind these values.
-RAG_CHUNK_SIZE = 256
-RAG_CHUNK_OVERLAP = 32
+# requires re-indexing) and hybrid retrieval fusion, chosen from the retrieval
+# evaluation (backend/evals/README.md). 384 tokens stays within the embedding
+# model's 512-token input.
+RAG_CHUNK_SIZE = 384
+RAG_CHUNK_OVERLAP = 48
 HYBRID_WEIGHTS = (0.5, 0.5)  # (vector, BM25) weights in reciprocal rank fusion
 HYBRID_CANDIDATES = 20  # results each retriever contributes to the fusion
 RRF_K = 60  # reciprocal rank fusion constant
@@ -97,7 +98,7 @@ class Settings(BaseSettings):
     # Vector search
     CHROMA_PERSIST_DIR: str = Field(default="./chroma_data", description="ChromaDB persistence directory")
     RAG_RETRIEVAL_MODE: Literal["vector", "hybrid"] = Field(
-        default="vector",
+        default="hybrid",
         description="Search retrieval: vector (embeddings only) or hybrid (embeddings fused with BM25 keyword search)",
     )
     FASTEMBED_CACHE_PATH: str | None = Field(
