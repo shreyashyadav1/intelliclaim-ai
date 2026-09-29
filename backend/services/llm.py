@@ -73,6 +73,7 @@ def as_llm_error(exc: BaseException) -> LLMError | None:
         return LLMProviderError()
     return None
 
+
 _groq_client: groq.AsyncGroq | None = None
 _openai_client: openai.AsyncOpenAI | None = None
 
