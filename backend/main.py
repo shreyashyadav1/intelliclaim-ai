@@ -8,15 +8,17 @@ import logging
 import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pymongo.errors import ConnectionFailure
+from slowapi.errors import RateLimitExceeded
 
 from config import HEALTH_CHECK_PARAMS, settings
 from db.connection import close_db, connect_db
 from middleware import BodySizeLimitMiddleware, SecurityHeadersMiddleware, UnhandledErrorMiddleware
 from routers import analytics, claims, documents, extraction, rag, validation
+from security import PROVIDER_CHECK_LIMIT, limiter, rate_limit_exceeded_handler, require_admin_key
 from services import llm
 
 logging.basicConfig(
@@ -48,6 +50,9 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 # Middleware added last runs first: CORS wraps everything, so error responses
 # produced further in (including unexpected 500s) still carry CORS headers.
@@ -96,8 +101,9 @@ async def health_check():
     }
 
 
-@app.get("/api/health/groq", tags=["System"])
-async def groq_health():
+@app.get("/api/health/groq", tags=["System"], dependencies=[Depends(require_admin_key)])
+@limiter.limit(PROVIDER_CHECK_LIMIT)
+async def groq_health(request: Request):
     """Check Groq connectivity with a minimal JSON-mode completion."""
     if settings.MOCK_LLM:
         return {

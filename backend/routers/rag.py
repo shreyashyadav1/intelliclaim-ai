@@ -7,10 +7,11 @@ Endpoints for Retrieval-Augmented Generation search across claim documents.
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field, StringConstraints
 
 from db.connection import get_database
+from security import BULK_LIMIT, SEARCH_LIMIT, WRITE_LIMIT, limiter, require_admin_key
 from services.llm import LLMError
 from services.rag_service import rag_service
 
@@ -37,7 +38,8 @@ def _index_metadata(doc: dict) -> dict:
 
 
 @router.post("/rag/query")
-async def rag_query(payload: QueryRequest):
+@limiter.limit(SEARCH_LIMIT)
+async def rag_query(request: Request, payload: QueryRequest):
     """Query documents using RAG (natural language search).
 
     503 when no AI provider is configured, 502 when the provider fails.
@@ -46,7 +48,8 @@ async def rag_query(payload: QueryRequest):
 
 
 @router.post("/rag/index/{document_id}")
-async def index_document(document_id: str):
+@limiter.limit(WRITE_LIMIT)
+async def index_document(request: Request, document_id: str):
     """Index a single document for RAG search."""
     db = get_database()
     doc = await db.documents.find_one({"_id": document_id})
@@ -66,8 +69,9 @@ async def index_document(document_id: str):
     return {"success": chunks > 0, "document_id": document_id, "chunks_indexed": chunks}
 
 
-@router.post("/rag/index-all")
-async def index_all_documents():
+@router.post("/rag/index-all", dependencies=[Depends(require_admin_key)])
+@limiter.limit(BULK_LIMIT)
+async def index_all_documents(request: Request):
     """Re-index all processed documents."""
     db = get_database()
     cursor = db.documents.find({"processing_status": "processed", "extracted_text": {"$nin": [None, ""]}})

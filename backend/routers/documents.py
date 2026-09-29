@@ -7,10 +7,11 @@ Endpoints for document upload, listing, retrieval, and deletion.
 import logging
 from pathlib import Path
 
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 
 from config import settings
 from db.connection import get_database
+from security import UPLOAD_LIMIT, WRITE_LIMIT, limiter, require_admin_key
 from services.claim_service import detach_document
 from services.ocr_service import ocr_service as ocr
 from services.rag_service import rag_service
@@ -50,7 +51,8 @@ async def _detect_kind(file: UploadFile) -> str:
 
 
 @router.post("/documents/upload")
-async def upload_document(file: UploadFile = File(...)):
+@limiter.limit(UPLOAD_LIMIT)
+async def upload_document(request: Request, file: UploadFile = File(...)):
     """Upload a document, extract text via OCR, and classify it.
 
     415 for unsupported or mismatched types, 413 above MAX_UPLOAD_MB, 400 for
@@ -180,8 +182,9 @@ async def get_document(document_id: str):
     return doc
 
 
-@router.delete("/documents/{document_id}")
-async def delete_document(document_id: str):
+@router.delete("/documents/{document_id}", dependencies=[Depends(require_admin_key)])
+@limiter.limit(WRITE_LIMIT)
+async def delete_document(request: Request, document_id: str):
     """Delete a document with its search vectors, claim links and stored file."""
     db = get_database()
     doc = await db.documents.find_one({"_id": document_id})

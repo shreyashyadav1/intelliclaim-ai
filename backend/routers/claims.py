@@ -7,11 +7,12 @@ Endpoints for CRUD operations on insurance claims.
 import logging
 import re
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pymongo.errors import DuplicateKeyError
 
 from db.connection import get_database
 from models.claim import ClaimUpdate
+from security import WRITE_LIMIT, limiter, require_admin_key
 from services.claim_service import detach_claim_documents
 from utils.helpers import utc_now
 
@@ -71,7 +72,8 @@ async def get_claim(claim_id: str):
 
 
 @router.put("/claims/{claim_id}")
-async def update_claim(claim_id: str, updates: ClaimUpdate):
+@limiter.limit(WRITE_LIMIT)
+async def update_claim(request: Request, claim_id: str, updates: ClaimUpdate):
     """Update a claim's fields. Only fields defined on ClaimUpdate are accepted."""
     db = get_database()
     existing = await db.claims.find_one({"_id": claim_id}, {"_id": 1})
@@ -98,8 +100,9 @@ async def update_claim(claim_id: str, updates: ClaimUpdate):
     return updated
 
 
-@router.delete("/claims/{claim_id}")
-async def delete_claim(claim_id: str):
+@router.delete("/claims/{claim_id}", dependencies=[Depends(require_admin_key)])
+@limiter.limit(WRITE_LIMIT)
+async def delete_claim(request: Request, claim_id: str):
     """Delete a claim and unlink its documents (the documents themselves are kept)."""
     db = get_database()
     result = await db.claims.delete_one({"_id": claim_id})

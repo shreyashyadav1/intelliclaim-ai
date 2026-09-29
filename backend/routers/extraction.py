@@ -6,9 +6,10 @@ Endpoints for AI-powered data extraction from documents.
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 from db.connection import get_database
+from security import AI_LIMIT, limiter
 from services.claim_service import save_extraction
 from services.extraction_service import extraction_service as extractor
 
@@ -17,7 +18,8 @@ router = APIRouter()
 
 
 @router.post("/extract/{document_id}")
-async def extract_document(document_id: str):
+@limiter.limit(AI_LIMIT)
+async def extract_document(request: Request, document_id: str):
     """Run AI extraction on a document and create or update its claim.
 
     Returns 503 when no AI provider is configured and 502 when the provider

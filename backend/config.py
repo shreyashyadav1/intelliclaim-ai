@@ -82,6 +82,18 @@ class Settings(BaseSettings):
         default=None, description="Directory holding the fastembed model files (the Docker image pre-downloads them)"
     )
 
+    # API protection
+    ADMIN_API_KEY: str | None = Field(
+        default=None,
+        description="When set, destructive and costly endpoints require this value in the X-Admin-Key header",
+    )
+    RATE_LIMIT_ENABLED: bool = Field(default=True, description="Per-client rate limits on write and AI endpoints")
+    TRUSTED_PROXY_COUNT: int = Field(
+        default=1,
+        ge=0,
+        description="Reverse proxies in front of the API whose X-Forwarded-For entries are trusted (0 = none)",
+    )
+
     # CORS: accepts a comma-separated string or a JSON array.
     ALLOWED_ORIGINS: Annotated[list[str], NoDecode] = Field(
         default=[
@@ -93,7 +105,7 @@ class Settings(BaseSettings):
         description="Allowed CORS origins",
     )
 
-    @field_validator("GROQ_API_KEY", "OPENAI_API_KEY", "FASTEMBED_CACHE_PATH", mode="before")
+    @field_validator("GROQ_API_KEY", "OPENAI_API_KEY", "FASTEMBED_CACHE_PATH", "ADMIN_API_KEY", mode="before")
     @classmethod
     def _blank_to_none(cls, value: Any) -> Any:
         """Treat empty or whitespace-only values (e.g. `GROQ_API_KEY=`) as unset."""

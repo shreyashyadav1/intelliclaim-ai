@@ -18,6 +18,7 @@ os.environ.update(
         "OPENAI_API_KEY": "",
         "MOCK_LLM": "false",
         "ADMIN_API_KEY": "",
+        "RATE_LIMIT_ENABLED": "false",
     }
 )
 
@@ -39,6 +40,7 @@ from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 
 from config import settings  # noqa: E402
 from main import app  # noqa: E402
+from security import limiter  # noqa: E402
 from services import llm  # noqa: E402
 
 TEST_MONGO_URI = os.environ.get("TEST_MONGODB_URI", "mongodb://localhost:27017")
@@ -124,6 +126,26 @@ def groq_errors() -> SimpleNamespace:
 @pytest.fixture
 def mock_llm(monkeypatch) -> None:
     monkeypatch.setattr(settings, "MOCK_LLM", True)
+
+
+# --- Rate limiting --------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _rate_limits_off():
+    """Rate limiting is off by default so tests do not share buckets."""
+    limiter.enabled = False
+    yield
+    limiter.enabled = False
+    limiter.reset()
+
+
+@pytest.fixture
+def rate_limits():
+    """Turn rate limiting on (with empty buckets) for one test."""
+    limiter.reset()
+    limiter.enabled = True
+    return limiter
 
 
 # --- File storage -------------------------------------------------------------------

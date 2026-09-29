@@ -7,10 +7,11 @@ Endpoints for claim validation, risk detection, and flagged claims.
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field, StringConstraints
 
 from db.connection import get_database
+from security import AI_LIMIT, BULK_LIMIT, limiter
 from services.llm import LLMError
 from services.validation_service import validation_service as validator
 from utils.helpers import utc_now
@@ -39,7 +40,8 @@ async def _store_result(db, claim_id: str, result: dict) -> None:
 
 
 @router.post("/validate/{claim_id}")
-async def validate_claim(claim_id: str):
+@limiter.limit(AI_LIMIT)
+async def validate_claim(request: Request, claim_id: str):
     """Run validation on a single claim and update its risk score/flags.
 
     If the AI provider fails the request returns 502 and the claim is left unchanged.
@@ -78,7 +80,8 @@ async def get_flagged_claims(
 
 
 @router.post("/batch-validate")
-async def batch_validate(payload: BatchValidateRequest):
+@limiter.limit(BULK_LIMIT)
+async def batch_validate(request: Request, payload: BatchValidateRequest):
     """Validate up to 100 claims.
 
     Each claim gets its own result entry. If the AI provider fails, the
