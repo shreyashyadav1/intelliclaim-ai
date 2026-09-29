@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 import platform
 import subprocess
 import sys
@@ -58,7 +59,8 @@ def environment(argv: list[str]) -> dict[str, Any]:
     return {
         "command": "python -m evals.run " + " ".join(argv),
         "started_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "git_commit": _git("rev-parse", "HEAD"),
+        # EVAL_GIT_COMMIT names the commit when the run happens outside a git checkout (e.g. in a container).
+        "git_commit": _git("rev-parse", "HEAD") or os.environ.get("EVAL_GIT_COMMIT"),
         "git_dirty": bool(status) if status is not None else None,
         "python": sys.version.split()[0],
         "platform": platform.platform(),
