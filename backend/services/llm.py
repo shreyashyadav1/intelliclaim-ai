@@ -6,6 +6,9 @@ the lifetime of the process, so calls share a connection pool and never
 block the event loop. Model names, timeouts and retries come from settings;
 per-task sampling parameters come from config.GenerationParams.
 
+chat_model() wraps the same clients in LangChain chat models (ChatGroq,
+ChatOpenAI) for the RAG chain, so both paths share pools and settings.
+
 Provider failures are raised as LLMError subclasses, which main.py turns
 into {"detail": ...} responses: 503 when no provider is configured and 502
 when a provider fails or returns unusable output.
@@ -56,6 +59,20 @@ class LLMOutputError(LLMError):
 
 _RATE_LIMITED_DETAIL = "The AI provider is rate limiting requests. Please try again in a minute."
 
+# Exceptions that mean "this provider failed" (a fallback provider may still answer).
+PROVIDER_ERRORS: tuple[type[Exception], ...] = (LLMError, groq.APIError, openai.APIError)
+
+
+def as_llm_error(exc: BaseException) -> LLMError | None:
+    """Map a provider SDK exception to the API's LLMError; None for anything else."""
+    if isinstance(exc, LLMError):
+        return exc
+    if isinstance(exc, groq.RateLimitError | openai.RateLimitError):
+        return LLMProviderError(_RATE_LIMITED_DETAIL)
+    if isinstance(exc, groq.APIError | openai.APIError):
+        return LLMProviderError()
+    return None
+
 _groq_client: groq.AsyncGroq | None = None
 _openai_client: openai.AsyncOpenAI | None = None
 
@@ -104,6 +121,53 @@ async def close_clients() -> None:
             await client.close()
     _groq_client = None
     _openai_client = None
+
+
+class _NoSyncClient:
+    """Stands in for the synchronous SDK client in LangChain chat models.
+
+    The application only calls chat models asynchronously (ainvoke), so no
+    synchronous client or connection pool is created.
+    """
+
+    def __getattr__(self, name: str) -> Any:
+        if name.startswith("__"):  # keep copy, pickle and hasattr probes working
+            raise AttributeError(name)
+        raise RuntimeError("Chat models built by services.llm support async calls only (use ainvoke).")
+
+
+def chat_model(provider: str, params: GenerationParams) -> Any:
+    """A LangChain chat model for `provider` that sends requests through the shared async client.
+
+    Groq: ChatGroq with GROQ_MODEL. OpenAI: ChatOpenAI with OPENAI_MODEL.
+    Raises LLMNotConfiguredError when the provider has no API key.
+    """
+    if provider == "groq":
+        from langchain_groq import ChatGroq
+
+        return ChatGroq(
+            model=settings.GROQ_MODEL,
+            api_key=settings.GROQ_API_KEY,
+            temperature=params.temperature,
+            max_tokens=params.max_tokens,
+            async_client=get_groq_client().chat.completions,
+            client=_NoSyncClient(),
+        )
+    if provider == "openai":
+        from langchain_openai import ChatOpenAI
+
+        client = get_openai_client()
+        return ChatOpenAI(
+            model=settings.OPENAI_MODEL,
+            api_key=settings.OPENAI_API_KEY,
+            temperature=params.temperature,
+            max_tokens=params.max_tokens,
+            async_client=client.chat.completions,
+            root_async_client=client,
+            client=_NoSyncClient(),
+            root_client=_NoSyncClient(),
+        )
+    raise ValueError(f"Unknown AI provider: {provider!r}")
 
 
 def configured_providers() -> list[str]:

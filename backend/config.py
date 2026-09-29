@@ -34,10 +34,19 @@ RAG_ANSWER_PARAMS = GenerationParams(temperature=0.1, max_tokens=1024)
 CLASSIFICATION_PARAMS = GenerationParams(temperature=0.0, max_tokens=20)  # OpenAI only
 HEALTH_CHECK_PARAMS = GenerationParams(temperature=0.0, max_tokens=512)
 
-# Embedding models. Vectors from different models are not comparable, so
-# changing either one requires re-indexing (POST /api/rag/index-all).
-EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"  # fastembed, local ONNX
-OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"  # OpenAI path only
+# Embedding model (fastembed, local ONNX) for documents and questions, whichever
+# chat provider answers. Vectors from different models are not comparable, so
+# changing it requires re-indexing (POST /api/rag/index-all).
+EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"
+
+# Search index chunking (LlamaIndex SentenceSplitter, in tokens; changing it also
+# requires re-indexing) and hybrid retrieval fusion. backend/evals/README.md
+# records the measurements behind these values.
+RAG_CHUNK_SIZE = 256
+RAG_CHUNK_OVERLAP = 32
+HYBRID_WEIGHTS = (0.5, 0.5)  # (vector, BM25) weights in reciprocal rank fusion
+HYBRID_CANDIDATES = 20  # results each retriever contributes to the fusion
+RRF_K = 60  # reciprocal rank fusion constant
 
 
 class Settings(BaseSettings):
@@ -87,6 +96,10 @@ class Settings(BaseSettings):
 
     # Vector search
     CHROMA_PERSIST_DIR: str = Field(default="./chroma_data", description="ChromaDB persistence directory")
+    RAG_RETRIEVAL_MODE: Literal["vector", "hybrid"] = Field(
+        default="vector",
+        description="Search retrieval: vector (embeddings only) or hybrid (embeddings fused with BM25 keyword search)",
+    )
     FASTEMBED_CACHE_PATH: str | None = Field(
         default=None, description="Directory holding the fastembed model files (the Docker image pre-downloads them)"
     )
@@ -122,6 +135,11 @@ class Settings(BaseSettings):
             value = value.strip()
             return value or None
         return value
+
+    @field_validator("RAG_RETRIEVAL_MODE", mode="before")
+    @classmethod
+    def _normalise_mode(cls, value: Any) -> Any:
+        return value.strip().lower() if isinstance(value, str) else value
 
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
