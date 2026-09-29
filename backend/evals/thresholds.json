@@ -1,0 +1,27 @@
+{
+  "_comment": "Bounds for `python -m evals.run --suite offline --check-thresholds` (CI). Each sits slightly below the value measured on 2026-09-29 (evals/README.md), with room for retrieval near-ties that differ between platforms and for OCR differences between tesseract versions.",
+  "retrieval": {
+    "hybrid.recall@5": {"min": 0.88},
+    "hybrid.mrr": {"min": 0.73},
+    "hybrid.answer_in_context@5": {"min": 0.85},
+    "vector.recall@5": {"min": 0.62},
+    "vector.mrr": {"min": 0.52},
+    "by_style.hybrid.identifier.recall@5": {"min": 0.76},
+    "by_style.hybrid.paraphrase.mrr": {"min": 0.86}
+  },
+  "ocr": {
+    "text_layer.cer.mean": {"max": 0.0001},
+    "scanned.cer.mean": {"max": 0.003},
+    "scanned.field_values_found": {"min": 0.93}
+  },
+  "classification": {
+    "keyword.accuracy": {"min": 0.78},
+    "keyword.macro_f1": {"min": 0.73}
+  },
+  "risk": {
+    "rules.pr_auc": {"min": 0.78},
+    "rules.roc_auc": {"min": 0.82},
+    "rules.thresholds.15.precision": {"min": 0.77},
+    "rules.thresholds.15.recall": {"min": 0.74}
+  }
+}
