@@ -16,6 +16,7 @@ from services.storage_service import FileTooLargeError
 from services.storage_service import storage_service as storage
 from utils.file_types import EXTENSION_KINDS, PDF, SNIFF_BYTES, sniff_file_type
 from utils.helpers import generate_id, sanitize_filename, utc_now
+from utils.pdf_parser import DocumentProcessingError, TooManyPagesError
 
 logger = logging.getLogger("intelliclaim.documents")
 router = APIRouter()
@@ -50,7 +51,10 @@ async def _detect_kind(file: UploadFile) -> str:
 async def upload_document(file: UploadFile = File(...)):
     """Upload a document, extract text via OCR, and classify it.
 
-    415 for unsupported or mismatched types, 413 above MAX_UPLOAD_MB.
+    415 for unsupported or mismatched types, 413 above MAX_UPLOAD_MB, 400 for
+    unreadable or encrypted files and more than MAX_DOCUMENT_PAGES pages. If
+    no text can be extracted the document is stored with processing_status
+    "failed" and an error_message.
     """
     kind = await _detect_kind(file)
     safe_filename = sanitize_filename(file.filename or "upload")
@@ -61,6 +65,16 @@ async def upload_document(file: UploadFile = File(...)):
     except FileTooLargeError:
         raise HTTPException(status_code=413, detail=f"File too large (max {settings.MAX_UPLOAD_MB} MB)") from None
 
+    # Structural checks before anything is recorded: unreadable, encrypted or
+    # over-long documents are rejected outright.
+    try:
+        page_count = await ocr.count_pages(stored.path, kind)
+        if page_count > settings.MAX_DOCUMENT_PAGES:
+            raise TooManyPagesError(page_count, settings.MAX_DOCUMENT_PAGES)
+    except DocumentProcessingError as exc:
+        await storage.delete_file(stored.path)
+        raise HTTPException(status_code=400, detail=str(exc)) from None
+
     db = get_database()
     doc_id = generate_id()
     now = utc_now()
@@ -69,11 +83,13 @@ async def upload_document(file: UploadFile = File(...)):
         "filename": safe_filename,
         "file_type": file_type,
         "file_size": stored.size,
+        "page_count": page_count,
         "storage_path": stored.path,
         "document_class": "other",
         "extracted_text": None,
         "claim_id": None,
         "processing_status": "processing",
+        "error_message": None,
         "created_at": now,
         "updated_at": now,
     }
@@ -83,42 +99,45 @@ async def upload_document(file: UploadFile = File(...)):
         await storage.delete_file(stored.path)
         raise
 
-    # Extract text
+    # Text extraction failures are recorded on the document, not swallowed.
+    status, error_message, extracted_text, document_class = "processed", None, "", "other"
     try:
         extracted_text = await ocr.extract_text(stored.path, file_type)
-    except Exception as e:
-        logger.warning("OCR extraction failed: %s", e)
-        extracted_text = ""
+    except DocumentProcessingError as exc:
+        status, error_message = "failed", str(exc)
+    else:
+        if extracted_text.strip():
+            document_class = await ocr.classify_document(extracted_text)
+        else:
+            status, error_message = "failed", "No text could be extracted from this document."
 
-    # Classify document
-    try:
-        document_class = await ocr.classify_document(extracted_text)
-    except Exception as e:
-        logger.warning("Classification failed: %s", e)
-        document_class = "other"
-
-    # Update document record
     await db.documents.update_one(
         {"_id": doc_id},
         {
             "$set": {
                 "extracted_text": extracted_text,
                 "document_class": document_class,
-                "processing_status": "processed",
+                "processing_status": status,
+                "error_message": error_message,
                 "updated_at": utc_now(),
             }
         },
     )
 
-    logger.info("Document uploaded: %s -> %s", safe_filename, document_class)
+    if status == "failed":
+        logger.warning("Document %s (%s) failed processing: %s", doc_id, safe_filename, error_message)
+    else:
+        logger.info("Document uploaded: %s -> %s", safe_filename, document_class)
     return {
         "id": doc_id,
         "filename": safe_filename,
         "file_type": file_type,
         "file_size": stored.size,
+        "page_count": page_count,
         "document_class": document_class,
-        "processing_status": "processed",
-        "extracted_text_preview": extracted_text[:500] if extracted_text else "",
+        "processing_status": status,
+        "error_message": error_message,
+        "extracted_text_preview": extracted_text[:500],
     }
 
 

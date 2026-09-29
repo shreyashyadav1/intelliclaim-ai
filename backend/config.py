@@ -74,6 +74,7 @@ class Settings(BaseSettings):
         default="./uploads", description="Directory for uploaded files (relative to the working directory, or absolute)"
     )
     MAX_UPLOAD_MB: int = Field(default=50, ge=1, description="Largest accepted upload, in MB")
+    MAX_DOCUMENT_PAGES: int = Field(default=50, ge=1, description="Most pages (PDF) or frames (TIFF) per upload")
 
     # Vector search
     CHROMA_PERSIST_DIR: str = Field(default="./chroma_data", description="ChromaDB persistence directory")
