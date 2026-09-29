@@ -1,99 +1,87 @@
-import { useEffect, useState } from 'react';
+import { useCountUp } from '../../hooks/useCountUp';
+import { getErrorMessage } from '../../services/api';
+import { riskColor, riskLevel } from '../../utils/format';
+import { ErrorState, LoadingState } from '../Shared/StateMessage';
 import './RiskGauge.css';
 
-export default function RiskGauge({ score = 32.4 }) {
-  const [animatedScore, setAnimatedScore] = useState(0);
+const RADIUS = 80;
+const STROKE_WIDTH = 12;
+const CX = 100;
+const CY = 100;
+const LEVEL_LABELS = { high: 'High Risk', medium: 'Medium Risk', low: 'Low Risk' };
 
-  useEffect(() => {
-    let current = 0;
-    const step = score / 60;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= score) {
-        setAnimatedScore(score);
-        clearInterval(timer);
-      } else {
-        setAnimatedScore(Math.round(current * 10) / 10);
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [score]);
+function polarToCartesian(angleDeg, radius = RADIUS) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return { x: CX + radius * Math.cos(rad), y: CY - radius * Math.sin(rad) };
+}
 
-  const getColor = (s) => {
-    if (s >= 60) return '#ef4444';
-    if (s >= 30) return '#f59e0b';
-    return '#10b981';
-  };
+// The gauge is a half circle drawn clockwise from 180° (left) towards 0° (right).
+function arcPath(startAngle, endAngle) {
+  const start = polarToCartesian(startAngle);
+  const end = polarToCartesian(endAngle);
+  return `M ${start.x} ${start.y} A ${RADIUS} ${RADIUS} 0 0 1 ${end.x} ${end.y}`;
+}
 
-  const getLevel = (s) => {
-    if (s >= 60) return 'High Risk';
-    if (s >= 30) return 'Medium Risk';
-    return 'Low Risk';
-  };
+export default function RiskGauge({ data, error, onRetry }) {
+  const hasClaims = (data?.total_claims ?? 0) > 0;
+  const score = hasClaims ? Math.min(Math.max(Number(data.avg_risk_score) || 0, 0), 100) : 0;
+  const animatedScore = useCountUp(score, 1000);
 
-  // SVG arc calculation
-  const radius = 80;
-  const strokeWidth = 12;
-  const cx = 100;
-  const cy = 100;
-  const startAngle = 180;
-  const endAngle = 0;
-  const totalAngle = 180;
-  const progressAngle = (animatedScore / 100) * totalAngle;
+  let body;
+  if (error) {
+    body = <ErrorState title="Couldn't load the risk score" message={getErrorMessage(error)} onRetry={onRetry} />;
+  } else if (!data) {
+    body = <LoadingState label="Loading risk score…" />;
+  } else {
+    const color = hasClaims ? riskColor(score) : 'var(--text-tertiary)';
+    const needleAngle = 180 - (animatedScore / 100) * 180;
+    const needleTip = polarToCartesian(needleAngle, RADIUS - 20);
 
-  const polarToCartesian = (cx, cy, r, angleDeg) => {
-    const rad = (angleDeg * Math.PI) / 180;
-    return {
-      x: cx + r * Math.cos(rad),
-      y: cy - r * Math.sin(rad),
-    };
-  };
-
-  const arcPath = (cx, cy, r, startAngle, endAngle) => {
-    const start = polarToCartesian(cx, cy, r, startAngle);
-    const end = polarToCartesian(cx, cy, r, endAngle);
-    const largeArcFlag = startAngle - endAngle > 180 ? 1 : 0;
-    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 1 ${end.x} ${end.y}`;
-  };
-
-  const bgPath = arcPath(cx, cy, radius, 180, 0);
-  const progressEnd = 180 - progressAngle;
-  const fgPath = arcPath(cx, cy, radius, 180, Math.max(progressEnd, 0.1));
-
-  const needleAngle = 180 - progressAngle;
-  const needleTip = polarToCartesian(cx, cy, radius - 20, needleAngle);
+    body = (
+      <>
+        <div className="risk-gauge-svg-wrapper">
+          <svg
+            viewBox="0 0 200 120"
+            className="risk-gauge-svg"
+            role="img"
+            aria-label={hasClaims ? `Average risk score ${score.toFixed(1)} out of 100` : 'No claims to score yet'}
+          >
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#10b981" />
+                <stop offset="50%" stopColor="#f59e0b" />
+                <stop offset="100%" stopColor="#ef4444" />
+              </linearGradient>
+            </defs>
+            <path d={arcPath(180, 0)} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={STROKE_WIDTH} strokeLinecap="round" />
+            {hasClaims && (
+              <path
+                d={arcPath(180, Math.max(needleAngle, 0.1))}
+                fill="none"
+                stroke="url(#gaugeGrad)"
+                strokeWidth={STROKE_WIDTH}
+                strokeLinecap="round"
+              />
+            )}
+            <line x1={CX} y1={CY} x2={needleTip.x} y2={needleTip.y} stroke={color} strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx={CX} cy={CY} r="5" fill={color} />
+            <circle cx={CX} cy={CY} r="2.5" fill="var(--bg-primary)" />
+          </svg>
+        </div>
+        <div className="risk-gauge-value" style={{ color }}>
+          {hasClaims ? animatedScore.toFixed(1) : '—'}
+        </div>
+        <div className="risk-gauge-level" style={{ color }}>
+          {hasClaims ? LEVEL_LABELS[riskLevel(score)] : 'No claims yet'}
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="risk-gauge glass-card" id="risk-gauge">
       <h3 className="risk-gauge-title">Overall Risk Score</h3>
-      <div className="risk-gauge-svg-wrapper">
-        <svg viewBox="0 0 200 120" className="risk-gauge-svg">
-          <defs>
-            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#10b981" />
-              <stop offset="50%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#ef4444" />
-            </linearGradient>
-          </defs>
-          {/* Background arc */}
-          <path d={bgPath} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={strokeWidth} strokeLinecap="round" />
-          {/* Progress arc */}
-          <path d={fgPath} fill="none" stroke="url(#gaugeGrad)" strokeWidth={strokeWidth} strokeLinecap="round"
-            style={{ transition: 'all 1s ease-out' }} />
-          {/* Needle */}
-          <line x1={cx} y1={cy} x2={needleTip.x} y2={needleTip.y}
-            stroke={getColor(animatedScore)} strokeWidth="2.5" strokeLinecap="round"
-            style={{ transition: 'all 1s ease-out' }} />
-          <circle cx={cx} cy={cy} r="5" fill={getColor(animatedScore)} />
-          <circle cx={cx} cy={cy} r="2.5" fill="var(--bg-primary)" />
-        </svg>
-      </div>
-      <div className="risk-gauge-value" style={{ color: getColor(score) }}>
-        {animatedScore.toFixed(1)}
-      </div>
-      <div className="risk-gauge-level" style={{ color: getColor(score) }}>
-        {getLevel(score)}
-      </div>
+      {body}
     </div>
   );
 }

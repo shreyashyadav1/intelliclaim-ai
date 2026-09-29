@@ -94,3 +94,78 @@
   background: rgba(239, 68, 68, 0.1);
   color: var(--status-danger);
 }
+
+.document-card--failed {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.document-card-error {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  word-break: break-word;
+}
+
+.doc-action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.doc-action-btn:disabled:hover {
+  background: none;
+  color: var(--text-secondary);
+}
+
+.doc-action-spinner {
+  animation: spin 1s linear infinite;
+}
+
+.document-list-state:hover {
+  transform: none;
+}
+
+.document-list-footnote {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
+.document-list-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.document-list-action:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.document-list-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Four actions leave too little room for the name, badges and errors on phones,
+   so they move to their own row. */
+@media (max-width: 600px) {
+  .document-card {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .document-card-info {
+    flex-basis: calc(100% - 60px); /* the row minus the 44px icon and the 16px gap */
+  }
+
+  .document-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
