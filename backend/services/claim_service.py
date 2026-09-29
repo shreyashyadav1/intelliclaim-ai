@@ -186,3 +186,21 @@ async def _link_document(db: AsyncIOMotorDatabase, document_id: str, claim_id: s
         {"_id": document_id},
         {"$set": {"claim_id": claim_id, "updated_at": utc_now()}},
     )
+
+
+async def detach_document(db: AsyncIOMotorDatabase, document_id: str) -> int:
+    """Remove a deleted document from every claim that lists it; returns claims changed."""
+    result = await db.claims.update_many(
+        {"document_ids": document_id},
+        {"$pull": {"document_ids": document_id}, "$set": {"updated_at": utc_now()}},
+    )
+    return result.modified_count
+
+
+async def detach_claim_documents(db: AsyncIOMotorDatabase, claim_id: str) -> int:
+    """Unlink the documents of a deleted claim; returns documents changed."""
+    result = await db.documents.update_many(
+        {"claim_id": claim_id},
+        {"$set": {"claim_id": None, "updated_at": utc_now()}},
+    )
+    return result.modified_count

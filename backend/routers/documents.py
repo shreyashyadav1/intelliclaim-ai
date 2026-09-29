@@ -11,7 +11,9 @@ from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 
 from config import settings
 from db.connection import get_database
+from services.claim_service import detach_document
 from services.ocr_service import ocr_service as ocr
+from services.rag_service import rag_service
 from services.storage_service import FileTooLargeError
 from services.storage_service import storage_service as storage
 from utils.file_types import EXTENSION_KINDS, PDF, SNIFF_BYTES, sniff_file_type
@@ -180,17 +182,25 @@ async def get_document(document_id: str):
 
 @router.delete("/documents/{document_id}")
 async def delete_document(document_id: str):
-    """Delete a document and its stored file."""
+    """Delete a document with its search vectors, claim links and stored file."""
     db = get_database()
     doc = await db.documents.find_one({"_id": document_id})
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    # Remove file from storage
-    try:
-        await storage.delete_file(doc["storage_path"])
-    except Exception as e:
-        logger.warning("Failed to delete file: %s", e)
-
+    # Vectors first: if the vector store fails, nothing has been deleted yet and
+    # the request can simply be retried.
+    vectors_removed = await rag_service.delete_document(document_id)
     await db.documents.delete_one({"_id": document_id})
-    return {"message": "Document deleted", "id": document_id}
+    unlinked_claims = await detach_document(db, document_id)
+    await storage.delete_file(doc["storage_path"])
+
+    logger.info(
+        "Deleted document %s (%d vectors, unlinked from %d claims)", document_id, vectors_removed, unlinked_claims
+    )
+    return {
+        "message": "Document deleted",
+        "id": document_id,
+        "vectors_removed": vectors_removed,
+        "unlinked_claims": unlinked_claims,
+    }

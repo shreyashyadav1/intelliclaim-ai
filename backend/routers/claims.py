@@ -12,6 +12,7 @@ from pymongo.errors import DuplicateKeyError
 
 from db.connection import get_database
 from models.claim import ClaimUpdate
+from services.claim_service import detach_claim_documents
 from utils.helpers import utc_now
 
 logger = logging.getLogger("intelliclaim.claims")
@@ -99,12 +100,13 @@ async def update_claim(claim_id: str, updates: ClaimUpdate):
 
 @router.delete("/claims/{claim_id}")
 async def delete_claim(claim_id: str):
-    """Delete a claim."""
+    """Delete a claim and unlink its documents (the documents themselves are kept)."""
     db = get_database()
     result = await db.claims.delete_one({"_id": claim_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Claim not found")
-    return {"message": "Claim deleted", "id": claim_id}
+    unlinked_documents = await detach_claim_documents(db, claim_id)
+    return {"message": "Claim deleted", "id": claim_id, "unlinked_documents": unlinked_documents}
 
 
 @router.get("/claims/{claim_id}/documents")
