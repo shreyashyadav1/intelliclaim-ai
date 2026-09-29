@@ -20,5 +20,6 @@ backend/htmlcov
 backend/uploads
 backend/chroma_data
 backend/tests
+backend/evals
 backend/pyproject.toml
 backend/requirements-dev.txt
