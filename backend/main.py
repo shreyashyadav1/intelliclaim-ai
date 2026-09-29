@@ -15,7 +15,7 @@ from pymongo.errors import ConnectionFailure
 from slowapi.errors import RateLimitExceeded
 
 from config import HEALTH_CHECK_PARAMS, settings
-from db.connection import close_db, connect_db
+from db.connection import close_db, connect_db, ping_database
 from middleware import BodySizeLimitMiddleware, SecurityHeadersMiddleware, UnhandledErrorMiddleware
 from routers import analytics, claims, documents, extraction, rag, validation
 from security import PROVIDER_CHECK_LIMIT, limiter, rate_limit_exceeded_handler, require_admin_key
@@ -26,6 +26,9 @@ logging.basicConfig(
     format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
 )
 logger = logging.getLogger("intelliclaim")
+
+APP_VERSION = "1.0.0"
+HEALTH_DB_TIMEOUT_SECONDS = 2.0
 
 
 @asynccontextmanager
@@ -47,7 +50,7 @@ app = FastAPI(
         "Insurance Document Intelligence Platform - AI-powered claim processing, "
         "extraction, RAG search, and risk detection."
     ),
-    version="1.0.0",
+    version=APP_VERSION,
     lifespan=lifespan,
 )
 
@@ -90,15 +93,27 @@ app.include_router(validation.router, prefix="/api", tags=["Validation"])
 
 @app.get("/api/health", tags=["System"])
 async def health_check():
-    """Health check endpoint."""
-    return {
-        "status": "healthy",
+    """Health check used by Railway and the Docker HEALTHCHECK.
+
+    Reports whether MongoDB answers a ping (within 2 seconds), whether an AI
+    provider is configured, and whether mock mode is on. Returns 503 when the
+    database is unreachable. Never includes keys or connection strings.
+    """
+    database_ok = await ping_database(timeout=HEALTH_DB_TIMEOUT_SECONDS)
+    body = {
+        "status": "healthy" if database_ok else "unhealthy",
         "service": "IntelliClaim AI API",
-        "version": "1.0.0",
+        "version": APP_VERSION,
+        "database": "ok" if database_ok else "unreachable",
+        "llm_configured": settings.llm_configured,
+        "mock_llm": settings.MOCK_LLM,
+        "ai_provider": settings.ai_provider,
         "openai_configured": settings.has_openai_key,
         "groq_configured": settings.has_groq_key,
-        "ai_provider": "openai" if settings.has_openai_key else ("groq" if settings.has_groq_key else "none"),
     }
+    if not database_ok:
+        return JSONResponse(status_code=503, content={"detail": "The database is unreachable.", **body})
+    return body
 
 
 @app.get("/api/health/groq", tags=["System"], dependencies=[Depends(require_admin_key)])

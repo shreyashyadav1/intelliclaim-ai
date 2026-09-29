@@ -5,6 +5,7 @@ Provides async MongoDB connectivity via Motor, including lifecycle
 hooks for FastAPI startup/shutdown and index creation.
 """
 
+import asyncio
 import logging
 import re
 
@@ -46,6 +47,18 @@ def get_database() -> AsyncIOMotorDatabase:
             "Database not initialised. Call connect_db() during app startup."
         )
     return _database
+
+
+async def ping_database(timeout: float = 2.0) -> bool:
+    """Whether MongoDB answers a ping within `timeout` seconds (never raises)."""
+    if _database is None:
+        return False
+    try:
+        await asyncio.wait_for(_database.command("ping"), timeout)
+    except Exception as exc:  # timeouts, network errors, auth failures
+        logger.warning("MongoDB ping failed: %s", type(exc).__name__)
+        return False
+    return True
 
 
 async def connect_db() -> None:
