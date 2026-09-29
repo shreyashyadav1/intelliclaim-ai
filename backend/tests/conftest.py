@@ -126,6 +126,19 @@ def mock_llm(monkeypatch) -> None:
     monkeypatch.setattr(settings, "MOCK_LLM", True)
 
 
+# --- File storage -------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def storage_dir(tmp_path, monkeypatch):
+    """Store uploads in a per-test directory (an absolute path, like a mounted volume)."""
+    from services.storage_service import storage_service
+
+    base = tmp_path / "uploads"
+    monkeypatch.setattr(storage_service, "base_path", base)
+    return base
+
+
 # --- Vector store -------------------------------------------------------------------
 
 

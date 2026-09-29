@@ -15,7 +15,7 @@ from pymongo.errors import ConnectionFailure
 
 from config import HEALTH_CHECK_PARAMS, settings
 from db.connection import close_db, connect_db
-from middleware import SecurityHeadersMiddleware, UnhandledErrorMiddleware
+from middleware import BodySizeLimitMiddleware, SecurityHeadersMiddleware, UnhandledErrorMiddleware
 from routers import analytics, claims, documents, extraction, rag, validation
 from services import llm
 
@@ -52,6 +52,7 @@ app = FastAPI(
 # Middleware added last runs first: CORS wraps everything, so error responses
 # produced further in (including unexpected 500s) still carry CORS headers.
 app.add_middleware(UnhandledErrorMiddleware)
+app.add_middleware(BodySizeLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,

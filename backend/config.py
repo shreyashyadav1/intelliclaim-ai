@@ -69,8 +69,11 @@ class Settings(BaseSettings):
     MONGODB_URI: str = Field(default="mongodb://localhost:27017", description="MongoDB connection URI")
     MONGODB_DB_NAME: str = Field(default="intelliclaim", description="MongoDB database name")
 
-    # File storage
-    LOCAL_STORAGE_PATH: str = Field(default="./uploads", description="Directory for uploaded files")
+    # File storage and uploads
+    LOCAL_STORAGE_PATH: str = Field(
+        default="./uploads", description="Directory for uploaded files (relative to the working directory, or absolute)"
+    )
+    MAX_UPLOAD_MB: int = Field(default=50, ge=1, description="Largest accepted upload, in MB")
 
     # Vector search
     CHROMA_PERSIST_DIR: str = Field(default="./chroma_data", description="ChromaDB persistence directory")
@@ -124,6 +127,10 @@ class Settings(BaseSettings):
     def has_groq_key(self) -> bool:
         """Check if Groq API key is configured."""
         return bool(self.GROQ_API_KEY and self.GROQ_API_KEY.strip())
+
+    @property
+    def max_upload_bytes(self) -> int:
+        return self.MAX_UPLOAD_MB * 1024 * 1024
 
     @property
     def llm_configured(self) -> bool:
