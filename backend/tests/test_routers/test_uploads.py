@@ -171,6 +171,26 @@ async def test_text_pdf_is_processed(async_client, test_db):
     assert "John Doe" in data["extracted_text_preview"]
 
 
+async def test_page_boundaries_are_stored_with_the_text(async_client, test_db):
+    doc = pymupdf.open()
+    for text in ("Invoice INV-1001 for patient John Doe.", "Total charges $1,250.00 are due."):
+        doc.new_page().insert_text((72, 72), text)
+    content = doc.tobytes()
+    doc.close()
+
+    data = (await _upload(async_client, "invoice.pdf", content)).json()
+
+    stored = await test_db.documents.find_one({"_id": data["id"]})
+    assert stored["page_starts"][0] == 0
+    assert stored["extracted_text"][stored["page_starts"][1]:] == "Total charges $1,250.00 are due."
+
+
+async def test_failed_documents_have_no_page_boundaries(async_client, test_db, no_tesseract):
+    data = (await _upload(async_client, "scan.pdf", scanned_pdf_bytes())).json()
+    stored = await test_db.documents.find_one({"_id": data["id"]})
+    assert stored["page_starts"] is None
+
+
 async def test_scanned_pdf_without_ocr_is_recorded_as_failed(async_client, test_db, no_tesseract):
     response = await _upload(async_client, "scan.pdf", scanned_pdf_bytes())
     assert response.status_code == 200

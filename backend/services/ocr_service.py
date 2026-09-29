@@ -12,7 +12,8 @@ import logging
 from config import CLASSIFICATION_PARAMS, settings
 from services import llm
 from services.llm import LLMError
-from utils.pdf_parser import DocumentReadError, count_pages, parse_image, parse_pdf
+from utils.paged_text import PagedText
+from utils.pdf_parser import DocumentReadError, count_pages, read_image, read_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +50,23 @@ class OCRService:
         return await asyncio.to_thread(count_pages, file_path, kind)
 
     async def extract_text(self, file_path: str, file_type: str) -> str:
-        """Extract text from a PDF or image file.
+        """Extract text from a PDF or image file (pages joined by blank lines).
+
+        Raises:
+            DocumentProcessingError: with a message that is safe to show users.
+        """
+        return (await self.extract_paged_text(file_path, file_type)).text
+
+    async def extract_paged_text(self, file_path: str, file_type: str) -> PagedText:
+        """Extract text from a PDF or image file, keeping page boundaries.
 
         Raises:
             DocumentProcessingError: with a message that is safe to show users.
         """
         if file_type == "pdf":
-            return await asyncio.to_thread(parse_pdf, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
+            return await asyncio.to_thread(read_pdf, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
         if file_type == "image":
-            return await asyncio.to_thread(parse_image, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
+            return await asyncio.to_thread(read_image, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
         raise DocumentReadError("Unsupported file type.")
 
     async def classify_document(self, text: str) -> str:
