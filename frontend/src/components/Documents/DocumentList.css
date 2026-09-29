@@ -151,3 +151,21 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Four actions leave too little room for the name, badges and errors on phones,
+   so they move to their own row. */
+@media (max-width: 600px) {
+  .document-card {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+
+  .document-card-info {
+    flex-basis: calc(100% - 60px); /* the row minus the 44px icon and the 16px gap */
+  }
+
+  .document-card-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
