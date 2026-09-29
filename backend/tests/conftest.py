@@ -21,15 +21,19 @@ os.environ.update(
     }
 )
 
+import hashlib  # noqa: E402
 import json  # noqa: E402
+import re  # noqa: E402
 from collections.abc import AsyncGenerator  # noqa: E402
 from datetime import UTC, datetime  # noqa: E402
 from types import SimpleNamespace  # noqa: E402
 
 import groq  # noqa: E402
 import httpx  # noqa: E402
+import numpy as np  # noqa: E402
 import pytest  # noqa: E402
 import pytest_asyncio  # noqa: E402
+from chromadb.api.shared_system_client import SharedSystemClient  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 
@@ -120,6 +124,45 @@ def groq_errors() -> SimpleNamespace:
 @pytest.fixture
 def mock_llm(monkeypatch) -> None:
     monkeypatch.setattr(settings, "MOCK_LLM", True)
+
+
+# --- Vector store -------------------------------------------------------------------
+
+
+class FakeEmbedder:
+    """Deterministic bag-of-words vectors, so tests never load or download fastembed."""
+
+    DIM = 64
+
+    def embed(self, texts):
+        for text in texts:
+            vector = np.zeros(self.DIM)
+            for word in re.findall(r"[a-z0-9]+", text.lower()):
+                vector[int(hashlib.md5(word.encode()).hexdigest(), 16) % self.DIM] += 1.0
+            norm = np.linalg.norm(vector)
+            if norm:
+                vector /= norm
+            else:
+                vector[0] = 1.0
+            yield vector
+
+
+@pytest.fixture(autouse=True)
+def isolated_vector_store(tmp_path, monkeypatch) -> SimpleNamespace:
+    """Give each test its own ChromaDB directory and the fake embedder.
+
+    Returns the original _get_embedder for the tests that check how it loads fastembed.
+    """
+    import services.rag_service as rag_module
+
+    originals = SimpleNamespace(get_embedder=rag_module._get_embedder)
+    monkeypatch.setattr(settings, "CHROMA_PERSIST_DIR", str(tmp_path / "chroma"))
+    monkeypatch.setattr(rag_module, "_chroma_client", None)
+    monkeypatch.setattr(rag_module, "_chroma_collection", None)
+    monkeypatch.setattr(rag_module, "_embedder", None)
+    monkeypatch.setattr(rag_module, "_get_embedder", FakeEmbedder)
+    yield originals
+    SharedSystemClient.clear_system_cache()
 
 
 # --- Database -----------------------------------------------------------------------
