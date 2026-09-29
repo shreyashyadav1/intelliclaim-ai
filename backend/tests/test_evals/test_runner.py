@@ -7,7 +7,7 @@ import pytest
 import evals.dataset.render as render
 from evals import run as runner
 from evals.common import Context
-from evals.suites import classification, extraction, rag_answer, risk
+from evals.suites import classification, extraction, ocr, rag_answer, risk
 from services import llm
 
 
@@ -84,6 +84,23 @@ async def test_classification_keyword_path(rendered_to_tmp):
     assert report["per_class"]["invoice"]["support"] == 24
     assert "llm" not in result["metrics"]
     assert result["notes"]
+
+
+def test_ocr_suite_compares_scans_with_the_text_layer(rendered_to_tmp, monkeypatch):
+    import utils.pdf_parser as pdf_parser
+
+    monkeypatch.setattr(pdf_parser, "tesseract_available", lambda: True)
+    monkeypatch.setattr(pdf_parser, "_ocr", lambda image: "Unreadable scan with nothing useful in it")
+    ctx = Context()
+    ctx.__dict__["documents"] = ctx.documents[:3]  # three documents keep the test fast
+
+    result = ocr.run(ctx)
+
+    m = result["metrics"]
+    assert m["text_layer"]["cer"]["mean"] == 0.0 and m["text_layer"]["field_values_found"] == 1.0
+    assert m["scanned"]["cer"]["mean"] > 0.5 and m["scanned"]["field_values_found"] == 0.0
+    assert sum(m["scanned"]["missed_values_by_field"].values()) > 0
+    assert "Printed field values not recovered" in "\n".join(ocr.summary(result))
 
 
 async def test_risk_suite_scores_rules_against_labels(test_db):

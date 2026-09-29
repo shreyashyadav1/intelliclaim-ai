@@ -19,10 +19,11 @@ from evals.metrics import character_error_rate, normalize_whitespace, summarize,
 NAME = "ocr"
 
 
-def _found(doc: dict[str, Any], text: str) -> tuple[int, int]:
+def _missed(doc: dict[str, Any], text: str) -> tuple[list[str], int]:
+    """Fields whose printed value does not appear verbatim in the text, and how many were checked."""
     haystack = normalize_whitespace(text)
-    values = [str(value) for value in doc["printed"].values() if value is not None]
-    return sum(1 for value in values if normalize_whitespace(value) in haystack), len(values)
+    printed = {name: str(value) for name, value in doc["printed"].items() if value is not None}
+    return [name for name, value in printed.items() if normalize_whitespace(value) not in haystack], len(printed)
 
 
 def run(ctx: Context) -> dict[str, Any]:
@@ -36,6 +37,7 @@ def run(ctx: Context) -> dict[str, Any]:
     variants: dict[str, dict[str, list]] = {"text_layer": defaultdict(list), "scanned": defaultdict(list)}
     by_type: dict[str, list[float]] = defaultdict(list)
     found = {"text_layer": [0, 0], "scanned": [0, 0]}
+    missed_fields: dict[str, int] = defaultdict(int)
     rows = []
     pages = 0
     for doc in ctx.documents:
@@ -46,10 +48,13 @@ def run(ctx: Context) -> dict[str, Any]:
             cer = character_error_rate(truth, paged.text)
             variants[variant]["cer"].append(cer)
             variants[variant]["wer"].append(word_error_rate(truth, paged.text))
-            hits, total = _found(doc, paged.text)
-            found[variant][0] += hits
+            missed, total = _missed(doc, paged.text)
+            found[variant][0] += total - len(missed)
             found[variant][1] += total
             row[f"{variant}_cer"] = round(cer, 4)
+            row[f"{variant}_missed_fields"] = missed
+        for name in row["scanned_missed_fields"]:
+            missed_fields[name] += 1
         by_type[doc["kind"]].append(row["scanned_cer"])
         rows.append(row)
 
@@ -61,6 +66,7 @@ def run(ctx: Context) -> dict[str, Any]:
             "field_values_found": round(found[variant][0] / found[variant][1], 4),
         }
     metrics["scanned"]["cer_by_type"] = {kind: summarize(values)["mean"] for kind, values in sorted(by_type.items())}
+    metrics["scanned"]["missed_values_by_field"] = dict(sorted(missed_fields.items()))
     ocr_seconds = sum(ctx.ocr_seconds.values())
     metrics["scanned"]["seconds_per_page"] = round(ocr_seconds / pages, 2) if ctx.ocr_seconds else None
     return {
@@ -87,6 +93,8 @@ def summary(result: dict[str, Any]) -> list[str]:
                      f"| {wer['mean']:.4f} | {m[variant]['field_values_found']:.3f} |")
     by_type = ", ".join(f"{kind} {value:.4f}" for kind, value in m["scanned"]["cer_by_type"].items())
     lines += ["", f"Scanned CER by document type: {by_type}."]
+    missed = ", ".join(f"{name} {count}" for name, count in m["scanned"]["missed_values_by_field"].items())
+    lines.append(f"Printed field values not recovered verbatim from the scans: {missed or 'none'}.")
     if m["scanned"].get("seconds_per_page") is not None:
         lines.append(f"OCR time: {m['scanned']['seconds_per_page']} s per page.")
     return lines
