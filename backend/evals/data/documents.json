@@ -1,0 +1,2237 @@
+{
+  "seed": 7341,
+  "documents": [
+    {
+      "id": "doc-001",
+      "filename": "doc-001.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2366",
+      "fields": {
+        "policy_number": "POL-2026-24266",
+        "claim_number": null,
+        "patient_name": "Darrell Miller",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": null,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "9929 Michael Unions, Waltonmouth, TX 80256",
+        "provider_id": "PRV-487553",
+        "date_of_service": "2026-05-23",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-24266",
+        "claim_number": null,
+        "patient_name": "Darrell Miller",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": null,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "9929 Michael Unions, Waltonmouth, TX 80256",
+        "provider_id": "PRV-487553",
+        "date_of_service": "May 23, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Darrell Miller",
+      "pages": [
+        "Larkspur Bay Health Center\n9929 Michael Unions, Waltonmouth, TX 80256\nPhone: (555) 0118-3210\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2366\n\nPatient: Darrell Miller\nPolicy number: POL-2026-24266\nDate of service: May 23, 2026\nExamining physician: Dr. Michael Meza\nProvider ID: PRV-487553\n\nChief complaint: Sore throat, nasal congestion and low-grade fever for four days.\nExamination findings: blood pressure 134/88 mmHg, heart rate 91 bpm, temperature 99.1 F.\nFindings are consistent with the history described above.\nDiagnosis: Acute upper respiratory infection (J06.9)\nPlan: Supportive care, fluids and rest. Return if symptoms persist beyond ten days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-002",
+      "filename": "doc-002.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-2632",
+      "fields": {
+        "policy_number": "POL-2026-22588",
+        "claim_number": "CLM-2026-87551",
+        "patient_name": "Stephen Marshall",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 45195.97,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": "2026-05-08",
+        "date_of_admission": "2026-05-08",
+        "date_of_discharge": "2026-05-15"
+      },
+      "printed": {
+        "policy_number": "POL-2026-22588",
+        "claim_number": "CLM-2026-87551",
+        "patient_name": "Stephen Marshall",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": "$45,195.97",
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": "05/08/2026",
+        "date_of_admission": "05/08/2026",
+        "date_of_discharge": "05/15/2026"
+      },
+      "patient": "Stephen Marshall",
+      "pages": [
+        "Cinderholt Memorial Hospital\n0455 Ryan Grove, North Brendaborough, MN 98344\nPhone: (555) 0136-6852\n\nINVOICE\nInvoice number: INV-2632\nInvoice date: 05/24/2026\n\nPatient: Stephen Marshall\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-22588\nClaim number: CLM-2026-87551\nAttending physician: Dr. Natalie Gonzalez\nProvider ID: PRV-901701\nDiagnosis: Fracture of right femoral neck (S72.001A)\nDate of service: 05/08/2026\nAdmission date: 05/08/2026\nDischarge date: 05/15/2026\n\nItemized charges\nRoom and board: $4,143.12\nOperating room services: $13,729.03\nImplant: $4,840.06\nPhysical therapy: $11,523.82\nPharmacy: $10,959.94\nSubtotal: $45,195.97\nAdjustments: $0.00\nTotal amount due: $45,195.97\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-003",
+      "filename": "doc-003.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3065",
+      "fields": {
+        "policy_number": "POL-2026-88682",
+        "claim_number": null,
+        "patient_name": "Karen Mccoy",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": null,
+        "date_of_admission": "2026-04-20",
+        "date_of_discharge": "2026-04-27"
+      },
+      "printed": {
+        "policy_number": "POL-2026-88682",
+        "claim_number": null,
+        "patient_name": "Karen Mccoy",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": null,
+        "date_of_admission": "2026-04-20",
+        "date_of_discharge": "2026-04-27"
+      },
+      "patient": "Karen Mccoy",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nDISCHARGE SUMMARY\nSummary ID: DS-3065\n\nPatient: Karen Mccoy\nPolicy number: POL-2026-88682\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nAdmission date: 2026-04-20\nDischarge date: 2026-04-27\nLength of stay: 7 days\nPrincipal diagnosis: Non-ST elevation myocardial infarction (I21.4)\n\nHospital course: Admitted with chest pain and elevated troponin. Cardiac catheterization\nwith stent placement was performed, followed by cardiac rehabilitation teaching.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Fernhollow Valley Medical Center - Discharge summary DS-3065 - Patient: Karen Mccoy (page 2)\n\nDischarge medication: Clopidogrel 75 mg daily.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-004",
+      "filename": "doc-004.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-98805",
+      "fields": {
+        "policy_number": "POL-2026-98805",
+        "claim_number": null,
+        "patient_name": "Amber Nichols",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-98805",
+        "claim_number": null,
+        "patient_name": "Amber Nichols",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Amber Nichols",
+      "pages": [
+        "Quillstone Health Plan\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Amber Nichols\nPolicy number: POL-2026-98805\nPlan: Quillstone Gold 1000\nCoverage period: 04/01/2026 to 03/31/2027\n\nCost sharing (in-network)\nAnnual deductible: $1,000.00\nOut-of-pocket maximum: $2,000.00\nCoinsurance after deductible: 20%\nPrimary care visit copay: $20.00\nSpecialist visit copay: $50.00\nEmergency room copay: $500.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-005",
+      "filename": "doc-005.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-7391",
+      "fields": {
+        "policy_number": "POL-2026-72855",
+        "claim_number": "CLM-2026-59846",
+        "patient_name": "Jennifer Hunt",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 28599.86,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-687627",
+        "date_of_service": "2026-02-05",
+        "date_of_admission": "2026-02-05",
+        "date_of_discharge": "2026-02-11"
+      },
+      "printed": {
+        "policy_number": "POL-2026-72855",
+        "claim_number": "CLM-2026-59846",
+        "patient_name": "Jennifer Hunt",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": "$28,599.86",
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-687627",
+        "date_of_service": "02/05/2026",
+        "date_of_admission": "02/05/2026",
+        "date_of_discharge": "02/11/2026"
+      },
+      "patient": "Jennifer Hunt",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nINVOICE\nInvoice number: INV-7391\nInvoice date: 02/15/2026\n\nPatient: Jennifer Hunt\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-72855\nClaim number: CLM-2026-59846\nAttending physician: Dr. Joshua Collins\nProvider ID: PRV-687627\nDiagnosis: Non-ST elevation myocardial infarction (I21.4)\nDate of service: 02/05/2026\nAdmission date: 02/05/2026\nDischarge date: 02/11/2026\n\nItemized charges\nRoom and board: $4,864.30\nCardiac catheterization: $5,183.12\nCoronary stent: $5,952.69\nPharmacy: $5,411.73\nLaboratory: $7,188.02\nSubtotal: $28,599.86\nAdjustments: $0.00\nTotal amount due: $28,599.86\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-006",
+      "filename": "doc-006.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-2508",
+      "fields": {
+        "policy_number": "POL-2026-98805",
+        "claim_number": "CLM-2026-39821",
+        "patient_name": "Amber Nichols",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 622.1,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-06-08",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-98805",
+        "claim_number": "CLM-2026-39821",
+        "patient_name": "Amber Nichols",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": "$622.10",
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "06/08/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Amber Nichols",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nINVOICE\nInvoice number: INV-2508\nInvoice date: 06/14/2026\n\nPatient: Amber Nichols\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-98805\nClaim number: CLM-2026-39821\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nDiagnosis: Type 2 diabetes mellitus without complications (E11.9)\nDate of service: 06/08/2026\n\nItemized charges\nOffice visit: $219.92\nHbA1c laboratory test: $148.63\nLipid panel: $253.55\nSubtotal: $622.10\nAdjustments: $0.00\nTotal amount due: $622.10\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-007",
+      "filename": "doc-007.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-5349",
+      "fields": {
+        "policy_number": "POL-2026-70016",
+        "claim_number": "CLM-2026-86514",
+        "patient_name": "Jennifer Martinez",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 714.95,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-282952",
+        "date_of_service": "2026-02-25",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-70016",
+        "claim_number": "CLM-2026-86514",
+        "patient_name": "Jennifer Martinez",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": "$714.95",
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-282952",
+        "date_of_service": "02/25/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Jennifer Martinez",
+      "pages": [
+        "Tamarack Hollow General Hospital\n2245 Ann Lights, Ramirezshire, MN 20004\nPhone: (555) 0100-7659\n\nINVOICE\nInvoice number: INV-5349\nInvoice date: 03/02/2026\n\nPatient: Jennifer Martinez\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-70016\nClaim number: CLM-2026-86514\nAttending physician: Dr. Kristopher Brown\nProvider ID: PRV-282952\nDiagnosis: Low back pain (M54.50)\nDate of service: 02/25/2026\n\nItemized charges\nOffice visit: $225.60\nLumbar spine X-ray: $151.39\nPhysical therapy evaluation: $337.96\nSubtotal: $714.95\nAdjustments: $0.00\nTotal amount due: $714.95\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-008",
+      "filename": "doc-008.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-9463",
+      "fields": {
+        "policy_number": "POL-2026-73506",
+        "claim_number": "CLM-2026-37321",
+        "patient_name": "Luis Gilbert",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 694.32,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-135657",
+        "date_of_service": "2026-04-10",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-73506",
+        "claim_number": "CLM-2026-37321",
+        "patient_name": "Luis Gilbert",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": "$694.32",
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-135657",
+        "date_of_service": "04/10/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Luis Gilbert",
+      "pages": [
+        "Bramblemoor Community Clinic\n01846 Jerome Burgs, Lisafurt, OR 71895\nPhone: (555) 0186-6617\n\nINVOICE\nInvoice number: INV-9463\nInvoice date: 04/17/2026\n\nPatient: Luis Gilbert\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-73506\nClaim number: CLM-2026-37321\nAttending physician: Dr. Katie Rodriguez\nProvider ID: PRV-135657\nDiagnosis: Migraine, not intractable (G43.909)\nDate of service: 04/10/2026\n\nItemized charges\nOffice visit: $226.18\nNeurological assessment: $249.36\nMedication: $218.78\nSubtotal: $694.32\nAdjustments: $0.00\nTotal amount due: $694.32\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-009",
+      "filename": "doc-009.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2936",
+      "fields": {
+        "policy_number": "POL-2026-70016",
+        "claim_number": null,
+        "patient_name": "Jennifer Martinez",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": null,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-282952",
+        "date_of_service": "2026-02-25",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-70016",
+        "claim_number": null,
+        "patient_name": "Jennifer Martinez",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": null,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-282952",
+        "date_of_service": "February 25, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Jennifer Martinez",
+      "pages": [
+        "Tamarack Hollow General Hospital\n2245 Ann Lights, Ramirezshire, MN 20004\nPhone: (555) 0100-7659\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2936\n\nPatient: Jennifer Martinez\nPolicy number: POL-2026-70016\nDate of service: February 25, 2026\nExamining physician: Dr. Kristopher Brown\nProvider ID: PRV-282952\n\nChief complaint: Lower back pain for two weeks after lifting boxes, no leg weakness.\nExamination findings: blood pressure 119/75 mmHg, heart rate 92 bpm, temperature 97.9 F.\nFindings are consistent with the history described above.\nDiagnosis: Low back pain (M54.50)\nPlan: Physical therapy twice weekly, ibuprofen as needed, avoid heavy lifting.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-010",
+      "filename": "doc-010.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3817",
+      "fields": {
+        "policy_number": "POL-2026-57732",
+        "claim_number": "CLM-2026-41067",
+        "patient_name": "Timothy Ortiz",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 6799.99,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": "2026-04-07",
+        "date_of_admission": "2026-04-07",
+        "date_of_discharge": "2026-04-13"
+      },
+      "printed": {
+        "policy_number": "POL-2026-57732",
+        "claim_number": "CLM-2026-41067",
+        "patient_name": "Timothy Ortiz",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": "$6,799.99",
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": "04/07/2026",
+        "date_of_admission": "04/07/2026",
+        "date_of_discharge": "04/13/2026"
+      },
+      "patient": "Timothy Ortiz",
+      "pages": [
+        "Bramblemoor Community Clinic\n01846 Jerome Burgs, Lisafurt, OR 71895\nPhone: (555) 0186-6617\n\nINVOICE\nInvoice number: INV-3817\nInvoice date: 04/18/2026\n\nPatient: Timothy Ortiz\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-57732\nClaim number: CLM-2026-41067\nAttending physician: Dr. Colin Bridges\nProvider ID: PRV-503709\nDiagnosis: Pneumonia, unspecified organism (J18.9)\nDate of service: 04/07/2026\nAdmission date: 04/07/2026\nDischarge date: 04/13/2026\n\nItemized charges\nRoom and board: $1,168.90\nRespiratory therapy: $789.21\nPharmacy: $1,461.70\nChest imaging: $1,708.43\nLaboratory: $1,671.75\nSubtotal: $6,799.99\nAdjustments: $0.00\nTotal amount due: $6,799.99\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-011",
+      "filename": "doc-011.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-5620",
+      "fields": {
+        "policy_number": "POL-2026-46125",
+        "claim_number": "CLM-2026-79662",
+        "patient_name": "William Simon",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 19649.68,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-01-14",
+        "date_of_admission": "2026-01-14",
+        "date_of_discharge": "2026-01-17"
+      },
+      "printed": {
+        "policy_number": "POL-2026-46125",
+        "claim_number": "CLM-2026-79662",
+        "patient_name": "William Simon",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": "$19,649.68",
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "01/14/2026",
+        "date_of_admission": "01/14/2026",
+        "date_of_discharge": "01/17/2026"
+      },
+      "patient": "William Simon",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nINVOICE\nInvoice number: INV-5620\nInvoice date: 01/20/2026\n\nPatient: William Simon\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-46125\nClaim number: CLM-2026-79662\nAttending physician: Dr. Margaret Horne\nProvider ID: PRV-256025\nDiagnosis: Acute cholecystitis (K81.0)\nDate of service: 01/14/2026\nAdmission date: 01/14/2026\nDischarge date: 01/17/2026\n\nItemized charges\nRoom and board: $3,029.63\nOperating room services: $4,590.49\nAnesthesia: $4,727.71\nImaging: $3,389.96\nPharmacy: $3,911.89\nSubtotal: $19,649.68\nAdjustments: $0.00\nTotal amount due: $19,649.68\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-012",
+      "filename": "doc-012.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2769",
+      "fields": {
+        "policy_number": "POL-2026-75871",
+        "claim_number": null,
+        "patient_name": "Brittany Frazier",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": null,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": "2026-02-01",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-75871",
+        "claim_number": null,
+        "patient_name": "Brittany Frazier",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": null,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": "February 1, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Brittany Frazier",
+      "pages": [
+        "Cinderholt Memorial Hospital\n0455 Ryan Grove, North Brendaborough, MN 98344\nPhone: (555) 0136-6852\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2769\n\nPatient: Brittany Frazier\nPolicy number: POL-2026-75871\nDate of service: February 1, 2026\nExamining physician: Dr. Natalie Gonzalez\nProvider ID: PRV-901701\n\nChief complaint: Redness, warmth and swelling of the right lower leg for three days.\nExamination findings: blood pressure 122/66 mmHg, heart rate 68 bpm, temperature 98.6 F.\nFindings are consistent with the history described above.\nDiagnosis: Cellulitis of right lower limb (L03.115)\nPlan: Oral cephalexin for seven days, elevate the leg, mark the border of redness.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-013",
+      "filename": "doc-013.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-73506",
+      "fields": {
+        "policy_number": "POL-2026-73506",
+        "claim_number": null,
+        "patient_name": "Luis Gilbert",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-73506",
+        "claim_number": null,
+        "patient_name": "Luis Gilbert",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Luis Gilbert",
+      "pages": [
+        "Tidewren Assurance\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Luis Gilbert\nPolicy number: POL-2026-73506\nPlan: Tidewren Gold 1500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $3,500.00\nOut-of-pocket maximum: $11,500.00\nCoinsurance after deductible: 20%\nPrimary care visit copay: $25.00\nSpecialist visit copay: $50.00\nEmergency room copay: $250.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-014",
+      "filename": "doc-014.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-8201",
+      "fields": {
+        "policy_number": "POL-2026-88682",
+        "claim_number": "CLM-2026-40815",
+        "patient_name": "Karen Mccoy",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 42048.92,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-04-20",
+        "date_of_admission": "2026-04-20",
+        "date_of_discharge": "2026-04-27"
+      },
+      "printed": {
+        "policy_number": "POL-2026-88682",
+        "claim_number": "CLM-2026-40815",
+        "patient_name": "Karen Mccoy",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": "$42,048.92",
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "04/20/2026",
+        "date_of_admission": "04/20/2026",
+        "date_of_discharge": "04/27/2026"
+      },
+      "patient": "Karen Mccoy",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nINVOICE\nInvoice number: INV-8201\nInvoice date: 04/30/2026\n\nPatient: Karen Mccoy\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-88682\nClaim number: CLM-2026-40815\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nDiagnosis: Non-ST elevation myocardial infarction (I21.4)\nDate of service: 04/20/2026\nAdmission date: 04/20/2026\nDischarge date: 04/27/2026\n\nItemized charges\nRoom and board: $11,266.25\nCardiac catheterization: $10,663.28\nCoronary stent: $3,685.36\nPharmacy: $7,062.20\nLaboratory: $9,371.83\nSubtotal: $42,048.92\nAdjustments: $0.00\nTotal amount due: $42,048.92\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-015",
+      "filename": "doc-015.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-8351",
+      "fields": {
+        "policy_number": "POL-2026-74654",
+        "claim_number": "CLM-2026-33173",
+        "patient_name": "Cody Davis",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 30950.05,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-05-05",
+        "date_of_admission": "2026-05-05",
+        "date_of_discharge": "2026-05-06"
+      },
+      "printed": {
+        "policy_number": "POL-2026-74654",
+        "claim_number": "CLM-2026-33173",
+        "patient_name": "Cody Davis",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": "$30,950.05",
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "05/05/2026",
+        "date_of_admission": "05/05/2026",
+        "date_of_discharge": "05/06/2026"
+      },
+      "patient": "Cody Davis",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nINVOICE\nInvoice number: INV-8351\nInvoice date: 05/10/2026\n\nPatient: Cody Davis\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-74654\nClaim number: CLM-2026-33173\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nDiagnosis: Acute appendicitis (K35.80)\nDate of service: 05/05/2026\nAdmission date: 05/05/2026\nDischarge date: 05/06/2026\n\nItemized charges\nRoom and board: $6,763.87\nOperating room services: $8,914.82\nAnesthesia: $9,737.00\nPharmacy: $2,633.97\nLaboratory: $2,900.39\nSubtotal: $30,950.05\nAdjustments: $0.00\nTotal amount due: $30,950.05\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-016",
+      "filename": "doc-016.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-2303",
+      "fields": {
+        "policy_number": "POL-2026-95236",
+        "claim_number": "CLM-2026-57284",
+        "patient_name": "Peter Brown",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 23875.89,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": "2026-05-14",
+        "date_of_admission": "2026-05-14",
+        "date_of_discharge": "2026-05-16"
+      },
+      "printed": {
+        "policy_number": "POL-2026-95236",
+        "claim_number": "CLM-2026-57284",
+        "patient_name": "Peter Brown",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": "$23,875.89",
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": "05/14/2026",
+        "date_of_admission": "05/14/2026",
+        "date_of_discharge": "05/16/2026"
+      },
+      "patient": "Peter Brown",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nINVOICE\nInvoice number: INV-2303\nInvoice date: 05/26/2026\n\nPatient: Peter Brown\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-95236\nClaim number: CLM-2026-57284\nAttending physician: Dr. Erica Perez\nProvider ID: PRV-512586\nDiagnosis: Acute appendicitis (K35.80)\nDate of service: 05/14/2026\nAdmission date: 05/14/2026\nDischarge date: 05/16/2026\n\nItemized charges\nRoom and board: $4,022.89\nOperating room services: $3,213.80\nAnesthesia: $3,795.58\nPharmacy: $7,937.37\nLaboratory: $4,906.25\nSubtotal: $23,875.89\nAdjustments: $0.00\nTotal amount due: $23,875.89\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-017",
+      "filename": "doc-017.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-14045",
+      "fields": {
+        "policy_number": "POL-2026-14045",
+        "claim_number": null,
+        "patient_name": "Todd Zuniga",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-14045",
+        "claim_number": null,
+        "patient_name": "Todd Zuniga",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Todd Zuniga",
+      "pages": [
+        "Tidewren Assurance\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Todd Zuniga\nPolicy number: POL-2026-14045\nPlan: Tidewren Silver 3500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $1,000.00\nOut-of-pocket maximum: $4,000.00\nCoinsurance after deductible: 30%\nPrimary care visit copay: $30.00\nSpecialist visit copay: $75.00\nEmergency room copay: $350.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-018",
+      "filename": "doc-018.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3157",
+      "fields": {
+        "policy_number": "POL-2026-20557",
+        "claim_number": "CLM-2026-89951",
+        "patient_name": "Christopher Marshall",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 3850.41,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-05-24",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-20557",
+        "claim_number": "CLM-2026-89951",
+        "patient_name": "Christopher Marshall",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": "$3,850.41",
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "05/24/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Christopher Marshall",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nINVOICE\nInvoice number: INV-3157\nInvoice date: 06/01/2026\n\nPatient: Christopher Marshall\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-20557\nClaim number: CLM-2026-89951\nAttending physician: Dr. Margaret Horne\nProvider ID: PRV-256025\nDiagnosis: Fracture of lower end of right radius (S52.501A)\nDate of service: 05/24/2026\n\nItemized charges\nEmergency evaluation: $1,145.46\nWrist X-ray: $1,073.24\nClosed reduction: $974.45\nCast application: $657.26\nSubtotal: $3,850.41\nAdjustments: $0.00\nTotal amount due: $3,850.41\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-019",
+      "filename": "doc-019.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-7677",
+      "fields": {
+        "policy_number": "POL-2026-70004",
+        "claim_number": "CLM-2026-73655",
+        "patient_name": "Samantha Saunders",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 24050.04,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": "2026-02-10",
+        "date_of_admission": "2026-02-10",
+        "date_of_discharge": "2026-02-14"
+      },
+      "printed": {
+        "policy_number": "POL-2026-70004",
+        "claim_number": "CLM-2026-73655",
+        "patient_name": "Samantha Saunders",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": "$24,050.04",
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": "02/10/2026",
+        "date_of_admission": "02/10/2026",
+        "date_of_discharge": "02/14/2026"
+      },
+      "patient": "Samantha Saunders",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nINVOICE\nInvoice number: INV-7677\nInvoice date: 02/21/2026\n\nPatient: Samantha Saunders\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-70004\nClaim number: CLM-2026-73655\nAttending physician: Dr. Jacob Manning\nProvider ID: PRV-181811\nDiagnosis: Acute cholecystitis (K81.0)\nDate of service: 02/10/2026\nAdmission date: 02/10/2026\nDischarge date: 02/14/2026\n\nItemized charges\nRoom and board: $4,863.24\nOperating room services: $4,461.44\nAnesthesia: $3,733.67\nImaging: $7,643.77\nPharmacy: $3,347.92\nSubtotal: $24,050.04\nAdjustments: $0.00\nTotal amount due: $24,050.04\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-020",
+      "filename": "doc-020.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-6761",
+      "fields": {
+        "policy_number": "POL-2026-80844",
+        "claim_number": "CLM-2026-53034",
+        "patient_name": "Jerome Taylor",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 44626.09,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-346557",
+        "date_of_service": "2026-05-20",
+        "date_of_admission": "2026-05-20",
+        "date_of_discharge": "2026-05-26"
+      },
+      "printed": {
+        "policy_number": "POL-2026-80844",
+        "claim_number": "CLM-2026-53034",
+        "patient_name": "Jerome Taylor",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": "$44,626.09",
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-346557",
+        "date_of_service": "05/20/2026",
+        "date_of_admission": "05/20/2026",
+        "date_of_discharge": "05/26/2026"
+      },
+      "patient": "Jerome Taylor",
+      "pages": [
+        "Tamarack Hollow General Hospital\n2245 Ann Lights, Ramirezshire, MN 20004\nPhone: (555) 0100-7659\n\nINVOICE\nInvoice number: INV-6761\nInvoice date: 06/03/2026\n\nPatient: Jerome Taylor\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-80844\nClaim number: CLM-2026-53034\nAttending physician: Dr. Kimberly Ward\nProvider ID: PRV-346557\nDiagnosis: Sepsis, unspecified organism (A41.9)\nDate of service: 05/20/2026\nAdmission date: 05/20/2026\nDischarge date: 05/26/2026\n\nItemized charges\nIntensive care: $6,867.69\nRoom and board: $12,421.98\nPharmacy: $6,962.97\nLaboratory: $13,831.72\nBlood cultures: $4,541.73\nSubtotal: $44,626.09\nAdjustments: $0.00\nTotal amount due: $44,626.09\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-021",
+      "filename": "doc-021.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3991",
+      "fields": {
+        "policy_number": "POL-2026-80844",
+        "claim_number": null,
+        "patient_name": "Jerome Taylor",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": null,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-346557",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-20",
+        "date_of_discharge": "2026-05-26"
+      },
+      "printed": {
+        "policy_number": "POL-2026-80844",
+        "claim_number": null,
+        "patient_name": "Jerome Taylor",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": null,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "2245 Ann Lights, Ramirezshire, MN 20004",
+        "provider_id": "PRV-346557",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-20",
+        "date_of_discharge": "2026-05-26"
+      },
+      "patient": "Jerome Taylor",
+      "pages": [
+        "Tamarack Hollow General Hospital\n2245 Ann Lights, Ramirezshire, MN 20004\nPhone: (555) 0100-7659\n\nDISCHARGE SUMMARY\nSummary ID: DS-3991\n\nPatient: Jerome Taylor\nPolicy number: POL-2026-80844\nAttending physician: Dr. Kimberly Ward\nProvider ID: PRV-346557\nAdmission date: 2026-05-20\nDischarge date: 2026-05-26\nLength of stay: 6 days\nPrincipal diagnosis: Sepsis, unspecified organism (A41.9)\n\nHospital course: Admitted with fever, low blood pressure and confusion. Treated with\nintravenous fluids and antibiotics in the intensive care unit before transfer to the ward.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Tamarack Hollow General Hospital - Discharge summary DS-3991 - Patient: Jerome Taylor (page 2)\n\nDischarge medication: Levofloxacin 750 mg daily for 7 days.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 10 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-022",
+      "filename": "doc-022.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-46125",
+      "fields": {
+        "policy_number": "POL-2026-46125",
+        "claim_number": null,
+        "patient_name": "William Simon",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-46125",
+        "claim_number": null,
+        "patient_name": "William Simon",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "William Simon",
+      "pages": [
+        "Tidewren Assurance\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: William Simon\nPolicy number: POL-2026-46125\nPlan: Tidewren Silver 3500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $2,500.00\nOut-of-pocket maximum: $8,000.00\nCoinsurance after deductible: 20%\nPrimary care visit copay: $30.00\nSpecialist visit copay: $50.00\nEmergency room copay: $500.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-023",
+      "filename": "doc-023.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3812",
+      "fields": {
+        "policy_number": "POL-2026-80802",
+        "claim_number": null,
+        "patient_name": "Greg Cross",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": null,
+        "date_of_admission": "2026-04-08",
+        "date_of_discharge": "2026-04-11"
+      },
+      "printed": {
+        "policy_number": "POL-2026-80802",
+        "claim_number": null,
+        "patient_name": "Greg Cross",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": null,
+        "date_of_admission": "2026-04-08",
+        "date_of_discharge": "2026-04-11"
+      },
+      "patient": "Greg Cross",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nDISCHARGE SUMMARY\nSummary ID: DS-3812\n\nPatient: Greg Cross\nPolicy number: POL-2026-80802\nAttending physician: Dr. Erica Perez\nProvider ID: PRV-512586\nAdmission date: 2026-04-08\nDischarge date: 2026-04-11\nLength of stay: 3 days\nPrincipal diagnosis: Pneumonia, unspecified organism (J18.9)\n\nHospital course: Admitted with fever, cough and hypoxia. Treated with intravenous\nantibiotics and oxygen, with steady improvement in breathing and oxygen saturation.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Marigold Quarry Regional Hospital - Discharge summary DS-3812 - Patient: Greg Cross (page 2)\n\nDischarge medication: Amoxicillin-clavulanate 875 mg twice daily for 5 days.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-024",
+      "filename": "doc-024.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2934",
+      "fields": {
+        "policy_number": "POL-2026-89272",
+        "claim_number": null,
+        "patient_name": "Caitlyn Schmidt",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": null,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": "2026-05-25",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-89272",
+        "claim_number": null,
+        "patient_name": "Caitlyn Schmidt",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": null,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": "May 25, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Caitlyn Schmidt",
+      "pages": [
+        "Wrenfield Crossing Hospital\n28065 Donaldson Rapid, Manninghaven, GA 95906\nPhone: (555) 0197-4876\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2934\n\nPatient: Caitlyn Schmidt\nPolicy number: POL-2026-89272\nDate of service: May 25, 2026\nExamining physician: Dr. Carolyn Fisher\nProvider ID: PRV-703952\n\nChief complaint: Follow-up of elevated blood pressure readings at home.\nExamination findings: blood pressure 116/68 mmHg, heart rate 89 bpm, temperature 97.9 F.\nFindings are consistent with the history described above.\nDiagnosis: Essential (primary) hypertension (I10)\nPlan: Start lisinopril 10 mg daily and monitor blood pressure at home twice a week.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-025",
+      "filename": "doc-025.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-29885",
+      "fields": {
+        "policy_number": "POL-2026-29885",
+        "claim_number": null,
+        "patient_name": "Austin Graham",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-29885",
+        "claim_number": null,
+        "patient_name": "Austin Graham",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Austin Graham",
+      "pages": [
+        "Quillstone Health Plan\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Austin Graham\nPolicy number: POL-2026-29885\nPlan: Quillstone Gold 1000\nCoverage period: 04/01/2026 to 03/31/2027\n\nCost sharing (in-network)\nAnnual deductible: $1,500.00\nOut-of-pocket maximum: $5,500.00\nCoinsurance after deductible: 30%\nPrimary care visit copay: $20.00\nSpecialist visit copay: $60.00\nEmergency room copay: $250.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-026",
+      "filename": "doc-026.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3344",
+      "fields": {
+        "policy_number": "POL-2026-74654",
+        "claim_number": null,
+        "patient_name": "Cody Davis",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-05",
+        "date_of_discharge": "2026-05-06"
+      },
+      "printed": {
+        "policy_number": "POL-2026-74654",
+        "claim_number": null,
+        "patient_name": "Cody Davis",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-05",
+        "date_of_discharge": "2026-05-06"
+      },
+      "patient": "Cody Davis",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nDISCHARGE SUMMARY\nSummary ID: DS-3344\n\nPatient: Cody Davis\nPolicy number: POL-2026-74654\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nAdmission date: 2026-05-05\nDischarge date: 2026-05-06\nLength of stay: 1 day\nPrincipal diagnosis: Acute appendicitis (K35.80)\n\nHospital course: Admitted with right lower quadrant pain. Laparoscopic appendectomy was\nperformed without complications and the patient tolerated a regular diet before discharge.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Fernhollow Valley Medical Center - Discharge summary DS-3344 - Patient: Cody Davis (page 2)\n\nDischarge medication: Oxycodone 5 mg every 6 hours as needed for pain.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-027",
+      "filename": "doc-027.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2566",
+      "fields": {
+        "policy_number": "POL-2026-98805",
+        "claim_number": null,
+        "patient_name": "Amber Nichols",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-06-08",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-98805",
+        "claim_number": null,
+        "patient_name": "Amber Nichols",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "June 8, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Amber Nichols",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2566\n\nPatient: Amber Nichols\nPolicy number: POL-2026-98805\nDate of service: June 8, 2026\nExamining physician: Dr. William Ruiz\nProvider ID: PRV-393204\n\nChief complaint: Routine review of blood sugar control and medication.\nExamination findings: blood pressure 148/92 mmHg, heart rate 60 bpm, temperature 99.1 F.\nFindings are consistent with the history described above.\nDiagnosis: Type 2 diabetes mellitus without complications (E11.9)\nPlan: Continue metformin, reinforce diet and exercise, repeat HbA1c in three months.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-028",
+      "filename": "doc-028.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-88682",
+      "fields": {
+        "policy_number": "POL-2026-88682",
+        "claim_number": null,
+        "patient_name": "Karen Mccoy",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-88682",
+        "claim_number": null,
+        "patient_name": "Karen Mccoy",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Karen Mccoy",
+      "pages": [
+        "Tidewren Assurance\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Karen Mccoy\nPolicy number: POL-2026-88682\nPlan: Tidewren Platinum 500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $500.00\nOut-of-pocket maximum: $1,500.00\nCoinsurance after deductible: 10%\nPrimary care visit copay: $20.00\nSpecialist visit copay: $60.00\nEmergency room copay: $350.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-029",
+      "filename": "doc-029.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-45039",
+      "fields": {
+        "policy_number": "POL-2026-45039",
+        "claim_number": null,
+        "patient_name": "Maria Lewis",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-45039",
+        "claim_number": null,
+        "patient_name": "Maria Lewis",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Maria Lewis",
+      "pages": [
+        "Tidewren Assurance\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Maria Lewis\nPolicy number: POL-2026-45039\nPlan: Tidewren Silver 2500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $2,500.00\nOut-of-pocket maximum: $5,000.00\nCoinsurance after deductible: 30%\nPrimary care visit copay: $40.00\nSpecialist visit copay: $50.00\nEmergency room copay: $250.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-030",
+      "filename": "doc-030.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2478",
+      "fields": {
+        "policy_number": "POL-2026-45039",
+        "claim_number": null,
+        "patient_name": "Maria Lewis",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-04-21",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-45039",
+        "claim_number": null,
+        "patient_name": "Maria Lewis",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "April 21, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Maria Lewis",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2478\n\nPatient: Maria Lewis\nPolicy number: POL-2026-45039\nDate of service: April 21, 2026\nExamining physician: Dr. Margaret Horne\nProvider ID: PRV-256025\n\nChief complaint: Sore throat, nasal congestion and low-grade fever for four days.\nExamination findings: blood pressure 151/80 mmHg, heart rate 58 bpm, temperature 98.2 F.\nFindings are consistent with the history described above.\nDiagnosis: Acute upper respiratory infection (J06.9)\nPlan: Supportive care, fluids and rest. Return if symptoms persist beyond ten days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-031",
+      "filename": "doc-031.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-22588",
+      "fields": {
+        "policy_number": "POL-2026-22588",
+        "claim_number": null,
+        "patient_name": "Stephen Marshall",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-22588",
+        "claim_number": null,
+        "patient_name": "Stephen Marshall",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Stephen Marshall",
+      "pages": [
+        "Quillstone Health Plan\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Stephen Marshall\nPolicy number: POL-2026-22588\nPlan: Quillstone Bronze 6000\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $2,500.00\nOut-of-pocket maximum: $5,000.00\nCoinsurance after deductible: 30%\nPrimary care visit copay: $25.00\nSpecialist visit copay: $75.00\nEmergency room copay: $250.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-032",
+      "filename": "doc-032.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3241",
+      "fields": {
+        "policy_number": "POL-2026-22588",
+        "claim_number": null,
+        "patient_name": "Stephen Marshall",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": null,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-08",
+        "date_of_discharge": "2026-05-15"
+      },
+      "printed": {
+        "policy_number": "POL-2026-22588",
+        "claim_number": null,
+        "patient_name": "Stephen Marshall",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": null,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-08",
+        "date_of_discharge": "2026-05-15"
+      },
+      "patient": "Stephen Marshall",
+      "pages": [
+        "Cinderholt Memorial Hospital\n0455 Ryan Grove, North Brendaborough, MN 98344\nPhone: (555) 0136-6852\n\nDISCHARGE SUMMARY\nSummary ID: DS-3241\n\nPatient: Stephen Marshall\nPolicy number: POL-2026-22588\nAttending physician: Dr. Natalie Gonzalez\nProvider ID: PRV-901701\nAdmission date: 2026-05-08\nDischarge date: 2026-05-15\nLength of stay: 7 days\nPrincipal diagnosis: Fracture of right femoral neck (S72.001A)\n\nHospital course: Admitted after a fall at home. Hip hemiarthroplasty was performed and\nphysical therapy started on the first postoperative day.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Cinderholt Memorial Hospital - Discharge summary DS-3241 - Patient: Stephen Marshall (page 2)\n\nDischarge medication: Enoxaparin 40 mg daily for 28 days.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-033",
+      "filename": "doc-033.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-19089",
+      "fields": {
+        "policy_number": "POL-2026-19089",
+        "claim_number": null,
+        "patient_name": "Kenneth Mcdonald",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-19089",
+        "claim_number": null,
+        "patient_name": "Kenneth Mcdonald",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Kenneth Mcdonald",
+      "pages": [
+        "Bluefern Mutual Health\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Kenneth Mcdonald\nPolicy number: POL-2026-19089\nPlan: Bluefern Silver 3500\nCoverage period: 07/01/2026 to 06/30/2027\n\nCost sharing (in-network)\nAnnual deductible: $500.00\nOut-of-pocket maximum: $2,000.00\nCoinsurance after deductible: 10%\nPrimary care visit copay: $20.00\nSpecialist visit copay: $50.00\nEmergency room copay: $250.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-034",
+      "filename": "doc-034.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-8865",
+      "fields": {
+        "policy_number": "POL-2026-20152",
+        "claim_number": "CLM-2026-57175",
+        "patient_name": "Mary Bennett",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": 15887.0,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": "2026-06-12",
+        "date_of_admission": "2026-06-12",
+        "date_of_discharge": "2026-06-15"
+      },
+      "printed": {
+        "policy_number": "POL-2026-20152",
+        "claim_number": "CLM-2026-57175",
+        "patient_name": "Mary Bennett",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": "$15,887.00",
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": "06/12/2026",
+        "date_of_admission": "06/12/2026",
+        "date_of_discharge": "06/15/2026"
+      },
+      "patient": "Mary Bennett",
+      "pages": [
+        "Wrenfield Crossing Hospital\n28065 Donaldson Rapid, Manninghaven, GA 95906\nPhone: (555) 0197-4876\n\nINVOICE\nInvoice number: INV-8865\nInvoice date: 06/24/2026\n\nPatient: Mary Bennett\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-20152\nClaim number: CLM-2026-57175\nAttending physician: Dr. Carolyn Fisher\nProvider ID: PRV-703952\nDiagnosis: Atrial fibrillation (I48.91)\nDate of service: 06/12/2026\nAdmission date: 06/12/2026\nDischarge date: 06/15/2026\n\nItemized charges\nRoom and board: $3,643.94\nCardiac monitoring: $1,947.18\nEchocardiogram: $3,283.28\nPharmacy: $2,680.61\nLaboratory: $4,331.99\nSubtotal: $15,887.00\nAdjustments: $0.00\nTotal amount due: $15,887.00\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-035",
+      "filename": "doc-035.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-8982",
+      "fields": {
+        "policy_number": "POL-2026-45039",
+        "claim_number": "CLM-2026-48245",
+        "patient_name": "Maria Lewis",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 536.59,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-04-21",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-45039",
+        "claim_number": "CLM-2026-48245",
+        "patient_name": "Maria Lewis",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": "$536.59",
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "04/21/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Maria Lewis",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nINVOICE\nInvoice number: INV-8982\nInvoice date: 04/27/2026\n\nPatient: Maria Lewis\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-45039\nClaim number: CLM-2026-48245\nAttending physician: Dr. Margaret Horne\nProvider ID: PRV-256025\nDiagnosis: Acute upper respiratory infection (J06.9)\nDate of service: 04/21/2026\n\nItemized charges\nOffice visit: $195.05\nRapid strep test: $210.73\nMedication: $130.81\nSubtotal: $536.59\nAdjustments: $0.00\nTotal amount due: $536.59\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-036",
+      "filename": "doc-036.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3096",
+      "fields": {
+        "policy_number": "POL-2026-97261",
+        "claim_number": null,
+        "patient_name": "Michael Brooks",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": null,
+        "date_of_admission": "2026-03-08",
+        "date_of_discharge": "2026-03-11"
+      },
+      "printed": {
+        "policy_number": "POL-2026-97261",
+        "claim_number": null,
+        "patient_name": "Michael Brooks",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": null,
+        "date_of_admission": "2026-03-08",
+        "date_of_discharge": "2026-03-11"
+      },
+      "patient": "Michael Brooks",
+      "pages": [
+        "Bramblemoor Community Clinic\n01846 Jerome Burgs, Lisafurt, OR 71895\nPhone: (555) 0186-6617\n\nDISCHARGE SUMMARY\nSummary ID: DS-3096\n\nPatient: Michael Brooks\nPolicy number: POL-2026-97261\nAttending physician: Dr. Colin Bridges\nProvider ID: PRV-503709\nAdmission date: 2026-03-08\nDischarge date: 2026-03-11\nLength of stay: 3 days\nPrincipal diagnosis: Calculus of kidney (N20.0)\n\nHospital course: Admitted with severe flank pain. Imaging showed a 6 mm kidney stone, which\npassed with hydration and pain control.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Bramblemoor Community Clinic - Discharge summary DS-3096 - Patient: Michael Brooks (page 2)\n\nDischarge medication: Tamsulosin 0.4 mg daily for 14 days.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 10 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-037",
+      "filename": "doc-037.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-5500",
+      "fields": {
+        "policy_number": "POL-2026-75871",
+        "claim_number": "CLM-2026-92611",
+        "patient_name": "Brittany Frazier",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 888.72,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": "2026-02-01",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-75871",
+        "claim_number": "CLM-2026-92611",
+        "patient_name": "Brittany Frazier",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": "$888.72",
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "0455 Ryan Grove, North Brendaborough, MN 98344",
+        "provider_id": "PRV-901701",
+        "date_of_service": "02/01/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Brittany Frazier",
+      "pages": [
+        "Cinderholt Memorial Hospital\n0455 Ryan Grove, North Brendaborough, MN 98344\nPhone: (555) 0136-6852\n\nINVOICE\nInvoice number: INV-5500\nInvoice date: 02/06/2026\n\nPatient: Brittany Frazier\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-75871\nClaim number: CLM-2026-92611\nAttending physician: Dr. Natalie Gonzalez\nProvider ID: PRV-901701\nDiagnosis: Cellulitis of right lower limb (L03.115)\nDate of service: 02/01/2026\n\nItemized charges\nUrgent care visit: $207.83\nComplete blood count: $484.08\nMedication: $196.81\nSubtotal: $888.72\nAdjustments: $0.00\nTotal amount due: $888.72\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-038",
+      "filename": "doc-038.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2713",
+      "fields": {
+        "policy_number": "POL-2026-20557",
+        "claim_number": null,
+        "patient_name": "Christopher Marshall",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-05-24",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-20557",
+        "claim_number": null,
+        "patient_name": "Christopher Marshall",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "May 24, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Christopher Marshall",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2713\n\nPatient: Christopher Marshall\nPolicy number: POL-2026-20557\nDate of service: May 24, 2026\nExamining physician: Dr. Margaret Horne\nProvider ID: PRV-256025\n\nChief complaint: Wrist pain and swelling after a fall on an outstretched hand.\nExamination findings: blood pressure 135/82 mmHg, heart rate 78 bpm, temperature 97.9 F.\nFindings are consistent with the history described above.\nDiagnosis: Fracture of lower end of right radius (S52.501A)\nPlan: Closed reduction and short arm cast; recheck alignment with X-ray in one week.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-039",
+      "filename": "doc-039.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-95671",
+      "fields": {
+        "policy_number": "POL-2026-95671",
+        "claim_number": null,
+        "patient_name": "Julie Hodge",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-95671",
+        "claim_number": null,
+        "patient_name": "Julie Hodge",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Julie Hodge",
+      "pages": [
+        "Quillstone Health Plan\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Julie Hodge\nPolicy number: POL-2026-95671\nPlan: Quillstone Silver 2500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $5,000.00\nOut-of-pocket maximum: $15,500.00\nCoinsurance after deductible: 30%\nPrimary care visit copay: $30.00\nSpecialist visit copay: $60.00\nEmergency room copay: $350.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-040",
+      "filename": "doc-040.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2904",
+      "fields": {
+        "policy_number": "POL-2026-14045",
+        "claim_number": null,
+        "patient_name": "Todd Zuniga",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-02-07",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-14045",
+        "claim_number": null,
+        "patient_name": "Todd Zuniga",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "February 7, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Todd Zuniga",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2904\n\nPatient: Todd Zuniga\nPolicy number: POL-2026-14045\nDate of service: February 7, 2026\nExamining physician: Dr. William Ruiz\nProvider ID: PRV-393204\n\nChief complaint: Follow-up of elevated blood pressure readings at home.\nExamination findings: blood pressure 146/76 mmHg, heart rate 77 bpm, temperature 99.1 F.\nFindings are consistent with the history described above.\nDiagnosis: Essential (primary) hypertension (I10)\nPlan: Start lisinopril 10 mg daily and monitor blood pressure at home twice a week.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-041",
+      "filename": "doc-041.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3693",
+      "fields": {
+        "policy_number": "POL-2026-97261",
+        "claim_number": "CLM-2026-80646",
+        "patient_name": "Michael Brooks",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 12413.73,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": "2026-03-08",
+        "date_of_admission": "2026-03-08",
+        "date_of_discharge": "2026-03-11"
+      },
+      "printed": {
+        "policy_number": "POL-2026-97261",
+        "claim_number": "CLM-2026-80646",
+        "patient_name": "Michael Brooks",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": "$12,413.73",
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": "03/08/2026",
+        "date_of_admission": "03/08/2026",
+        "date_of_discharge": "03/11/2026"
+      },
+      "patient": "Michael Brooks",
+      "pages": [
+        "Bramblemoor Community Clinic\n01846 Jerome Burgs, Lisafurt, OR 71895\nPhone: (555) 0186-6617\n\nINVOICE\nInvoice number: INV-3693\nInvoice date: 03/15/2026\n\nPatient: Michael Brooks\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-97261\nClaim number: CLM-2026-80646\nAttending physician: Dr. Colin Bridges\nProvider ID: PRV-503709\nDiagnosis: Calculus of kidney (N20.0)\nDate of service: 03/08/2026\nAdmission date: 03/08/2026\nDischarge date: 03/11/2026\n\nItemized charges\nRoom and board: $2,809.59\nCT imaging: $3,862.54\nPharmacy: $2,660.25\nLaboratory: $3,081.35\nSubtotal: $12,413.73\nAdjustments: $0.00\nTotal amount due: $12,413.73\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-042",
+      "filename": "doc-042.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2987",
+      "fields": {
+        "policy_number": "POL-2026-29885",
+        "claim_number": null,
+        "patient_name": "Austin Graham",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-06-10",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-29885",
+        "claim_number": null,
+        "patient_name": "Austin Graham",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": null,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "June 10, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Austin Graham",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2987\n\nPatient: Austin Graham\nPolicy number: POL-2026-29885\nDate of service: June 10, 2026\nExamining physician: Dr. William Ruiz\nProvider ID: PRV-393204\n\nChief complaint: Routine review of blood sugar control and medication.\nExamination findings: blood pressure 132/66 mmHg, heart rate 70 bpm, temperature 97.9 F.\nFindings are consistent with the history described above.\nDiagnosis: Type 2 diabetes mellitus without complications (E11.9)\nPlan: Continue metformin, reinforce diet and exercise, repeat HbA1c in three months.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-043",
+      "filename": "doc-043.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-89272",
+      "fields": {
+        "policy_number": "POL-2026-89272",
+        "claim_number": null,
+        "patient_name": "Caitlyn Schmidt",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-89272",
+        "claim_number": null,
+        "patient_name": "Caitlyn Schmidt",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Caitlyn Schmidt",
+      "pages": [
+        "Bluefern Mutual Health\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Caitlyn Schmidt\nPolicy number: POL-2026-89272\nPlan: Bluefern Silver 3500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $5,000.00\nOut-of-pocket maximum: $15,000.00\nCoinsurance after deductible: 20%\nPrimary care visit copay: $20.00\nSpecialist visit copay: $75.00\nEmergency room copay: $350.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-044",
+      "filename": "doc-044.pdf",
+      "kind": "policy_summary",
+      "document_class": "other",
+      "reference": "POL-2026-74654",
+      "fields": {
+        "policy_number": "POL-2026-74654",
+        "claim_number": null,
+        "patient_name": "Cody Davis",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-74654",
+        "claim_number": null,
+        "patient_name": "Cody Davis",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": null,
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Cody Davis",
+      "pages": [
+        "Tidewren Assurance\nMember services: (555) 0142-7700\n\nPOLICY SUMMARY\n\nPolicyholder: Cody Davis\nPolicy number: POL-2026-74654\nPlan: Tidewren Platinum 500\nCoverage period: 01/01/2026 to 12/31/2026\n\nCost sharing (in-network)\nAnnual deductible: $1,500.00\nOut-of-pocket maximum: $3,000.00\nCoinsurance after deductible: 30%\nPrimary care visit copay: $25.00\nSpecialist visit copay: $60.00\nEmergency room copay: $250.00\n\nCovered services include preventive care, hospital stays, surgery, emergency care,\nlaboratory tests and prescription drugs, subject to the cost sharing above.\nThis summary is not a contract. The policy documents describe the full terms of coverage.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-045",
+      "filename": "doc-045.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2686",
+      "fields": {
+        "policy_number": "POL-2026-73506",
+        "claim_number": null,
+        "patient_name": "Luis Gilbert",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-135657",
+        "date_of_service": "2026-04-10",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-73506",
+        "claim_number": null,
+        "patient_name": "Luis Gilbert",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-135657",
+        "date_of_service": "April 10, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Luis Gilbert",
+      "pages": [
+        "Bramblemoor Community Clinic\n01846 Jerome Burgs, Lisafurt, OR 71895\nPhone: (555) 0186-6617\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2686\n\nPatient: Luis Gilbert\nPolicy number: POL-2026-73506\nDate of service: April 10, 2026\nExamining physician: Dr. Katie Rodriguez\nProvider ID: PRV-135657\n\nChief complaint: Recurrent throbbing headaches with light sensitivity, two per week.\nExamination findings: blood pressure 150/80 mmHg, heart rate 77 bpm, temperature 98.6 F.\nFindings are consistent with the history described above.\nDiagnosis: Migraine, not intractable (G43.909)\nPlan: Start sumatriptan as needed, keep a headache diary, reduce caffeine.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-046",
+      "filename": "doc-046.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3678",
+      "fields": {
+        "policy_number": "POL-2026-14045",
+        "claim_number": "CLM-2026-18690",
+        "patient_name": "Todd Zuniga",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 320.4,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-02-07",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-14045",
+        "claim_number": "CLM-2026-18690",
+        "patient_name": "Todd Zuniga",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": "$320.40",
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "02/07/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Todd Zuniga",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nINVOICE\nInvoice number: INV-3678\nInvoice date: 02/12/2026\n\nPatient: Todd Zuniga\nInsurer: Tidewren Assurance\nPolicy number: POL-2026-14045\nClaim number: CLM-2026-18690\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nDiagnosis: Essential (primary) hypertension (I10)\nDate of service: 02/07/2026\n\nItemized charges\nOffice visit: $108.08\nBasic metabolic panel: $110.12\nElectrocardiogram: $102.20\nSubtotal: $320.40\nAdjustments: $0.00\nTotal amount due: $320.40\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-047",
+      "filename": "doc-047.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3023",
+      "fields": {
+        "policy_number": "POL-2026-95671",
+        "claim_number": "CLM-2026-19837",
+        "patient_name": "Julie Hodge",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 626.35,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-04-10",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-95671",
+        "claim_number": "CLM-2026-19837",
+        "patient_name": "Julie Hodge",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": "$626.35",
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "04/10/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Julie Hodge",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nINVOICE\nInvoice number: INV-3023\nInvoice date: 04/14/2026\n\nPatient: Julie Hodge\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-95671\nClaim number: CLM-2026-19837\nAttending physician: Dr. Margaret Horne\nProvider ID: PRV-256025\nDiagnosis: Asthma, uncomplicated (J45.909)\nDate of service: 04/10/2026\n\nItemized charges\nOffice visit: $173.38\nSpirometry: $241.14\nMedication: $211.83\nSubtotal: $626.35\nAdjustments: $0.00\nTotal amount due: $626.35\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-048",
+      "filename": "doc-048.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2639",
+      "fields": {
+        "policy_number": "POL-2026-19089",
+        "claim_number": null,
+        "patient_name": "Kenneth Mcdonald",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": "2026-01-14",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-19089",
+        "claim_number": null,
+        "patient_name": "Kenneth Mcdonald",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": "January 14, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Kenneth Mcdonald",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2639\n\nPatient: Kenneth Mcdonald\nPolicy number: POL-2026-19089\nDate of service: January 14, 2026\nExamining physician: Dr. Jacob Manning\nProvider ID: PRV-181811\n\nChief complaint: Increased wheezing at night over the past month.\nExamination findings: blood pressure 132/69 mmHg, heart rate 63 bpm, temperature 97.9 F.\nFindings are consistent with the history described above.\nDiagnosis: Asthma, uncomplicated (J45.909)\nPlan: Add an inhaled corticosteroid, review inhaler technique, written action plan given.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-049",
+      "filename": "doc-049.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3158",
+      "fields": {
+        "policy_number": "POL-2026-70004",
+        "claim_number": null,
+        "patient_name": "Samantha Saunders",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": null,
+        "date_of_admission": "2026-02-10",
+        "date_of_discharge": "2026-02-14"
+      },
+      "printed": {
+        "policy_number": "POL-2026-70004",
+        "claim_number": null,
+        "patient_name": "Samantha Saunders",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": null,
+        "date_of_admission": "2026-02-10",
+        "date_of_discharge": "2026-02-14"
+      },
+      "patient": "Samantha Saunders",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nDISCHARGE SUMMARY\nSummary ID: DS-3158\n\nPatient: Samantha Saunders\nPolicy number: POL-2026-70004\nAttending physician: Dr. Jacob Manning\nProvider ID: PRV-181811\nAdmission date: 2026-02-10\nDischarge date: 2026-02-14\nLength of stay: 4 days\nPrincipal diagnosis: Acute cholecystitis (K81.0)\n\nHospital course: Admitted with right upper quadrant pain and fever. Laparoscopic\ncholecystectomy was performed on the second hospital day.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Marigold Quarry Regional Hospital - Discharge summary DS-3158 - Patient: Samantha Saunders (page 2)\n\nDischarge medication: Acetaminophen 1000 mg every 8 hours as needed.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-050",
+      "filename": "doc-050.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3840",
+      "fields": {
+        "policy_number": "POL-2026-46125",
+        "claim_number": null,
+        "patient_name": "William Simon",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": null,
+        "date_of_admission": "2026-01-14",
+        "date_of_discharge": "2026-01-17"
+      },
+      "printed": {
+        "policy_number": "POL-2026-46125",
+        "claim_number": null,
+        "patient_name": "William Simon",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": null,
+        "date_of_admission": "2026-01-14",
+        "date_of_discharge": "2026-01-17"
+      },
+      "patient": "William Simon",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nDISCHARGE SUMMARY\nSummary ID: DS-3840\n\nPatient: William Simon\nPolicy number: POL-2026-46125\nAttending physician: Dr. Margaret Horne\nProvider ID: PRV-256025\nAdmission date: 2026-01-14\nDischarge date: 2026-01-17\nLength of stay: 3 days\nPrincipal diagnosis: Acute cholecystitis (K81.0)\n\nHospital course: Admitted with right upper quadrant pain and fever. Laparoscopic\ncholecystectomy was performed on the second hospital day.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Juniperwick Medical Center - Discharge summary DS-3840 - Patient: William Simon (page 2)\n\nDischarge medication: Acetaminophen 1000 mg every 8 hours as needed.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 7 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-051",
+      "filename": "doc-051.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3679",
+      "fields": {
+        "policy_number": "POL-2026-24266",
+        "claim_number": "CLM-2026-33121",
+        "patient_name": "Darrell Miller",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 400.8,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "9929 Michael Unions, Waltonmouth, TX 80256",
+        "provider_id": "PRV-487553",
+        "date_of_service": "2026-05-23",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-24266",
+        "claim_number": "CLM-2026-33121",
+        "patient_name": "Darrell Miller",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": "$400.80",
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "9929 Michael Unions, Waltonmouth, TX 80256",
+        "provider_id": "PRV-487553",
+        "date_of_service": "05/23/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Darrell Miller",
+      "pages": [
+        "Larkspur Bay Health Center\n9929 Michael Unions, Waltonmouth, TX 80256\nPhone: (555) 0118-3210\n\nINVOICE\nInvoice number: INV-3679\nInvoice date: 05/27/2026\n\nPatient: Darrell Miller\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-24266\nClaim number: CLM-2026-33121\nAttending physician: Dr. Michael Meza\nProvider ID: PRV-487553\nDiagnosis: Acute upper respiratory infection (J06.9)\nDate of service: 05/23/2026\n\nItemized charges\nOffice visit: $122.29\nRapid strep test: $90.77\nMedication: $187.74\nSubtotal: $400.80\nAdjustments: $0.00\nTotal amount due: $400.80\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-052",
+      "filename": "doc-052.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3222",
+      "fields": {
+        "policy_number": "POL-2026-57732",
+        "claim_number": null,
+        "patient_name": "Timothy Ortiz",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": null,
+        "date_of_admission": "2026-04-07",
+        "date_of_discharge": "2026-04-13"
+      },
+      "printed": {
+        "policy_number": "POL-2026-57732",
+        "claim_number": null,
+        "patient_name": "Timothy Ortiz",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "01846 Jerome Burgs, Lisafurt, OR 71895",
+        "provider_id": "PRV-503709",
+        "date_of_service": null,
+        "date_of_admission": "2026-04-07",
+        "date_of_discharge": "2026-04-13"
+      },
+      "patient": "Timothy Ortiz",
+      "pages": [
+        "Bramblemoor Community Clinic\n01846 Jerome Burgs, Lisafurt, OR 71895\nPhone: (555) 0186-6617\n\nDISCHARGE SUMMARY\nSummary ID: DS-3222\n\nPatient: Timothy Ortiz\nPolicy number: POL-2026-57732\nAttending physician: Dr. Colin Bridges\nProvider ID: PRV-503709\nAdmission date: 2026-04-07\nDischarge date: 2026-04-13\nLength of stay: 6 days\nPrincipal diagnosis: Pneumonia, unspecified organism (J18.9)\n\nHospital course: Admitted with fever, cough and hypoxia. Treated with intravenous\nantibiotics and oxygen, with steady improvement in breathing and oxygen saturation.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Bramblemoor Community Clinic - Discharge summary DS-3222 - Patient: Timothy Ortiz (page 2)\n\nDischarge medication: Amoxicillin-clavulanate 875 mg twice daily for 5 days.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-053",
+      "filename": "doc-053.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-9242",
+      "fields": {
+        "policy_number": "POL-2026-89272",
+        "claim_number": "CLM-2026-91564",
+        "patient_name": "Caitlyn Schmidt",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 350.19,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": "2026-05-25",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-89272",
+        "claim_number": "CLM-2026-91564",
+        "patient_name": "Caitlyn Schmidt",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": "$350.19",
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": "05/25/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Caitlyn Schmidt",
+      "pages": [
+        "Wrenfield Crossing Hospital\n28065 Donaldson Rapid, Manninghaven, GA 95906\nPhone: (555) 0197-4876\n\nINVOICE\nInvoice number: INV-9242\nInvoice date: 06/03/2026\n\nPatient: Caitlyn Schmidt\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-89272\nClaim number: CLM-2026-91564\nAttending physician: Dr. Carolyn Fisher\nProvider ID: PRV-703952\nDiagnosis: Essential (primary) hypertension (I10)\nDate of service: 05/25/2026\n\nItemized charges\nOffice visit: $104.97\nBasic metabolic panel: $109.29\nElectrocardiogram: $135.93\nSubtotal: $350.19\nAdjustments: $0.00\nTotal amount due: $350.19\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-054",
+      "filename": "doc-054.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-8545",
+      "fields": {
+        "policy_number": "POL-2026-29885",
+        "claim_number": "CLM-2026-62183",
+        "patient_name": "Austin Graham",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 456.37,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "2026-06-10",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-29885",
+        "claim_number": "CLM-2026-62183",
+        "patient_name": "Austin Graham",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": "$456.37",
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "6938 Joseph Stravenue, South Amy, MN 74198",
+        "provider_id": "PRV-393204",
+        "date_of_service": "06/10/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Austin Graham",
+      "pages": [
+        "Fernhollow Valley Medical Center\n6938 Joseph Stravenue, South Amy, MN 74198\nPhone: (555) 0163-1728\n\nINVOICE\nInvoice number: INV-8545\nInvoice date: 06/15/2026\n\nPatient: Austin Graham\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-29885\nClaim number: CLM-2026-62183\nAttending physician: Dr. William Ruiz\nProvider ID: PRV-393204\nDiagnosis: Type 2 diabetes mellitus without complications (E11.9)\nDate of service: 06/10/2026\n\nItemized charges\nOffice visit: $100.99\nHbA1c laboratory test: $244.41\nLipid panel: $110.97\nSubtotal: $456.37\nAdjustments: $0.00\nTotal amount due: $456.37\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-055",
+      "filename": "doc-055.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3187",
+      "fields": {
+        "policy_number": "POL-2026-20152",
+        "claim_number": null,
+        "patient_name": "Mary Bennett",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": null,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": null,
+        "date_of_admission": "2026-06-12",
+        "date_of_discharge": "2026-06-15"
+      },
+      "printed": {
+        "policy_number": "POL-2026-20152",
+        "claim_number": null,
+        "patient_name": "Mary Bennett",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": null,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "28065 Donaldson Rapid, Manninghaven, GA 95906",
+        "provider_id": "PRV-703952",
+        "date_of_service": null,
+        "date_of_admission": "2026-06-12",
+        "date_of_discharge": "2026-06-15"
+      },
+      "patient": "Mary Bennett",
+      "pages": [
+        "Wrenfield Crossing Hospital\n28065 Donaldson Rapid, Manninghaven, GA 95906\nPhone: (555) 0197-4876\n\nDISCHARGE SUMMARY\nSummary ID: DS-3187\n\nPatient: Mary Bennett\nPolicy number: POL-2026-20152\nAttending physician: Dr. Carolyn Fisher\nProvider ID: PRV-703952\nAdmission date: 2026-06-12\nDischarge date: 2026-06-15\nLength of stay: 3 days\nPrincipal diagnosis: Atrial fibrillation (I48.91)\n\nHospital course: Admitted with palpitations and rapid ventricular response. Rate control was\nachieved and anticoagulation was started after risk assessment.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Wrenfield Crossing Hospital - Discharge summary DS-3187 - Patient: Mary Bennett (page 2)\n\nDischarge medication: Apixaban 5 mg twice daily.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 7 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-056",
+      "filename": "doc-056.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3157",
+      "fields": {
+        "policy_number": "POL-2026-72855",
+        "claim_number": null,
+        "patient_name": "Jennifer Hunt",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-687627",
+        "date_of_service": null,
+        "date_of_admission": "2026-02-05",
+        "date_of_discharge": "2026-02-11"
+      },
+      "printed": {
+        "policy_number": "POL-2026-72855",
+        "claim_number": null,
+        "patient_name": "Jennifer Hunt",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-687627",
+        "date_of_service": null,
+        "date_of_admission": "2026-02-05",
+        "date_of_discharge": "2026-02-11"
+      },
+      "patient": "Jennifer Hunt",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nDISCHARGE SUMMARY\nSummary ID: DS-3157\n\nPatient: Jennifer Hunt\nPolicy number: POL-2026-72855\nAttending physician: Dr. Joshua Collins\nProvider ID: PRV-687627\nAdmission date: 2026-02-05\nDischarge date: 2026-02-11\nLength of stay: 6 days\nPrincipal diagnosis: Non-ST elevation myocardial infarction (I21.4)\n\nHospital course: Admitted with chest pain and elevated troponin. Cardiac catheterization\nwith stent placement was performed, followed by cardiac rehabilitation teaching.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Juniperwick Medical Center - Discharge summary DS-3157 - Patient: Jennifer Hunt (page 2)\n\nDischarge medication: Clopidogrel 75 mg daily.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 10 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-057",
+      "filename": "doc-057.pdf",
+      "kind": "discharge_summary",
+      "document_class": "discharge_summary",
+      "reference": "DS-3730",
+      "fields": {
+        "policy_number": "POL-2026-95236",
+        "claim_number": null,
+        "patient_name": "Peter Brown",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-14",
+        "date_of_discharge": "2026-05-16"
+      },
+      "printed": {
+        "policy_number": "POL-2026-95236",
+        "claim_number": null,
+        "patient_name": "Peter Brown",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": null,
+        "date_of_admission": "2026-05-14",
+        "date_of_discharge": "2026-05-16"
+      },
+      "patient": "Peter Brown",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nDISCHARGE SUMMARY\nSummary ID: DS-3730\n\nPatient: Peter Brown\nPolicy number: POL-2026-95236\nAttending physician: Dr. Erica Perez\nProvider ID: PRV-512586\nAdmission date: 2026-05-14\nDischarge date: 2026-05-16\nLength of stay: 2 days\nPrincipal diagnosis: Acute appendicitis (K35.80)\n\nHospital course: Admitted with right lower quadrant pain. Laparoscopic appendectomy was\nperformed without complications and the patient tolerated a regular diet before discharge.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional.",
+        "Marigold Quarry Regional Hospital - Discharge summary DS-3730 - Patient: Peter Brown (page 2)\n\nDischarge medication: Oxycodone 5 mg every 6 hours as needed for pain.\nDischarge instructions: rest at home, resume normal activity gradually, and return to the\nemergency department for fever, worsening pain or shortness of breath.\nFollow-up: primary care visit within 14 days.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-058",
+      "filename": "doc-058.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-3605",
+      "fields": {
+        "policy_number": "POL-2026-19089",
+        "claim_number": "CLM-2026-90512",
+        "patient_name": "Kenneth Mcdonald",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 445.26,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": "2026-01-14",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-19089",
+        "claim_number": "CLM-2026-90512",
+        "patient_name": "Kenneth Mcdonald",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": "$445.26",
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-181811",
+        "date_of_service": "01/14/2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Kenneth Mcdonald",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nINVOICE\nInvoice number: INV-3605\nInvoice date: 01/18/2026\n\nPatient: Kenneth Mcdonald\nInsurer: Bluefern Mutual Health\nPolicy number: POL-2026-19089\nClaim number: CLM-2026-90512\nAttending physician: Dr. Jacob Manning\nProvider ID: PRV-181811\nDiagnosis: Asthma, uncomplicated (J45.909)\nDate of service: 01/14/2026\n\nItemized charges\nOffice visit: $140.02\nSpirometry: $142.98\nMedication: $162.26\nSubtotal: $445.26\nAdjustments: $0.00\nTotal amount due: $445.26\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-059",
+      "filename": "doc-059.pdf",
+      "kind": "medical_report",
+      "document_class": "medical_report",
+      "reference": "MR-2397",
+      "fields": {
+        "policy_number": "POL-2026-95671",
+        "claim_number": null,
+        "patient_name": "Julie Hodge",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "2026-04-10",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "printed": {
+        "policy_number": "POL-2026-95671",
+        "claim_number": null,
+        "patient_name": "Julie Hodge",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": null,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "8606 Emily Mews, Lake Matthewfort, NY 06325",
+        "provider_id": "PRV-256025",
+        "date_of_service": "April 10, 2026",
+        "date_of_admission": null,
+        "date_of_discharge": null
+      },
+      "patient": "Julie Hodge",
+      "pages": [
+        "Juniperwick Medical Center\n8606 Emily Mews, Lake Matthewfort, NY 06325\nPhone: (555) 0171-7651\n\nOUTPATIENT MEDICAL REPORT\nReport ID: MR-2397\n\nPatient: Julie Hodge\nPolicy number: POL-2026-95671\nDate of service: April 10, 2026\nExamining physician: Dr. Margaret Horne\nProvider ID: PRV-256025\n\nChief complaint: Increased wheezing at night over the past month.\nExamination findings: blood pressure 140/80 mmHg, heart rate 60 bpm, temperature 97.9 F.\nFindings are consistent with the history described above.\nDiagnosis: Asthma, uncomplicated (J45.909)\nPlan: Add an inhaled corticosteroid, review inhaler technique, written action plan given.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    },
+    {
+      "id": "doc-060",
+      "filename": "doc-060.pdf",
+      "kind": "invoice",
+      "document_class": "invoice",
+      "reference": "INV-9271",
+      "fields": {
+        "policy_number": "POL-2026-80802",
+        "claim_number": "CLM-2026-84394",
+        "patient_name": "Greg Cross",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 15793.31,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": "2026-04-08",
+        "date_of_admission": "2026-04-08",
+        "date_of_discharge": "2026-04-11"
+      },
+      "printed": {
+        "policy_number": "POL-2026-80802",
+        "claim_number": "CLM-2026-84394",
+        "patient_name": "Greg Cross",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": "$15,793.31",
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "070 Henry Pass, North Samantha, NY 81013",
+        "provider_id": "PRV-512586",
+        "date_of_service": "04/08/2026",
+        "date_of_admission": "04/08/2026",
+        "date_of_discharge": "04/11/2026"
+      },
+      "patient": "Greg Cross",
+      "pages": [
+        "Marigold Quarry Regional Hospital\n070 Henry Pass, North Samantha, NY 81013\nPhone: (555) 0102-6493\n\nINVOICE\nInvoice number: INV-9271\nInvoice date: 04/21/2026\n\nPatient: Greg Cross\nInsurer: Quillstone Health Plan\nPolicy number: POL-2026-80802\nClaim number: CLM-2026-84394\nAttending physician: Dr. Erica Perez\nProvider ID: PRV-512586\nDiagnosis: Pneumonia, unspecified organism (J18.9)\nDate of service: 04/08/2026\nAdmission date: 04/08/2026\nDischarge date: 04/11/2026\n\nItemized charges\nRoom and board: $3,620.53\nRespiratory therapy: $2,218.32\nPharmacy: $4,221.13\nChest imaging: $1,314.04\nLaboratory: $4,419.29\nSubtotal: $15,793.31\nAdjustments: $0.00\nTotal amount due: $15,793.31\n\nPayment is due within 30 days of the invoice date.\n\nSynthetic document for software evaluation. All people, organizations and identifiers are fictional."
+      ]
+    }
+  ]
+}

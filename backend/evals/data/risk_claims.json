@@ -1,0 +1,5481 @@
+{
+  "seed": 7342,
+  "history": [
+    {
+      "_id": "hist-001",
+      "claim_number": "CLM-2026-98934",
+      "policy_number": "POL-2026-81454",
+      "patient_name": "Rachel Watkins",
+      "diagnosis": "Asthma, uncomplicated (J45.909)",
+      "treatment_cost": 292.66,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-736743",
+      "date_of_service": "2025-09-18",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-002",
+      "claim_number": "CLM-2026-74703",
+      "policy_number": "POL-2026-76999",
+      "patient_name": "Jennifer Robinson",
+      "diagnosis": "Cellulitis of right lower limb (L03.115)",
+      "treatment_cost": 993.82,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-499355",
+      "date_of_service": "2025-07-26",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-003",
+      "claim_number": "CLM-2026-88029",
+      "policy_number": "POL-2026-42364",
+      "patient_name": "Jared Preston",
+      "diagnosis": "Cellulitis of right lower limb (L03.115)",
+      "treatment_cost": 1227.97,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-365956",
+      "date_of_service": "2026-04-09",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-004",
+      "claim_number": "CLM-2026-97216",
+      "policy_number": "POL-2026-15850",
+      "patient_name": "Angel Roth",
+      "diagnosis": "Essential (primary) hypertension (I10)",
+      "treatment_cost": 362.82,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-373076",
+      "date_of_service": "2026-01-12",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-005",
+      "claim_number": "CLM-2026-65568",
+      "policy_number": "POL-2026-27675",
+      "patient_name": "Jessica Walker",
+      "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+      "treatment_cost": 41101.86,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-491119",
+      "date_of_service": "2025-11-22",
+      "date_of_admission": "2025-11-22",
+      "date_of_discharge": "2025-11-26",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-006",
+      "claim_number": "CLM-2026-53244",
+      "policy_number": "POL-2026-21517",
+      "patient_name": "Matthew Allen",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 30364.23,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-965250",
+      "date_of_service": "2026-04-26",
+      "date_of_admission": "2026-04-26",
+      "date_of_discharge": "2026-04-28",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-007",
+      "claim_number": "CLM-2026-85351",
+      "policy_number": "POL-2026-25263",
+      "patient_name": "Patricia Conway",
+      "diagnosis": "Essential (primary) hypertension (I10)",
+      "treatment_cost": 431.08,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-605098",
+      "date_of_service": "2025-11-06",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-008",
+      "claim_number": "CLM-2026-94304",
+      "policy_number": "POL-2026-97579",
+      "patient_name": "Brooke Santos",
+      "diagnosis": "Fracture of right femoral neck (S72.001A)",
+      "treatment_cost": 34711.18,
+      "hospital_name": "Cinderholt Memorial Hospital",
+      "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+      "provider_id": "PRV-262611",
+      "date_of_service": "2025-07-22",
+      "date_of_admission": "2025-07-22",
+      "date_of_discharge": "2025-07-28",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-009",
+      "claim_number": "CLM-2026-19956",
+      "policy_number": "POL-2026-11619",
+      "patient_name": "Shawn Wheeler",
+      "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+      "treatment_cost": 358.68,
+      "hospital_name": "Cinderholt Memorial Hospital",
+      "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+      "provider_id": "PRV-637283",
+      "date_of_service": "2026-01-30",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-010",
+      "claim_number": "CLM-2026-16669",
+      "policy_number": "POL-2026-48962",
+      "patient_name": "Emily Carroll",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 25215.93,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-215508",
+      "date_of_service": "2025-08-13",
+      "date_of_admission": "2025-08-13",
+      "date_of_discharge": "2025-08-14",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-011",
+      "claim_number": "CLM-2026-63397",
+      "policy_number": "POL-2026-55921",
+      "patient_name": "Jamie Brown",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 27486.67,
+      "hospital_name": "Fernhollow Valley Medical Center",
+      "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+      "provider_id": "PRV-532695",
+      "date_of_service": "2025-08-25",
+      "date_of_admission": "2025-08-25",
+      "date_of_discharge": "2025-08-26",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-012",
+      "claim_number": "CLM-2026-33143",
+      "policy_number": "POL-2026-84361",
+      "patient_name": "Robert Richard",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 15657.28,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-503358",
+      "date_of_service": "2026-05-10",
+      "date_of_admission": "2026-05-10",
+      "date_of_discharge": "2026-05-12",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-013",
+      "claim_number": "CLM-2026-57591",
+      "policy_number": "POL-2026-24791",
+      "patient_name": "Donna Ellis",
+      "diagnosis": "Calculus of kidney (N20.0)",
+      "treatment_cost": 10387.13,
+      "hospital_name": "Larkspur Bay Health Center",
+      "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+      "provider_id": "PRV-542986",
+      "date_of_service": "2026-01-31",
+      "date_of_admission": "2026-01-31",
+      "date_of_discharge": "2026-02-02",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-014",
+      "claim_number": "CLM-2026-78003",
+      "policy_number": "POL-2026-13257",
+      "patient_name": "Emily Lee",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 22712.22,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-919558",
+      "date_of_service": "2026-04-29",
+      "date_of_admission": "2026-04-29",
+      "date_of_discharge": "2026-05-02",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-015",
+      "claim_number": "CLM-2026-41644",
+      "policy_number": "POL-2026-86740",
+      "patient_name": "Lisa Randolph",
+      "diagnosis": "Cellulitis of right lower limb (L03.115)",
+      "treatment_cost": 2005.56,
+      "hospital_name": "Bramblemoor Community Clinic",
+      "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+      "provider_id": "PRV-916919",
+      "date_of_service": "2025-12-23",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-016",
+      "claim_number": "CLM-2026-87808",
+      "policy_number": "POL-2026-49355",
+      "patient_name": "Kim Simpson",
+      "diagnosis": "Asthma, uncomplicated (J45.909)",
+      "treatment_cost": 603.79,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-696320",
+      "date_of_service": "2026-01-28",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-017",
+      "claim_number": "CLM-2026-65248",
+      "policy_number": "POL-2026-12242",
+      "patient_name": "Jeffrey Robinson",
+      "diagnosis": "Migraine, not intractable (G43.909)",
+      "treatment_cost": 1093.59,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-580093",
+      "date_of_service": "2026-03-18",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-018",
+      "claim_number": "CLM-2026-57294",
+      "policy_number": "POL-2026-74850",
+      "patient_name": "Isaac Reed",
+      "diagnosis": "Essential (primary) hypertension (I10)",
+      "treatment_cost": 349.47,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-330042",
+      "date_of_service": "2025-07-20",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-019",
+      "claim_number": "CLM-2026-57810",
+      "policy_number": "POL-2026-48273",
+      "patient_name": "Natalie Smith",
+      "diagnosis": "Asthma, uncomplicated (J45.909)",
+      "treatment_cost": 203.79,
+      "hospital_name": "Bramblemoor Community Clinic",
+      "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+      "provider_id": "PRV-621219",
+      "date_of_service": "2025-12-25",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-020",
+      "claim_number": "CLM-2026-45486",
+      "policy_number": "POL-2026-56267",
+      "patient_name": "Tyler Fleming",
+      "diagnosis": "Sepsis, unspecified organism (A41.9)",
+      "treatment_cost": 52173.52,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-486510",
+      "date_of_service": "2026-02-07",
+      "date_of_admission": "2026-02-07",
+      "date_of_discharge": "2026-02-13",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-021",
+      "claim_number": "CLM-2026-55057",
+      "policy_number": "POL-2026-55257",
+      "patient_name": "Katherine Wells",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 10528.15,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-380548",
+      "date_of_service": "2026-04-19",
+      "date_of_admission": "2026-04-19",
+      "date_of_discharge": "2026-04-22",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-022",
+      "claim_number": "CLM-2026-34951",
+      "policy_number": "POL-2026-49464",
+      "patient_name": "Ryan Nelson",
+      "diagnosis": "Calculus of kidney (N20.0)",
+      "treatment_cost": 5013.38,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-504414",
+      "date_of_service": "2025-07-09",
+      "date_of_admission": "2025-07-09",
+      "date_of_discharge": "2025-07-10",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-023",
+      "claim_number": "CLM-2026-38113",
+      "policy_number": "POL-2026-26113",
+      "patient_name": "Michael Franco",
+      "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+      "treatment_cost": 464.77,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-312232",
+      "date_of_service": "2026-01-28",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-024",
+      "claim_number": "CLM-2026-61735",
+      "policy_number": "POL-2026-69332",
+      "patient_name": "Julie Rowland",
+      "diagnosis": "Sepsis, unspecified organism (A41.9)",
+      "treatment_cost": 83187.45,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-933881",
+      "date_of_service": "2025-07-08",
+      "date_of_admission": "2025-07-08",
+      "date_of_discharge": "2025-07-14",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-025",
+      "claim_number": "CLM-2026-38469",
+      "policy_number": "POL-2026-92310",
+      "patient_name": "Michael Snow",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 12670.29,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-248451",
+      "date_of_service": "2025-09-14",
+      "date_of_admission": "2025-09-14",
+      "date_of_discharge": "2025-09-19",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-026",
+      "claim_number": "CLM-2026-38550",
+      "policy_number": "POL-2026-63419",
+      "patient_name": "Ashley Taylor",
+      "diagnosis": "Acute cholecystitis (K81.0)",
+      "treatment_cost": 17912.32,
+      "hospital_name": "Bramblemoor Community Clinic",
+      "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+      "provider_id": "PRV-803150",
+      "date_of_service": "2026-05-25",
+      "date_of_admission": "2026-05-25",
+      "date_of_discharge": "2026-05-27",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-027",
+      "claim_number": "CLM-2026-44066",
+      "policy_number": "POL-2026-53374",
+      "patient_name": "Michael Rios",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 20743.78,
+      "hospital_name": "Fernhollow Valley Medical Center",
+      "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+      "provider_id": "PRV-853720",
+      "date_of_service": "2026-04-22",
+      "date_of_admission": "2026-04-22",
+      "date_of_discharge": "2026-04-25",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-028",
+      "claim_number": "CLM-2026-30213",
+      "policy_number": "POL-2026-52189",
+      "patient_name": "Randall Wiggins",
+      "diagnosis": "Cellulitis of right lower limb (L03.115)",
+      "treatment_cost": 742.76,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-231891",
+      "date_of_service": "2025-11-04",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-029",
+      "claim_number": "CLM-2026-87664",
+      "policy_number": "POL-2026-51675",
+      "patient_name": "Alvin Lee",
+      "diagnosis": "Cellulitis of right lower limb (L03.115)",
+      "treatment_cost": 1246.27,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-702450",
+      "date_of_service": "2026-01-08",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-030",
+      "claim_number": "CLM-2026-80690",
+      "policy_number": "POL-2026-58677",
+      "patient_name": "Kevin Barry",
+      "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+      "treatment_cost": 433.1,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-799348",
+      "date_of_service": "2025-09-15",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-031",
+      "claim_number": "CLM-2026-26763",
+      "policy_number": "POL-2026-17318",
+      "patient_name": "Brandon Weiss",
+      "diagnosis": "Calculus of kidney (N20.0)",
+      "treatment_cost": 14260.21,
+      "hospital_name": "Cinderholt Memorial Hospital",
+      "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+      "provider_id": "PRV-792493",
+      "date_of_service": "2025-09-01",
+      "date_of_admission": "2025-09-01",
+      "date_of_discharge": "2025-09-03",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-032",
+      "claim_number": "CLM-2026-54250",
+      "policy_number": "POL-2026-33795",
+      "patient_name": "Jeanette Wolfe",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 22549.21,
+      "hospital_name": "Larkspur Bay Health Center",
+      "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+      "provider_id": "PRV-559103",
+      "date_of_service": "2025-10-05",
+      "date_of_admission": "2025-10-05",
+      "date_of_discharge": "2025-10-06",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-033",
+      "claim_number": "CLM-2026-42052",
+      "policy_number": "POL-2026-35590",
+      "patient_name": "David Hall",
+      "diagnosis": "Fracture of right femoral neck (S72.001A)",
+      "treatment_cost": 29715.36,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-569025",
+      "date_of_service": "2026-03-13",
+      "date_of_admission": "2026-03-13",
+      "date_of_discharge": "2026-03-19",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-034",
+      "claim_number": "CLM-2026-25399",
+      "policy_number": "POL-2026-80905",
+      "patient_name": "Stephanie Carroll",
+      "diagnosis": "Acute cholecystitis (K81.0)",
+      "treatment_cost": 20150.88,
+      "hospital_name": "Fernhollow Valley Medical Center",
+      "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+      "provider_id": "PRV-272702",
+      "date_of_service": "2026-05-08",
+      "date_of_admission": "2026-05-08",
+      "date_of_discharge": "2026-05-10",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-035",
+      "claim_number": "CLM-2026-88081",
+      "policy_number": "POL-2026-89466",
+      "patient_name": "Tyler Mckinney",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 19041.63,
+      "hospital_name": "Cinderholt Memorial Hospital",
+      "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+      "provider_id": "PRV-892168",
+      "date_of_service": "2025-08-26",
+      "date_of_admission": "2025-08-26",
+      "date_of_discharge": "2025-08-28",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-036",
+      "claim_number": "CLM-2026-34545",
+      "policy_number": "POL-2026-17836",
+      "patient_name": "Alexis Ewing",
+      "diagnosis": "Acute cholecystitis (K81.0)",
+      "treatment_cost": 26282.26,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-535035",
+      "date_of_service": "2025-12-20",
+      "date_of_admission": "2025-12-20",
+      "date_of_discharge": "2025-12-22",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-037",
+      "claim_number": "CLM-2026-31467",
+      "policy_number": "POL-2026-49277",
+      "patient_name": "Ralph Tanner",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 17628.98,
+      "hospital_name": "Cinderholt Memorial Hospital",
+      "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+      "provider_id": "PRV-284178",
+      "date_of_service": "2025-09-21",
+      "date_of_admission": "2025-09-21",
+      "date_of_discharge": "2025-09-22",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-038",
+      "claim_number": "CLM-2026-54656",
+      "policy_number": "POL-2026-31986",
+      "patient_name": "Laura Wood",
+      "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+      "treatment_cost": 45472.34,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-833713",
+      "date_of_service": "2025-11-04",
+      "date_of_admission": "2025-11-04",
+      "date_of_discharge": "2025-11-08",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-039",
+      "claim_number": "CLM-2026-97013",
+      "policy_number": "POL-2026-78124",
+      "patient_name": "Julie Fisher",
+      "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+      "treatment_cost": 25026.1,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-970783",
+      "date_of_service": "2025-09-02",
+      "date_of_admission": "2025-09-02",
+      "date_of_discharge": "2025-09-08",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-040",
+      "claim_number": "CLM-2026-29433",
+      "policy_number": "POL-2026-35202",
+      "patient_name": "Jeff Green",
+      "diagnosis": "Low back pain (M54.50)",
+      "treatment_cost": 493.54,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-741304",
+      "date_of_service": "2026-02-01",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-041",
+      "claim_number": "CLM-2026-76790",
+      "policy_number": "POL-2026-96345",
+      "patient_name": "Donald Anderson",
+      "diagnosis": "Calculus of kidney (N20.0)",
+      "treatment_cost": 6493.23,
+      "hospital_name": "Larkspur Bay Health Center",
+      "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+      "provider_id": "PRV-825347",
+      "date_of_service": "2026-04-02",
+      "date_of_admission": "2026-04-02",
+      "date_of_discharge": "2026-04-04",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-042",
+      "claim_number": "CLM-2026-89606",
+      "policy_number": "POL-2026-77929",
+      "patient_name": "Renee Mcguire",
+      "diagnosis": "Fracture of right femoral neck (S72.001A)",
+      "treatment_cost": 53300.04,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-850982",
+      "date_of_service": "2026-01-13",
+      "date_of_admission": "2026-01-13",
+      "date_of_discharge": "2026-01-18",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-043",
+      "claim_number": "CLM-2026-77605",
+      "policy_number": "POL-2026-95372",
+      "patient_name": "Jeffery Sparks",
+      "diagnosis": "Low back pain (M54.50)",
+      "treatment_cost": 734.62,
+      "hospital_name": "Larkspur Bay Health Center",
+      "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+      "provider_id": "PRV-840806",
+      "date_of_service": "2025-10-07",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-044",
+      "claim_number": "CLM-2026-39928",
+      "policy_number": "POL-2026-68394",
+      "patient_name": "Rick Bryant",
+      "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+      "treatment_cost": 16489.71,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-896282",
+      "date_of_service": "2025-11-18",
+      "date_of_admission": "2025-11-18",
+      "date_of_discharge": "2025-11-23",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-045",
+      "claim_number": "CLM-2026-10120",
+      "policy_number": "POL-2026-83924",
+      "patient_name": "Michael Byrd",
+      "diagnosis": "Essential (primary) hypertension (I10)",
+      "treatment_cost": 467.05,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-368444",
+      "date_of_service": "2026-03-26",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-046",
+      "claim_number": "CLM-2026-84270",
+      "policy_number": "POL-2026-45546",
+      "patient_name": "Jacob Rivera",
+      "diagnosis": "Atrial fibrillation (I48.91)",
+      "treatment_cost": 13924.18,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-328397",
+      "date_of_service": "2026-04-18",
+      "date_of_admission": "2026-04-18",
+      "date_of_discharge": "2026-04-22",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-047",
+      "claim_number": "CLM-2026-67439",
+      "policy_number": "POL-2026-62048",
+      "patient_name": "Raymond Walker",
+      "diagnosis": "Asthma, uncomplicated (J45.909)",
+      "treatment_cost": 392.12,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-316374",
+      "date_of_service": "2025-12-04",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-048",
+      "claim_number": "CLM-2026-75601",
+      "policy_number": "POL-2026-70608",
+      "patient_name": "John Moore",
+      "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+      "treatment_cost": 13557.68,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-635373",
+      "date_of_service": "2025-11-06",
+      "date_of_admission": "2025-11-06",
+      "date_of_discharge": "2025-11-11",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-049",
+      "claim_number": "CLM-2026-34049",
+      "policy_number": "POL-2026-90933",
+      "patient_name": "James Dunlap",
+      "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+      "treatment_cost": 261.92,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-544793",
+      "date_of_service": "2026-02-04",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-050",
+      "claim_number": "CLM-2026-66177",
+      "policy_number": "POL-2026-79230",
+      "patient_name": "Jeffrey Brooks",
+      "diagnosis": "Asthma, uncomplicated (J45.909)",
+      "treatment_cost": 209.82,
+      "hospital_name": "Fernhollow Valley Medical Center",
+      "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+      "provider_id": "PRV-216848",
+      "date_of_service": "2025-09-23",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-051",
+      "claim_number": "CLM-2026-50857",
+      "policy_number": "POL-2026-13377",
+      "patient_name": "Louis Taylor",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 23757.42,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-909272",
+      "date_of_service": "2025-09-04",
+      "date_of_admission": "2025-09-04",
+      "date_of_discharge": "2025-09-06",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-052",
+      "claim_number": "CLM-2026-11478",
+      "policy_number": "POL-2026-82577",
+      "patient_name": "Bradley Melton",
+      "diagnosis": "Fracture of right femoral neck (S72.001A)",
+      "treatment_cost": 39406.17,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-216867",
+      "date_of_service": "2025-12-08",
+      "date_of_admission": "2025-12-08",
+      "date_of_discharge": "2025-12-16",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-053",
+      "claim_number": "CLM-2026-34027",
+      "policy_number": "POL-2026-76406",
+      "patient_name": "Amber Edwards",
+      "diagnosis": "Migraine, not intractable (G43.909)",
+      "treatment_cost": 438.88,
+      "hospital_name": "Larkspur Bay Health Center",
+      "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+      "provider_id": "PRV-853146",
+      "date_of_service": "2025-11-05",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-054",
+      "claim_number": "CLM-2026-15496",
+      "policy_number": "POL-2026-52974",
+      "patient_name": "Elizabeth Hughes",
+      "diagnosis": "Asthma, uncomplicated (J45.909)",
+      "treatment_cost": 296.93,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-185176",
+      "date_of_service": "2025-11-13",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-055",
+      "claim_number": "CLM-2026-55870",
+      "policy_number": "POL-2026-39187",
+      "patient_name": "David Anderson",
+      "diagnosis": "Acute upper respiratory infection (J06.9)",
+      "treatment_cost": 578.82,
+      "hospital_name": "Marigold Quarry Regional Hospital",
+      "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+      "provider_id": "PRV-126430",
+      "date_of_service": "2025-08-31",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-056",
+      "claim_number": "CLM-2026-54664",
+      "policy_number": "POL-2026-88329",
+      "patient_name": "Lindsey Howe",
+      "diagnosis": "Calculus of kidney (N20.0)",
+      "treatment_cost": 6749.62,
+      "hospital_name": "Wrenfield Crossing Hospital",
+      "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+      "provider_id": "PRV-477124",
+      "date_of_service": "2026-04-08",
+      "date_of_admission": "2026-04-08",
+      "date_of_discharge": "2026-04-11",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-057",
+      "claim_number": "CLM-2026-93924",
+      "policy_number": "POL-2026-35061",
+      "patient_name": "Donna Armstrong",
+      "diagnosis": "Acute upper respiratory infection (J06.9)",
+      "treatment_cost": 260.95,
+      "hospital_name": "Tamarack Hollow General Hospital",
+      "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+      "provider_id": "PRV-290928",
+      "date_of_service": "2025-12-02",
+      "date_of_admission": null,
+      "date_of_discharge": null,
+      "status": "pending"
+    },
+    {
+      "_id": "hist-058",
+      "claim_number": "CLM-2026-18718",
+      "policy_number": "POL-2026-11411",
+      "patient_name": "Anna Mason",
+      "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+      "treatment_cost": 7269.0,
+      "hospital_name": "Fernhollow Valley Medical Center",
+      "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+      "provider_id": "PRV-934565",
+      "date_of_service": "2025-12-09",
+      "date_of_admission": "2025-12-09",
+      "date_of_discharge": "2025-12-13",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-059",
+      "claim_number": "CLM-2026-41983",
+      "policy_number": "POL-2026-78537",
+      "patient_name": "Nicole Miller",
+      "diagnosis": "Calculus of kidney (N20.0)",
+      "treatment_cost": 13206.37,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-326647",
+      "date_of_service": "2026-01-09",
+      "date_of_admission": "2026-01-09",
+      "date_of_discharge": "2026-01-10",
+      "status": "pending"
+    },
+    {
+      "_id": "hist-060",
+      "claim_number": "CLM-2026-51204",
+      "policy_number": "POL-2026-45455",
+      "patient_name": "Hunter Young",
+      "diagnosis": "Acute appendicitis (K35.80)",
+      "treatment_cost": 26180.09,
+      "hospital_name": "Juniperwick Medical Center",
+      "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+      "provider_id": "PRV-239086",
+      "date_of_service": "2026-02-05",
+      "date_of_admission": "2026-02-05",
+      "date_of_discharge": "2026-02-08",
+      "status": "pending"
+    }
+  ],
+  "claims": [
+    {
+      "id": "rc-001",
+      "claim": {
+        "_id": "rc-001",
+        "claim_number": "CLM-2026-57080",
+        "policy_number": "POL-2026-32369",
+        "patient_name": "Shane Lyons",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": 25340.59,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-802164",
+        "date_of_service": "2026-01-21",
+        "date_of_admission": "2026-01-21",
+        "date_of_discharge": "2026-01-25",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-002",
+      "claim": {
+        "_id": "rc-002",
+        "claim_number": "CLM-2026-77447",
+        "policy_number": "POL-2026-55621",
+        "patient_name": "Victor Espinoza",
+        "diagnosis": null,
+        "treatment_cost": 14153.31,
+        "hospital_name": null,
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-647769",
+        "date_of_service": "2026-03-20",
+        "date_of_admission": "2026-03-20",
+        "date_of_discharge": "2026-03-25",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-003",
+      "claim": {
+        "_id": "rc-003",
+        "claim_number": "CLM-2026-18636",
+        "policy_number": null,
+        "patient_name": "James Long",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 274.48,
+        "hospital_name": null,
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-444363",
+        "date_of_service": "2026-02-02",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-004",
+      "claim": {
+        "_id": "rc-004",
+        "claim_number": "CLM-2026-71615",
+        "policy_number": "POL-2026-70818",
+        "patient_name": "Mark Khan",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 15375.36,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-343461",
+        "date_of_service": "2025-10-03",
+        "date_of_admission": "2025-10-03",
+        "date_of_discharge": "2025-10-07",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-005",
+      "claim": {
+        "_id": "rc-005",
+        "claim_number": "CLM-2026-17568",
+        "policy_number": "POL-2026-44321",
+        "patient_name": "Kenneth Lawson",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 11572.27,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-659303",
+        "date_of_service": "2026-02-11",
+        "date_of_admission": "2026-02-11",
+        "date_of_discharge": "2026-02-16",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-006",
+      "claim": {
+        "_id": "rc-006",
+        "claim_number": "CLM-2026-36050",
+        "policy_number": "POL-2026-48122",
+        "patient_name": "Eric Weaver",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 105362.17,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-501872",
+        "date_of_service": "2025-08-09",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-007",
+      "claim": {
+        "_id": "rc-007",
+        "claim_number": "CLM-2026-34197",
+        "policy_number": "POL-2026-21517",
+        "patient_name": "Matthew Allen",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 29323.66,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-965250",
+        "date_of_service": "2026-04-26",
+        "date_of_admission": "2026-04-26",
+        "date_of_discharge": "2026-04-28",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-008",
+      "claim": {
+        "_id": "rc-008",
+        "claim_number": "CLM-2026-27456",
+        "policy_number": "POL-2026-73278",
+        "patient_name": "Michael Nielsen",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 59254.43,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-834835",
+        "date_of_service": "2026-04-07",
+        "date_of_admission": "2026-04-07",
+        "date_of_discharge": "2026-04-14",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-009",
+      "claim": {
+        "_id": "rc-009",
+        "claim_number": null,
+        "policy_number": "POL-2026-14771",
+        "patient_name": "Lori Williams",
+        "diagnosis": null,
+        "treatment_cost": 25380.33,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-929501",
+        "date_of_service": "2025-08-04",
+        "date_of_admission": "2025-08-04",
+        "date_of_discharge": "2025-08-07",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-010",
+      "claim": {
+        "_id": "rc-010",
+        "claim_number": "CLM-2026-26342",
+        "policy_number": "POL-2026-52974",
+        "patient_name": "Elizabeth Hughes",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 124388.51,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-185176",
+        "date_of_service": "2025-11-13",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        },
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-011",
+      "claim": {
+        "_id": "rc-011",
+        "claim_number": "CLM-2026-40207",
+        "policy_number": "POL-2026-73138",
+        "patient_name": "Regina Wilcox",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 446.21,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-410445",
+        "date_of_service": "2026-03-29",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-012",
+      "claim": {
+        "_id": "rc-012",
+        "claim_number": "CLM-2026-29768",
+        "policy_number": "POL-2026-98783",
+        "patient_name": "Steven Moore",
+        "diagnosis": "Primary osteoarthritis, right knee (M17.11) - total knee replacement",
+        "treatment_cost": 60278.9,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-741726",
+        "date_of_service": "2026-04-13",
+        "date_of_admission": "2026-04-13",
+        "date_of_discharge": "2026-04-15",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-013",
+      "claim": {
+        "_id": "rc-013",
+        "claim_number": "CLM-2026-23702",
+        "policy_number": "POL-2026-33351",
+        "patient_name": "Brian Davis",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 17532.38,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-428066",
+        "date_of_service": "2025-10-04",
+        "date_of_admission": "2025-10-04",
+        "date_of_discharge": "2025-10-05",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-014",
+      "claim": {
+        "_id": "rc-014",
+        "claim_number": "CLM-2026-67138",
+        "policy_number": "POL-2026-65320",
+        "patient_name": "Robert Mccoy",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 953.62,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-928385",
+        "date_of_service": "2025-07-31",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-015",
+      "claim": {
+        "_id": "rc-015",
+        "claim_number": "CLM-2026-35533",
+        "policy_number": "POL-2026-76162",
+        "patient_name": "Robert Miller",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 841.79,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-707730",
+        "date_of_service": "2025-07-23",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-016",
+      "claim": {
+        "_id": "rc-016",
+        "claim_number": "CLM-2026-79773",
+        "policy_number": "POL-2026-89617",
+        "patient_name": "Kevin Weiss",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 924.26,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-594424",
+        "date_of_service": "2025-12-07",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-017",
+      "claim": {
+        "_id": "rc-017",
+        "claim_number": "CLM-2026-35154",
+        "policy_number": "POL-2026-83303",
+        "patient_name": "Stacy Ortiz",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 32817.13,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-282894",
+        "date_of_service": "2025-10-14",
+        "date_of_admission": "2025-10-14",
+        "date_of_discharge": "2026-03-19",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "stay_over_90_days"
+        }
+      ]
+    },
+    {
+      "id": "rc-018",
+      "claim": {
+        "_id": "rc-018",
+        "claim_number": "CLM-2026-99874",
+        "policy_number": "POL-2026-44990",
+        "patient_name": "Pamela Brady",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 320.98,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-972611",
+        "date_of_service": "2025-09-13",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-019",
+      "claim": {
+        "_id": "rc-019",
+        "claim_number": "CLM-2026-96968",
+        "policy_number": "POL-2026-85372",
+        "patient_name": "Jared Jackson",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 574.38,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-967418",
+        "date_of_service": "2025-12-31",
+        "date_of_admission": "2025-12-31",
+        "date_of_discharge": "2025-12-13",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-020",
+      "claim": {
+        "_id": "rc-020",
+        "claim_number": "CLM-2026-93555",
+        "policy_number": "POL-2026-20298",
+        "patient_name": "Isaiah Norris",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 15482.66,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-943993",
+        "date_of_service": "2025-12-09",
+        "date_of_admission": "2025-12-09",
+        "date_of_discharge": "2025-12-12",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-021",
+      "claim": {
+        "_id": "rc-021",
+        "claim_number": "CLM-2026-56440",
+        "policy_number": "POL-2026-58714",
+        "patient_name": "Robert Downs",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 476.83,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-711875",
+        "date_of_service": "2025-07-25",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-022",
+      "claim": {
+        "_id": "rc-022",
+        "claim_number": "CLM-2026-59527",
+        "policy_number": "POL-2026-29860",
+        "patient_name": "Daniel Martinez",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 410.67,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-142477",
+        "date_of_service": "2025-08-20",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-023",
+      "claim": {
+        "_id": "rc-023",
+        "claim_number": "CLM-2026-11602",
+        "policy_number": "POL-2026-51458",
+        "patient_name": "Taylor Meyer",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 423.17,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-515653",
+        "date_of_service": "2025-08-30",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-024",
+      "claim": {
+        "_id": "rc-024",
+        "claim_number": "CLM-2026-46903",
+        "policy_number": "POL-2026-87633",
+        "patient_name": "Richard Rubio",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 658.26,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-555769",
+        "date_of_service": "2026-04-24",
+        "date_of_admission": "2026-04-06",
+        "date_of_discharge": "2026-04-11",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-025",
+      "claim": {
+        "_id": "rc-025",
+        "claim_number": "CLM-2026-62415",
+        "policy_number": "POL-2026-26113",
+        "patient_name": "Michael Franco",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 442.67,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-312232",
+        "date_of_service": "2026-01-28",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-026",
+      "claim": {
+        "_id": "rc-026",
+        "claim_number": "CLM-2026-52235",
+        "policy_number": "POL-2026-60150",
+        "patient_name": "Robert Hernandez",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 16036.12,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-991923",
+        "date_of_service": "2025-10-16",
+        "date_of_admission": "2025-10-16",
+        "date_of_discharge": "2025-10-22",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-027",
+      "claim": {
+        "_id": "rc-027",
+        "claim_number": "CLM-2026-61955",
+        "policy_number": "POL-2026-30650",
+        "patient_name": "Joseph Carr",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 5905.57,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-843797",
+        "date_of_service": "2026-03-18",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-028",
+      "claim": {
+        "_id": "rc-028",
+        "claim_number": "CLM-2026-63734",
+        "policy_number": "POL-2026-76307",
+        "patient_name": "Lonnie Roberts",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 14424.0,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-333942",
+        "date_of_service": "2026-01-02",
+        "date_of_admission": "2026-01-02",
+        "date_of_discharge": "2026-01-05",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-029",
+      "claim": {
+        "_id": "rc-029",
+        "claim_number": "CLM-2026-43513",
+        "policy_number": "POL-2026-36695",
+        "patient_name": "Jennifer Hopkins",
+        "diagnosis": "Primary osteoarthritis, right knee (M17.11) - total knee replacement",
+        "treatment_cost": 67495.02,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-930199",
+        "date_of_service": "2025-08-23",
+        "date_of_admission": "2025-08-23",
+        "date_of_discharge": "2025-08-24",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-030",
+      "claim": {
+        "_id": "rc-030",
+        "claim_number": "CLM-2026-71427",
+        "policy_number": "POL-2026-31758",
+        "patient_name": "James Murray",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 2578.81,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-747311",
+        "date_of_service": "2025-07-27",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-031",
+      "claim": {
+        "_id": "rc-031",
+        "claim_number": "CLM-2026-45479",
+        "policy_number": "POL-2026-30564",
+        "patient_name": "Patrick Lawson",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 297255.29,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-556067",
+        "date_of_service": "2025-09-11",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "above_150k"
+        }
+      ]
+    },
+    {
+      "id": "rc-032",
+      "claim": {
+        "_id": "rc-032",
+        "claim_number": "CLM-2026-46229",
+        "policy_number": "POL-2026-92636",
+        "patient_name": null,
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": null,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-271899",
+        "date_of_service": "2025-08-28",
+        "date_of_admission": "2025-08-28",
+        "date_of_discharge": "2025-08-31",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-033",
+      "claim": {
+        "_id": "rc-033",
+        "claim_number": "CLM-2026-98997",
+        "policy_number": "POL-2026-57942",
+        "patient_name": "Tammy Craig",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 837.08,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-673317",
+        "date_of_service": "2025-09-10",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-034",
+      "claim": {
+        "_id": "rc-034",
+        "claim_number": "CLM-2026-21036",
+        "policy_number": "POL-2026-17410",
+        "patient_name": "Michael Lee",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 424.42,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-445109",
+        "date_of_service": "2025-07-01",
+        "date_of_admission": "2025-07-01",
+        "date_of_discharge": "2025-06-30",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-035",
+      "claim": {
+        "_id": "rc-035",
+        "claim_number": "CLM-2026-24692",
+        "policy_number": "POL-2026-55257",
+        "patient_name": "katherine wells  ",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": 10753.27,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-380548",
+        "date_of_service": "2026-04-19",
+        "date_of_admission": "2026-04-19",
+        "date_of_discharge": "2026-04-22",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_case_or_spacing"
+        }
+      ]
+    },
+    {
+      "id": "rc-036",
+      "claim": {
+        "_id": "rc-036",
+        "claim_number": "CLM-2026-47858",
+        "policy_number": "POL-2026-17263",
+        "patient_name": "Zachary Mccarthy",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 747.47,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-157839",
+        "date_of_service": "2026-03-26",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-037",
+      "claim": {
+        "_id": "rc-037",
+        "claim_number": "CLM-2026-97020",
+        "policy_number": "POL-2026-54589",
+        "patient_name": "John Daniel",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 16330.74,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-257420",
+        "date_of_service": "2026-02-05",
+        "date_of_admission": "2026-02-05",
+        "date_of_discharge": "2026-02-09",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-038",
+      "claim": {
+        "_id": "rc-038",
+        "claim_number": "CLM-2026-26672",
+        "policy_number": "POL-2026-98693",
+        "patient_name": "Jeremy Griffin",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 12631.29,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-913946",
+        "date_of_service": "2026-02-22",
+        "date_of_admission": "2026-02-22",
+        "date_of_discharge": "2026-07-25",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "stay_over_90_days"
+        }
+      ]
+    },
+    {
+      "id": "rc-039",
+      "claim": {
+        "_id": "rc-039",
+        "claim_number": "CLM-2026-67033",
+        "policy_number": "POL-2026-11167",
+        "patient_name": "Alicia Hanson",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 10550.64,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-239977",
+        "date_of_service": "2026-04-08",
+        "date_of_admission": "2026-04-08",
+        "date_of_discharge": "2026-04-09",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-040",
+      "claim": {
+        "_id": "rc-040",
+        "claim_number": null,
+        "policy_number": "POL-2026-84644",
+        "patient_name": null,
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-392421",
+        "date_of_service": "2026-01-22",
+        "date_of_admission": "2026-01-22",
+        "date_of_discharge": "2026-01-25",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "three_or_more_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-041",
+      "claim": {
+        "_id": "rc-041",
+        "claim_number": "CLM-2026-31860",
+        "policy_number": "POL-2026-92038",
+        "patient_name": "Aaron Chandler",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 618.32,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-511852",
+        "date_of_service": "2025-12-23",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-042",
+      "claim": {
+        "_id": "rc-042",
+        "claim_number": "CLM-2026-52940",
+        "policy_number": "POL-2026-59401",
+        "patient_name": "Janet Scott",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 2976.09,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-568790",
+        "date_of_service": "2026-01-15",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-043",
+      "claim": {
+        "_id": "rc-043",
+        "claim_number": "CLM-2026-18108",
+        "policy_number": "POL-2026-28536",
+        "patient_name": null,
+        "diagnosis": null,
+        "treatment_cost": 31440.96,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-652796",
+        "date_of_service": "2025-09-07",
+        "date_of_admission": "2025-09-07",
+        "date_of_discharge": "2025-09-13",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-044",
+      "claim": {
+        "_id": "rc-044",
+        "claim_number": "CLM-2026-68609",
+        "policy_number": "POL-2026-90467",
+        "patient_name": "Travis Cook",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 124293.25,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-685829",
+        "date_of_service": "2026-04-10",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-045",
+      "claim": {
+        "_id": "rc-045",
+        "claim_number": "CLM-2026-77223",
+        "policy_number": "POL-2026-57381",
+        "patient_name": "Stephanie Knight",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 38972.06,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-683975",
+        "date_of_service": "2025-08-08",
+        "date_of_admission": "2025-08-08",
+        "date_of_discharge": "2025-08-18",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-046",
+      "claim": {
+        "_id": "rc-046",
+        "claim_number": "CLM-2026-95876",
+        "policy_number": "POL-2026-55302",
+        "patient_name": "Mark Robinson",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 63651.64,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-454118",
+        "date_of_service": "2025-10-21",
+        "date_of_admission": "2025-10-21",
+        "date_of_discharge": "2026-02-05",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "stay_over_90_days"
+        }
+      ]
+    },
+    {
+      "id": "rc-047",
+      "claim": {
+        "_id": "rc-047",
+        "claim_number": "CLM-2026-97161",
+        "policy_number": "POL-2026-67021",
+        "patient_name": "Karen Torres",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 49037.19,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-476531",
+        "date_of_service": "2026-01-27",
+        "date_of_admission": "2026-01-19",
+        "date_of_discharge": "2026-01-23",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-048",
+      "claim": {
+        "_id": "rc-048",
+        "claim_number": "CLM-2026-37438",
+        "policy_number": "POL-2026-69161",
+        "patient_name": "Randy Thompson",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 54569.57,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-982083",
+        "date_of_service": "2025-08-07",
+        "date_of_admission": "2025-08-07",
+        "date_of_discharge": "2025-08-11",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-049",
+      "claim": {
+        "_id": "rc-049",
+        "claim_number": "CLM-2026-91884",
+        "policy_number": "POL-2026-45956",
+        "patient_name": "Jamie Walters",
+        "diagnosis": "Coronary artery disease (I25.10) - coronary artery bypass graft",
+        "treatment_cost": 103098.01,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-458628",
+        "date_of_service": "2025-07-17",
+        "date_of_admission": "2025-07-17",
+        "date_of_discharge": "2025-07-23",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-050",
+      "claim": {
+        "_id": "rc-050",
+        "claim_number": "CLM-2026-60833",
+        "policy_number": "POL-2026-35202",
+        "patient_name": "JEFF GREEN  ",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 495.33,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-741304",
+        "date_of_service": "2026-02-01",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_case_or_spacing"
+        }
+      ]
+    },
+    {
+      "id": "rc-051",
+      "claim": {
+        "_id": "rc-051",
+        "claim_number": "CLM-2026-60127",
+        "policy_number": "POL-2026-61428",
+        "patient_name": "Brandy Mason",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 579.97,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-541982",
+        "date_of_service": "2025-09-02",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-052",
+      "claim": {
+        "_id": "rc-052",
+        "claim_number": "CLM-2026-26479",
+        "policy_number": "POL-2026-17836",
+        "patient_name": "Alexis Ewnig",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 27561.94,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-535035",
+        "date_of_service": "2025-12-20",
+        "date_of_admission": "2025-12-20",
+        "date_of_discharge": "2025-12-22",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_typo"
+        }
+      ]
+    },
+    {
+      "id": "rc-053",
+      "claim": {
+        "_id": "rc-053",
+        "claim_number": "CLM-2026-84667",
+        "policy_number": "POL-2026-60954",
+        "patient_name": "Brian Simmons",
+        "diagnosis": "Primary osteoarthritis, left hip (M16.12) - elective total hip replacement",
+        "treatment_cost": 35658.7,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-884229",
+        "date_of_service": "2025-08-05",
+        "date_of_admission": "2025-08-05",
+        "date_of_discharge": "2025-08-08",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-054",
+      "claim": {
+        "_id": "rc-054",
+        "claim_number": "CLM-2026-53014",
+        "policy_number": "POL-2026-37565",
+        "patient_name": "Lauren Brown",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 51825.82,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": "2025-09-09",
+        "date_of_admission": "2025-09-09",
+        "date_of_discharge": "2025-09-13",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "optional_only"
+        }
+      ]
+    },
+    {
+      "id": "rc-055",
+      "claim": {
+        "_id": "rc-055",
+        "claim_number": "CLM-2026-72310",
+        "policy_number": "POL-2026-96614",
+        "patient_name": "Stephanie Martin",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 280328.9,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-869549",
+        "date_of_service": "2025-09-18",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "above_150k"
+        }
+      ]
+    },
+    {
+      "id": "rc-056",
+      "claim": {
+        "_id": "rc-056",
+        "claim_number": "CLM-2026-44461",
+        "policy_number": "POL-2026-13321",
+        "patient_name": "Madeline Wolfe",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 726.55,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-102781",
+        "date_of_service": "2025-11-12",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-057",
+      "claim": {
+        "_id": "rc-057",
+        "claim_number": "CLM-2026-17136",
+        "policy_number": "POL-2026-28061",
+        "patient_name": "Frank Galvan",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 478.18,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-817308",
+        "date_of_service": "2026-02-19",
+        "date_of_admission": "2026-02-08",
+        "date_of_discharge": "2026-02-13",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-058",
+      "claim": {
+        "_id": "rc-058",
+        "claim_number": "CLM-2026-36583",
+        "policy_number": "POL-2026-44986",
+        "patient_name": "Allen Rodriguez",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 6412.32,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-783662",
+        "date_of_service": "2025-10-30",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-059",
+      "claim": {
+        "_id": "rc-059",
+        "claim_number": "CLM-2026-32647",
+        "policy_number": "POL-2026-12758",
+        "patient_name": "Michelle Bowen",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 73200.05,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-661762",
+        "date_of_service": "2025-12-07",
+        "date_of_admission": "2025-12-07",
+        "date_of_discharge": "2025-12-17",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-060",
+      "claim": {
+        "_id": "rc-060",
+        "claim_number": "CLM-2026-44623",
+        "policy_number": "POL-2026-54832",
+        "patient_name": "David Collins",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 543.23,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-354903",
+        "date_of_service": "2026-02-14",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-061",
+      "claim": {
+        "_id": "rc-061",
+        "claim_number": "CLM-2026-23374",
+        "policy_number": "POL-2026-29647",
+        "patient_name": "Amber Ingram",
+        "diagnosis": "Primary osteoarthritis, right knee (M17.11) - total knee replacement",
+        "treatment_cost": 73039.95,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-316218",
+        "date_of_service": "2026-03-24",
+        "date_of_admission": "2026-03-24",
+        "date_of_discharge": "2026-03-27",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-062",
+      "claim": {
+        "_id": "rc-062",
+        "claim_number": "CLM-2026-82041",
+        "policy_number": "POL-2026-15129",
+        "patient_name": "Beth Smith",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 296.34,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-815602",
+        "date_of_service": "2025-07-15",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-063",
+      "claim": {
+        "_id": "rc-063",
+        "claim_number": "CLM-2026-92848",
+        "policy_number": "POL-2026-37397",
+        "patient_name": "Andrea Spencer",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 40606.57,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-926685",
+        "date_of_service": "2025-10-13",
+        "date_of_admission": "2025-10-13",
+        "date_of_discharge": "2025-10-19",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-064",
+      "claim": {
+        "_id": "rc-064",
+        "claim_number": "CLM-2026-66046",
+        "policy_number": "POL-2026-32887",
+        "patient_name": "Tara Barajas",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 5523.99,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-239093",
+        "date_of_service": "2025-07-20",
+        "date_of_admission": "2025-07-20",
+        "date_of_discharge": "2025-11-28",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "stay_over_90_days"
+        }
+      ]
+    },
+    {
+      "id": "rc-065",
+      "claim": {
+        "_id": "rc-065",
+        "claim_number": "CLM-2026-90724",
+        "policy_number": "POL-2026-97761",
+        "patient_name": "Kimberly Fitzgerald",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 374.71,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-166183",
+        "date_of_service": "2026-04-18",
+        "date_of_admission": "2026-03-31",
+        "date_of_discharge": "2026-04-05",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-066",
+      "claim": {
+        "_id": "rc-066",
+        "claim_number": "CLM-2026-59832",
+        "policy_number": "POL-2026-87687",
+        "patient_name": "Mike White",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 527.05,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-540166",
+        "date_of_service": "2026-02-19",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-067",
+      "claim": {
+        "_id": "rc-067",
+        "claim_number": "CLM-2026-30661",
+        "policy_number": "POL-2026-10270",
+        "patient_name": "William Garcia",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 923.51,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-975143",
+        "date_of_service": "2026-02-15",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-068",
+      "claim": {
+        "_id": "rc-068",
+        "claim_number": "CLM-2026-96554",
+        "policy_number": "POL-2026-43344",
+        "patient_name": "Karen Mendez",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 807.21,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-750713",
+        "date_of_service": "2025-11-11",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-069",
+      "claim": {
+        "_id": "rc-069",
+        "claim_number": "CLM-2026-83333",
+        "policy_number": "POL-2026-44908",
+        "patient_name": "Joseph Landry",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 13578.85,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-824510",
+        "date_of_service": "2025-10-29",
+        "date_of_admission": "2025-10-29",
+        "date_of_discharge": "2025-11-01",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-070",
+      "claim": {
+        "_id": "rc-070",
+        "claim_number": "CLM-2026-52893",
+        "policy_number": "POL-2026-38656",
+        "patient_name": "Mark Brown",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 268.34,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-740749",
+        "date_of_service": "2025-11-05",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-071",
+      "claim": {
+        "_id": "rc-071",
+        "claim_number": "CLM-2026-99149",
+        "policy_number": "POL-2026-76036",
+        "patient_name": "Crystal Bright",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 65020.7,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-437872",
+        "date_of_service": "2025-12-09",
+        "date_of_admission": "2025-12-09",
+        "date_of_discharge": "2025-12-16",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-072",
+      "claim": {
+        "_id": "rc-072",
+        "claim_number": "CLM-2026-66413",
+        "policy_number": "POL-2026-91542",
+        "patient_name": null,
+        "diagnosis": null,
+        "treatment_cost": 327.46,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-384339",
+        "date_of_service": "2026-02-08",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-073",
+      "claim": {
+        "_id": "rc-073",
+        "claim_number": "CLM-2026-42541",
+        "policy_number": "POL-2026-67768",
+        "patient_name": "David Walker",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 67788.92,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": "2025-07-06",
+        "date_of_admission": "2025-07-06",
+        "date_of_discharge": "2025-07-09",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "optional_only"
+        }
+      ]
+    },
+    {
+      "id": "rc-074",
+      "claim": {
+        "_id": "rc-074",
+        "claim_number": "CLM-2026-47088",
+        "policy_number": "POL-2026-43840",
+        "patient_name": "Carolyn Myers",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 44822.9,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-824380",
+        "date_of_service": "2026-02-06",
+        "date_of_admission": "2026-02-06",
+        "date_of_discharge": "2026-02-13",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-075",
+      "claim": {
+        "_id": "rc-075",
+        "claim_number": "CLM-2026-99495",
+        "policy_number": "POL-2026-82577",
+        "patient_name": "Bradley Melotn",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 40108.9,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-216867",
+        "date_of_service": "2025-12-08",
+        "date_of_admission": "2025-12-08",
+        "date_of_discharge": "2025-12-16",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_typo"
+        }
+      ]
+    },
+    {
+      "id": "rc-076",
+      "claim": {
+        "_id": "rc-076",
+        "claim_number": "CLM-2026-50321",
+        "policy_number": "POL-2026-45382",
+        "patient_name": "Carla Reynolds",
+        "diagnosis": "Primary osteoarthritis, right knee (M17.11) - total knee replacement",
+        "treatment_cost": 73933.69,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-788736",
+        "date_of_service": "2025-10-11",
+        "date_of_admission": "2025-10-11",
+        "date_of_discharge": "2025-10-12",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-077",
+      "claim": {
+        "_id": "rc-077",
+        "claim_number": "CLM-2026-71463",
+        "policy_number": "POL-2026-59897",
+        "patient_name": "Angel Jones",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 1314.5,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-807374",
+        "date_of_service": "2026-02-21",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-078",
+      "claim": {
+        "_id": "rc-078",
+        "claim_number": "CLM-2026-52670",
+        "policy_number": "POL-2026-73810",
+        "patient_name": "Kevin Meza",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 59891.16,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-960551",
+        "date_of_service": "2026-05-06",
+        "date_of_admission": "2026-04-06",
+        "date_of_discharge": "2026-04-11",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-079",
+      "claim": {
+        "_id": "rc-079",
+        "claim_number": "CLM-2026-96815",
+        "policy_number": "POL-2026-63419",
+        "patient_name": "Ashley Taylor",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 17463.76,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-803150",
+        "date_of_service": "2026-05-25",
+        "date_of_admission": "2026-05-25",
+        "date_of_discharge": "2026-05-24",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        },
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-080",
+      "claim": {
+        "_id": "rc-080",
+        "claim_number": "CLM-2026-50294",
+        "policy_number": "POL-2026-18513",
+        "patient_name": "Ian Livingston",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 289956.18,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-781253",
+        "date_of_service": "2025-07-19",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "above_150k"
+        }
+      ]
+    },
+    {
+      "id": "rc-081",
+      "claim": {
+        "_id": "rc-081",
+        "claim_number": "CLM-2026-90619",
+        "policy_number": "POL-2026-53516",
+        "patient_name": "Leslie Dennis",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 1807.48,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": "2026-02-14",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "optional_only"
+        }
+      ]
+    },
+    {
+      "id": "rc-082",
+      "claim": {
+        "_id": "rc-082",
+        "claim_number": "CLM-2026-10582",
+        "policy_number": "POL-2026-52737",
+        "patient_name": null,
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-499718",
+        "date_of_service": "2025-08-16",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "three_or_more_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-083",
+      "claim": {
+        "_id": "rc-083",
+        "claim_number": "CLM-2026-48317",
+        "policy_number": "POL-2026-80360",
+        "patient_name": "Nicholas Hopkins",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 77764.66,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-199594",
+        "date_of_service": "2026-02-12",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-084",
+      "claim": {
+        "_id": "rc-084",
+        "claim_number": "CLM-2026-39936",
+        "policy_number": "POL-2026-12242",
+        "patient_name": "Jeffrey Robinson",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 1052.58,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-580093",
+        "date_of_service": "2026-03-18",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-085",
+      "claim": {
+        "_id": "rc-085",
+        "claim_number": "CLM-2026-19314",
+        "policy_number": "POL-2026-89265",
+        "patient_name": "Lori Robinson",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 500.52,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-165462",
+        "date_of_service": "2025-09-14",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-086",
+      "claim": {
+        "_id": "rc-086",
+        "claim_number": "CLM-2026-31697",
+        "policy_number": "POL-2026-16638",
+        "patient_name": "Brianna Patterson",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 532.35,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-326249",
+        "date_of_service": "2025-10-16",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-087",
+      "claim": {
+        "_id": "rc-087",
+        "claim_number": "CLM-2026-41846",
+        "policy_number": "POL-2026-79738",
+        "patient_name": "Leonard Robbins",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 11625.41,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-155557",
+        "date_of_service": "2025-07-04",
+        "date_of_admission": "2025-07-04",
+        "date_of_discharge": "2025-07-07",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-088",
+      "claim": {
+        "_id": "rc-088",
+        "claim_number": "CLM-2026-73490",
+        "policy_number": "POL-2026-76244",
+        "patient_name": "Jessica Nelson",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 190.18,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-208597",
+        "date_of_service": "2026-03-07",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-089",
+      "claim": {
+        "_id": "rc-089",
+        "claim_number": "CLM-2026-93441",
+        "policy_number": "POL-2026-16162",
+        "patient_name": "Calvin Pratt",
+        "diagnosis": "Coronary artery disease (I25.10) - coronary artery bypass graft",
+        "treatment_cost": 123946.12,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-272164",
+        "date_of_service": "2025-08-28",
+        "date_of_admission": "2025-08-28",
+        "date_of_discharge": "2025-09-04",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-090",
+      "claim": {
+        "_id": "rc-090",
+        "claim_number": "CLM-2026-17255",
+        "policy_number": "POL-2026-70257",
+        "patient_name": "Amanda Banks",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 9416.94,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-826089",
+        "date_of_service": "2026-04-01",
+        "date_of_admission": "2026-04-01",
+        "date_of_discharge": "2026-04-06",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-091",
+      "claim": {
+        "_id": "rc-091",
+        "claim_number": null,
+        "policy_number": "POL-2026-53774",
+        "patient_name": "Anna Peterson",
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-702889",
+        "date_of_service": "2026-01-20",
+        "date_of_admission": "2026-01-20",
+        "date_of_discharge": "2026-01-23",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "three_or_more_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-092",
+      "claim": {
+        "_id": "rc-092",
+        "claim_number": "CLM-2026-83535",
+        "policy_number": "POL-2026-25432",
+        "patient_name": "Mark Meyer",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 9805.58,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-532201",
+        "date_of_service": "2025-07-30",
+        "date_of_admission": "2025-07-30",
+        "date_of_discharge": "2025-07-31",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-093",
+      "claim": {
+        "_id": "rc-093",
+        "claim_number": "CLM-2026-95450",
+        "policy_number": "POL-2026-99162",
+        "patient_name": "Donald Wilson",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 577.76,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-692558",
+        "date_of_service": "2026-04-11",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-094",
+      "claim": {
+        "_id": "rc-094",
+        "claim_number": "CLM-2026-65776",
+        "policy_number": "POL-2026-44233",
+        "patient_name": "Maria Walker",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 243.06,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-598767",
+        "date_of_service": "2026-05-17",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-095",
+      "claim": {
+        "_id": "rc-095",
+        "claim_number": "CLM-2026-80263",
+        "policy_number": "POL-2026-28319",
+        "patient_name": "Michael Le",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 882.61,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-303092",
+        "date_of_service": "2025-08-08",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-096",
+      "claim": {
+        "_id": "rc-096",
+        "claim_number": "CLM-2026-40736",
+        "policy_number": "POL-2026-18117",
+        "patient_name": "Samuel Wells",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 630.53,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-776727",
+        "date_of_service": "2026-05-24",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-097",
+      "claim": {
+        "_id": "rc-097",
+        "claim_number": "CLM-2026-97639",
+        "policy_number": "POL-2026-44157",
+        "patient_name": "Katherine Cole",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 72456.84,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-184502",
+        "date_of_service": "2026-04-22",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-098",
+      "claim": {
+        "_id": "rc-098",
+        "claim_number": "CLM-2026-15082",
+        "policy_number": "POL-2026-16529",
+        "patient_name": "Shaun Baker",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 27902.09,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-359134",
+        "date_of_service": "2025-08-05",
+        "date_of_admission": "2025-08-05",
+        "date_of_discharge": "2025-08-07",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-099",
+      "claim": {
+        "_id": "rc-099",
+        "claim_number": "CLM-2026-62494",
+        "policy_number": "POL-2026-67391",
+        "patient_name": "Michael Kidd",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 50195.79,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-461837",
+        "date_of_service": "2025-12-29",
+        "date_of_admission": "2025-12-29",
+        "date_of_discharge": "2026-01-04",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-100",
+      "claim": {
+        "_id": "rc-100",
+        "claim_number": "CLM-2026-46613",
+        "policy_number": "POL-2026-62451",
+        "patient_name": "Cheryl Cordova",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 797.57,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-168037",
+        "date_of_service": "2025-12-15",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-101",
+      "claim": {
+        "_id": "rc-101",
+        "claim_number": "CLM-2026-88416",
+        "policy_number": "POL-2026-81604",
+        "patient_name": "Christopher Lewis",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 492.46,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-717768",
+        "date_of_service": "2026-03-31",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-102",
+      "claim": {
+        "_id": "rc-102",
+        "claim_number": "CLM-2026-18272",
+        "policy_number": "POL-2026-65794",
+        "patient_name": "Paul Warren",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 290.6,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-960349",
+        "date_of_service": "2025-07-27",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-103",
+      "claim": {
+        "_id": "rc-103",
+        "claim_number": "CLM-2026-18844",
+        "policy_number": "POL-2026-44851",
+        "patient_name": "Lauren Mcdaniel",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 12127.06,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-626563",
+        "date_of_service": "2026-03-22",
+        "date_of_admission": "2026-03-22",
+        "date_of_discharge": "2026-03-26",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-104",
+      "claim": {
+        "_id": "rc-104",
+        "claim_number": "CLM-2026-35276",
+        "policy_number": "POL-2026-75125",
+        "patient_name": "Brandon Perez",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 551.87,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-807988",
+        "date_of_service": "2025-08-26",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-105",
+      "claim": {
+        "_id": "rc-105",
+        "claim_number": "CLM-2026-11428",
+        "policy_number": "POL-2026-12242",
+        "patient_name": "Jeffrey Robinson",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 1125.25,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-580093",
+        "date_of_service": "2026-03-18",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-106",
+      "claim": {
+        "_id": "rc-106",
+        "claim_number": "CLM-2026-90004",
+        "policy_number": "POL-2026-89363",
+        "patient_name": "Kristen Tate",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": 13384.97,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-588574",
+        "date_of_service": "2026-03-25",
+        "date_of_admission": "2026-03-25",
+        "date_of_discharge": "2026-03-28",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-107",
+      "claim": {
+        "_id": "rc-107",
+        "claim_number": "CLM-2026-25568",
+        "policy_number": "POL-2026-68690",
+        "patient_name": "Michael Johnson",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 2186.43,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-476634",
+        "date_of_service": "2025-12-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-108",
+      "claim": {
+        "_id": "rc-108",
+        "claim_number": "CLM-2026-41956",
+        "policy_number": "POL-2026-15808",
+        "patient_name": "Melissa Chapman",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 15104.84,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-205191",
+        "date_of_service": "2026-05-26",
+        "date_of_admission": "2026-05-26",
+        "date_of_discharge": "2026-05-28",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-109",
+      "claim": {
+        "_id": "rc-109",
+        "claim_number": "CLM-2026-96850",
+        "policy_number": null,
+        "patient_name": null,
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 671.78,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-747098",
+        "date_of_service": "2026-04-06",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-110",
+      "claim": {
+        "_id": "rc-110",
+        "claim_number": "CLM-2026-22178",
+        "policy_number": "POL-2026-61957",
+        "patient_name": "Michael Ryan",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 10257.32,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-121985",
+        "date_of_service": "2026-03-21",
+        "date_of_admission": "2026-03-21",
+        "date_of_discharge": "2026-03-26",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-111",
+      "claim": {
+        "_id": "rc-111",
+        "claim_number": "CLM-2026-47830",
+        "policy_number": "POL-2026-81454",
+        "patient_name": "Rachel Watkins",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 283.72,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-736743",
+        "date_of_service": "2025-09-18",
+        "date_of_admission": "2025-09-18",
+        "date_of_discharge": "2025-09-01",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        },
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-112",
+      "claim": {
+        "_id": "rc-112",
+        "claim_number": "CLM-2026-42841",
+        "policy_number": "POL-2026-93902",
+        "patient_name": "Gregory Wright",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 12881.47,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-318795",
+        "date_of_service": "2025-11-06",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-113",
+      "claim": {
+        "_id": "rc-113",
+        "claim_number": "CLM-2026-48233",
+        "policy_number": "POL-2026-51381",
+        "patient_name": "Jonathan Mendoza",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 25704.81,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-551858",
+        "date_of_service": "2025-07-26",
+        "date_of_admission": "2025-07-16",
+        "date_of_discharge": "2025-07-18",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-114",
+      "claim": {
+        "_id": "rc-114",
+        "claim_number": "CLM-2026-74024",
+        "policy_number": "POL-2026-91092",
+        "patient_name": "Lauren Olsen",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 53974.4,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-555275",
+        "date_of_service": "2025-10-23",
+        "date_of_admission": "2025-10-23",
+        "date_of_discharge": "2025-10-26",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-115",
+      "claim": {
+        "_id": "rc-115",
+        "claim_number": "CLM-2026-58295",
+        "policy_number": "POL-2026-70608",
+        "patient_name": "JOHN MOORE  ",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 14024.89,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-635373",
+        "date_of_service": "2025-11-06",
+        "date_of_admission": "2025-11-06",
+        "date_of_discharge": "2025-11-11",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_case_or_spacing"
+        }
+      ]
+    },
+    {
+      "id": "rc-116",
+      "claim": {
+        "_id": "rc-116",
+        "claim_number": "CLM-2026-43516",
+        "policy_number": "POL-2026-89364",
+        "patient_name": "Joseph Walker",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 642.59,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-887898",
+        "date_of_service": "2025-07-03",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-117",
+      "claim": {
+        "_id": "rc-117",
+        "claim_number": "CLM-2026-59319",
+        "policy_number": "POL-2026-66537",
+        "patient_name": "John White",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 5197.61,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-289551",
+        "date_of_service": "2026-03-29",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-118",
+      "claim": {
+        "_id": "rc-118",
+        "claim_number": "CLM-2026-24357",
+        "policy_number": "POL-2026-20783",
+        "patient_name": "Mary Gray",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 673.52,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-743247",
+        "date_of_service": "2026-05-24",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-119",
+      "claim": {
+        "_id": "rc-119",
+        "claim_number": "CLM-2026-99220",
+        "policy_number": "POL-2026-54892",
+        "patient_name": "Alexander Phillips",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 206634.93,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-756618",
+        "date_of_service": "2025-10-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "above_150k"
+        }
+      ]
+    },
+    {
+      "id": "rc-120",
+      "claim": {
+        "_id": "rc-120",
+        "claim_number": "CLM-2026-96450",
+        "policy_number": "POL-2026-76999",
+        "patient_name": "Jennifer Robinsno",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 950.05,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-499355",
+        "date_of_service": "2025-07-26",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_typo"
+        }
+      ]
+    },
+    {
+      "id": "rc-121",
+      "claim": {
+        "_id": "rc-121",
+        "claim_number": "CLM-2026-16935",
+        "policy_number": "POL-2026-16884",
+        "patient_name": null,
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-624401",
+        "date_of_service": "2026-02-22",
+        "date_of_admission": "2026-02-22",
+        "date_of_discharge": "2026-02-25",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "three_or_more_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-122",
+      "claim": {
+        "_id": "rc-122",
+        "claim_number": "CLM-2026-19288",
+        "policy_number": "POL-2026-51204",
+        "patient_name": "Danielle Greer",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 17841.51,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-335567",
+        "date_of_service": "2025-07-11",
+        "date_of_admission": "2025-07-11",
+        "date_of_discharge": "2025-07-15",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-123",
+      "claim": {
+        "_id": "rc-123",
+        "claim_number": "CLM-2026-67826",
+        "policy_number": "POL-2026-31749",
+        "patient_name": "Elizabeth Ray",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 9883.73,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-829915",
+        "date_of_service": "2025-09-18",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-124",
+      "claim": {
+        "_id": "rc-124",
+        "claim_number": "CLM-2026-35729",
+        "policy_number": "POL-2026-43122",
+        "patient_name": null,
+        "diagnosis": null,
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-694568",
+        "date_of_service": "2025-07-10",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "three_or_more_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-125",
+      "claim": {
+        "_id": "rc-125",
+        "claim_number": "CLM-2026-60520",
+        "policy_number": "POL-2026-47139",
+        "patient_name": "Jessica Cooper",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 472.32,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-901898",
+        "date_of_service": "2026-02-15",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-126",
+      "claim": {
+        "_id": "rc-126",
+        "claim_number": "CLM-2026-12480",
+        "policy_number": "POL-2026-49141",
+        "patient_name": "Sheila Green",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 12422.72,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-524354",
+        "date_of_service": "2026-04-18",
+        "date_of_admission": "2026-04-18",
+        "date_of_discharge": "2026-04-20",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-127",
+      "claim": {
+        "_id": "rc-127",
+        "claim_number": "CLM-2026-43250",
+        "policy_number": "POL-2026-92125",
+        "patient_name": "Cynthia Austin",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 12309.08,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-152787",
+        "date_of_service": "2025-10-27",
+        "date_of_admission": "2025-10-27",
+        "date_of_discharge": "2025-10-31",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-128",
+      "claim": {
+        "_id": "rc-128",
+        "claim_number": "CLM-2026-72425",
+        "policy_number": "POL-2026-49355",
+        "patient_name": "kim simpson  ",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 633.63,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-696320",
+        "date_of_service": "2026-01-28",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_case_or_spacing"
+        }
+      ]
+    },
+    {
+      "id": "rc-129",
+      "claim": {
+        "_id": "rc-129",
+        "claim_number": "CLM-2026-96631",
+        "policy_number": "POL-2026-52189",
+        "patient_name": "RANDALL WIGGINS  ",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 708.65,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-231891",
+        "date_of_service": "2025-11-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_case_or_spacing"
+        }
+      ]
+    },
+    {
+      "id": "rc-130",
+      "claim": {
+        "_id": "rc-130",
+        "claim_number": "CLM-2026-66852",
+        "policy_number": "POL-2026-74219",
+        "patient_name": "Christopher Nelson",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 522.02,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-357024",
+        "date_of_service": "2026-04-19",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-131",
+      "claim": {
+        "_id": "rc-131",
+        "claim_number": "CLM-2026-62782",
+        "policy_number": "POL-2026-15282",
+        "patient_name": "Nicole Simpson",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 14046.8,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": null,
+        "provider_id": null,
+        "date_of_service": "2026-05-11",
+        "date_of_admission": "2026-05-11",
+        "date_of_discharge": "2026-05-14",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "optional_only"
+        }
+      ]
+    },
+    {
+      "id": "rc-132",
+      "claim": {
+        "_id": "rc-132",
+        "claim_number": "CLM-2026-14991",
+        "policy_number": "POL-2026-43988",
+        "patient_name": "Robert Richardson",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 180713.25,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-896947",
+        "date_of_service": "2026-01-07",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "above_150k"
+        }
+      ]
+    },
+    {
+      "id": "rc-133",
+      "claim": {
+        "_id": "rc-133",
+        "claim_number": "CLM-2026-82262",
+        "policy_number": "POL-2026-32749",
+        "patient_name": "John Rodriguez",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 53169.47,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-318895",
+        "date_of_service": "2026-03-19",
+        "date_of_admission": "2026-03-19",
+        "date_of_discharge": "2026-03-23",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-134",
+      "claim": {
+        "_id": "rc-134",
+        "claim_number": null,
+        "policy_number": "POL-2026-76685",
+        "patient_name": "Nicholas Cruz",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 39850.69,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-602594",
+        "date_of_service": "2025-08-20",
+        "date_of_admission": "2025-08-20",
+        "date_of_discharge": "2025-08-28",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-135",
+      "claim": {
+        "_id": "rc-135",
+        "claim_number": "CLM-2026-27178",
+        "policy_number": "POL-2026-15902",
+        "patient_name": "Michael Curry",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 8492.41,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-560501",
+        "date_of_service": "2025-08-23",
+        "date_of_admission": "2025-08-23",
+        "date_of_discharge": "2025-08-04",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-136",
+      "claim": {
+        "_id": "rc-136",
+        "claim_number": "CLM-2026-70668",
+        "policy_number": "POL-2026-74549",
+        "patient_name": "Anthony Tanner",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 476.37,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-455381",
+        "date_of_service": "2025-12-08",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-137",
+      "claim": {
+        "_id": "rc-137",
+        "claim_number": "CLM-2026-48808",
+        "policy_number": "POL-2026-21334",
+        "patient_name": "Natasha Stevens",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 36216.09,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-967493",
+        "date_of_service": "2026-03-08",
+        "date_of_admission": "2026-03-08",
+        "date_of_discharge": "2026-02-28",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-138",
+      "claim": {
+        "_id": "rc-138",
+        "claim_number": "CLM-2026-43803",
+        "policy_number": "POL-2026-75879",
+        "patient_name": "Jason Smith",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 64206.6,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-613096",
+        "date_of_service": "2025-07-19",
+        "date_of_admission": "2025-07-19",
+        "date_of_discharge": "2025-07-29",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-139",
+      "claim": {
+        "_id": "rc-139",
+        "claim_number": "CLM-2026-54303",
+        "policy_number": "POL-2026-52293",
+        "patient_name": "Stephen Brown",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 16517.27,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-647708",
+        "date_of_service": "2026-04-03",
+        "date_of_admission": "2026-04-03",
+        "date_of_discharge": "2026-08-30",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "stay_over_90_days"
+        }
+      ]
+    },
+    {
+      "id": "rc-140",
+      "claim": {
+        "_id": "rc-140",
+        "claim_number": "CLM-2026-20555",
+        "policy_number": "POL-2026-24886",
+        "patient_name": "Adam Collins",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 1253.86,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-902926",
+        "date_of_service": "2025-08-01",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-141",
+      "claim": {
+        "_id": "rc-141",
+        "claim_number": "CLM-2026-56078",
+        "policy_number": "POL-2026-36062",
+        "patient_name": "Jason Hicks",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 3186.34,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-695548",
+        "date_of_service": "2026-01-27",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-142",
+      "claim": {
+        "_id": "rc-142",
+        "claim_number": "CLM-2026-96711",
+        "policy_number": "POL-2026-81454",
+        "patient_name": "Rachel Watikns",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 285.44,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-736743",
+        "date_of_service": "2025-09-18",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_typo"
+        }
+      ]
+    },
+    {
+      "id": "rc-143",
+      "claim": {
+        "_id": "rc-143",
+        "claim_number": null,
+        "policy_number": "POL-2026-85509",
+        "patient_name": null,
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": null,
+        "hospital_name": null,
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-341349",
+        "date_of_service": "2025-07-20",
+        "date_of_admission": "2025-07-20",
+        "date_of_discharge": "2025-07-24",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "three_or_more_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-144",
+      "claim": {
+        "_id": "rc-144",
+        "claim_number": "CLM-2026-92770",
+        "policy_number": "POL-2026-17504",
+        "patient_name": "Matthew Hernandez",
+        "diagnosis": "Acute cholecystitis (K81.0)",
+        "treatment_cost": 14098.14,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-931889",
+        "date_of_service": "2026-01-16",
+        "date_of_admission": "2026-01-16",
+        "date_of_discharge": "2026-01-20",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-145",
+      "claim": {
+        "_id": "rc-145",
+        "claim_number": "CLM-2026-16246",
+        "policy_number": "POL-2026-62048",
+        "patient_name": "Raymond Walker",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 400.89,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-316374",
+        "date_of_service": "2025-12-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-146",
+      "claim": {
+        "_id": "rc-146",
+        "claim_number": "CLM-2026-85145",
+        "policy_number": "POL-2026-55459",
+        "patient_name": "Evan Serrano",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 623.4,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-992430",
+        "date_of_service": "2026-05-25",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-147",
+      "claim": {
+        "_id": "rc-147",
+        "claim_number": "CLM-2026-27869",
+        "policy_number": "POL-2026-55513",
+        "patient_name": "Lee Mercado",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 277.02,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-137488",
+        "date_of_service": "2026-01-15",
+        "date_of_admission": "2026-01-15",
+        "date_of_discharge": "2026-01-14",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-148",
+      "claim": {
+        "_id": "rc-148",
+        "claim_number": "CLM-2026-61852",
+        "policy_number": "POL-2026-73200",
+        "patient_name": "James Kirby",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 17457.1,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-444198",
+        "date_of_service": "2026-01-19",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-149",
+      "claim": {
+        "_id": "rc-149",
+        "claim_number": "CLM-2026-53894",
+        "policy_number": "POL-2026-96951",
+        "patient_name": "Wesley Smith",
+        "diagnosis": "Low back pain (M54.50)",
+        "treatment_cost": 594.5,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-172209",
+        "date_of_service": "2026-01-28",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-150",
+      "claim": {
+        "_id": "rc-150",
+        "claim_number": "CLM-2026-51365",
+        "policy_number": "POL-2026-95525",
+        "patient_name": "Stephanie Gonzalez",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 127196.01,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-749887",
+        "date_of_service": "2025-12-14",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-151",
+      "claim": {
+        "_id": "rc-151",
+        "claim_number": "CLM-2026-12792",
+        "policy_number": "POL-2026-90474",
+        "patient_name": "Lori Nunez",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 809.28,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-578068",
+        "date_of_service": "2026-04-12",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-152",
+      "claim": {
+        "_id": "rc-152",
+        "claim_number": "CLM-2026-43039",
+        "policy_number": "POL-2026-13850",
+        "patient_name": "Stephen Harrell",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": 14386.01,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-816654",
+        "date_of_service": "2026-04-14",
+        "date_of_admission": "2026-04-14",
+        "date_of_discharge": "2026-04-19",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-153",
+      "claim": {
+        "_id": "rc-153",
+        "claim_number": "CLM-2026-19434",
+        "policy_number": "POL-2026-98703",
+        "patient_name": "Carl Williams",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 216.45,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-384753",
+        "date_of_service": "2025-10-01",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-154",
+      "claim": {
+        "_id": "rc-154",
+        "claim_number": "CLM-2026-12648",
+        "policy_number": "POL-2026-52189",
+        "patient_name": "Randall Wiggins",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 106594.94,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-231891",
+        "date_of_service": "2025-11-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        },
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-155",
+      "claim": {
+        "_id": "rc-155",
+        "claim_number": "CLM-2026-45923",
+        "policy_number": "POL-2026-85679",
+        "patient_name": "Stephen Poole",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 21274.23,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-733982",
+        "date_of_service": "2025-08-09",
+        "date_of_admission": "2025-08-09",
+        "date_of_discharge": "2025-08-10",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-156",
+      "claim": {
+        "_id": "rc-156",
+        "claim_number": "CLM-2026-86475",
+        "policy_number": "POL-2026-73608",
+        "patient_name": "Danny Melton",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 8364.96,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-784160",
+        "date_of_service": "2025-12-31",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-157",
+      "claim": {
+        "_id": "rc-157",
+        "claim_number": "CLM-2026-81983",
+        "policy_number": "POL-2026-29238",
+        "patient_name": "Thomas Horn",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 5948.49,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-603117",
+        "date_of_service": "2026-03-15",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-158",
+      "claim": {
+        "_id": "rc-158",
+        "claim_number": "CLM-2026-80915",
+        "policy_number": "POL-2026-53566",
+        "patient_name": "Andrea Nelson",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 489.01,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-333933",
+        "date_of_service": "2026-02-26",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-159",
+      "claim": {
+        "_id": "rc-159",
+        "claim_number": "CLM-2026-61192",
+        "policy_number": "POL-2026-76814",
+        "patient_name": "Steven Morris",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 45508.68,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-444211",
+        "date_of_service": "2025-11-10",
+        "date_of_admission": "2025-11-10",
+        "date_of_discharge": "2025-11-16",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-160",
+      "claim": {
+        "_id": "rc-160",
+        "claim_number": "CLM-2026-95617",
+        "policy_number": "POL-2026-45960",
+        "patient_name": "Jodi Richmond",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 1483.23,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-559033",
+        "date_of_service": "2026-02-27",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-161",
+      "claim": {
+        "_id": "rc-161",
+        "claim_number": "CLM-2026-31946",
+        "policy_number": "POL-2026-62048",
+        "patient_name": "Raymond Walker",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 406.13,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-316374",
+        "date_of_service": "2025-12-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-162",
+      "claim": {
+        "_id": "rc-162",
+        "claim_number": "CLM-2026-89400",
+        "policy_number": "POL-2026-96022",
+        "patient_name": null,
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 339.92,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-587600",
+        "date_of_service": "2025-08-02",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-163",
+      "claim": {
+        "_id": "rc-163",
+        "claim_number": "CLM-2026-73930",
+        "policy_number": "POL-2026-50016",
+        "patient_name": "Michael Bailey",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 611.77,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-346243",
+        "date_of_service": "2026-04-10",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-164",
+      "claim": {
+        "_id": "rc-164",
+        "claim_number": "CLM-2026-27192",
+        "policy_number": "POL-2026-39187",
+        "patient_name": "David Anderosn",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 561.41,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-126430",
+        "date_of_service": "2025-08-31",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_typo"
+        }
+      ]
+    },
+    {
+      "id": "rc-165",
+      "claim": {
+        "_id": "rc-165",
+        "claim_number": "CLM-2026-28145",
+        "policy_number": "POL-2026-11122",
+        "patient_name": "Stacy Pacheco",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 51619.83,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-612525",
+        "date_of_service": "2025-09-16",
+        "date_of_admission": "2025-09-16",
+        "date_of_discharge": "2025-09-07",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-166",
+      "claim": {
+        "_id": "rc-166",
+        "claim_number": "CLM-2026-91321",
+        "policy_number": "POL-2026-33039",
+        "patient_name": "Shaun Campbell",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 7814.76,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-379492",
+        "date_of_service": "2025-09-09",
+        "date_of_admission": "2025-09-09",
+        "date_of_discharge": "2025-09-12",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-167",
+      "claim": {
+        "_id": "rc-167",
+        "claim_number": "CLM-2026-66062",
+        "policy_number": "POL-2026-27287",
+        "patient_name": "Kirsten Rangel",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 14748.82,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-828043",
+        "date_of_service": "2026-01-27",
+        "date_of_admission": "2026-01-27",
+        "date_of_discharge": "2026-01-15",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-168",
+      "claim": {
+        "_id": "rc-168",
+        "claim_number": "CLM-2026-66540",
+        "policy_number": "POL-2026-22142",
+        "patient_name": "Kelly Adams",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 10042.66,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-291669",
+        "date_of_service": "2025-07-18",
+        "date_of_admission": "2025-07-18",
+        "date_of_discharge": "2025-07-24",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-169",
+      "claim": {
+        "_id": "rc-169",
+        "claim_number": "CLM-2026-36135",
+        "policy_number": "POL-2026-40065",
+        "patient_name": "Zachary Rogers",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 44029.53,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-769890",
+        "date_of_service": "2025-09-17",
+        "date_of_admission": "2025-09-17",
+        "date_of_discharge": "2025-09-24",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-170",
+      "claim": {
+        "_id": "rc-170",
+        "claim_number": "CLM-2026-43591",
+        "policy_number": "POL-2026-41160",
+        "patient_name": "Katherine Gay",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 1376.42,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-865037",
+        "date_of_service": "2025-07-06",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-171",
+      "claim": {
+        "_id": "rc-171",
+        "claim_number": "CLM-2026-53353",
+        "policy_number": "POL-2026-67797",
+        "patient_name": "Kayla Lopez",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 13048.26,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-466044",
+        "date_of_service": "2026-05-16",
+        "date_of_admission": "2026-05-16",
+        "date_of_discharge": "2026-05-17",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-172",
+      "claim": {
+        "_id": "rc-172",
+        "claim_number": "CLM-2026-33087",
+        "policy_number": "POL-2026-11876",
+        "patient_name": "Angela Perez",
+        "diagnosis": "Atrial fibrillation (I48.91)",
+        "treatment_cost": 18636.28,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-199982",
+        "date_of_service": "2025-12-18",
+        "date_of_admission": "2025-12-18",
+        "date_of_discharge": "2025-12-23",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-173",
+      "claim": {
+        "_id": "rc-173",
+        "claim_number": null,
+        "policy_number": "POL-2026-48273",
+        "patient_name": "Natalie Smith",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": null,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-621219",
+        "date_of_service": "2025-12-25",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        },
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-174",
+      "claim": {
+        "_id": "rc-174",
+        "claim_number": "CLM-2026-97241",
+        "policy_number": "POL-2026-27023",
+        "patient_name": "Jesse Peters",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": 130234.73,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-206637",
+        "date_of_service": "2026-04-09",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-175",
+      "claim": {
+        "_id": "rc-175",
+        "claim_number": "CLM-2026-75644",
+        "policy_number": "POL-2026-27562",
+        "patient_name": "Alison Sweeney",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 26925.92,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-938989",
+        "date_of_service": "2025-07-16",
+        "date_of_admission": "2025-07-16",
+        "date_of_discharge": "2025-07-18",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-176",
+      "claim": {
+        "_id": "rc-176",
+        "claim_number": "CLM-2026-35680",
+        "policy_number": "POL-2026-73330",
+        "patient_name": "Jennifer Graves",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 16249.79,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-809774",
+        "date_of_service": "2026-04-06",
+        "date_of_admission": "2026-04-06",
+        "date_of_discharge": "2026-04-09",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-177",
+      "claim": {
+        "_id": "rc-177",
+        "claim_number": "CLM-2026-82705",
+        "policy_number": "POL-2026-65528",
+        "patient_name": "Kyle Brown",
+        "diagnosis": "Fracture of lower end of right radius (S52.501A)",
+        "treatment_cost": 5507.18,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-103700",
+        "date_of_service": "2025-10-27",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-178",
+      "claim": {
+        "_id": "rc-178",
+        "claim_number": "CLM-2026-80363",
+        "policy_number": "POL-2026-15836",
+        "patient_name": "Steven Ferguson",
+        "diagnosis": "Primary osteoarthritis, left hip (M16.12) - elective total hip replacement",
+        "treatment_cost": 44689.16,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-683254",
+        "date_of_service": "2026-03-01",
+        "date_of_admission": "2026-03-01",
+        "date_of_discharge": "2026-03-04",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-179",
+      "claim": {
+        "_id": "rc-179",
+        "claim_number": "CLM-2026-49765",
+        "policy_number": "POL-2026-56485",
+        "patient_name": "Andrea Jones",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 29701.94,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-262364",
+        "date_of_service": "2025-12-28",
+        "date_of_admission": "2025-12-28",
+        "date_of_discharge": "2025-12-30",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-180",
+      "claim": {
+        "_id": "rc-180",
+        "claim_number": "CLM-2026-82488",
+        "policy_number": "POL-2026-69160",
+        "patient_name": "James Parsons",
+        "diagnosis": "Coronary artery disease (I25.10) - coronary artery bypass graft",
+        "treatment_cost": 106949.74,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-506703",
+        "date_of_service": "2025-07-29",
+        "date_of_admission": "2025-07-29",
+        "date_of_discharge": "2025-08-05",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-181",
+      "claim": {
+        "_id": "rc-181",
+        "claim_number": "CLM-2026-70009",
+        "policy_number": "POL-2026-53826",
+        "patient_name": "Patrick Vargas",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 53014.76,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-795650",
+        "date_of_service": "2025-10-08",
+        "date_of_admission": "2025-09-11",
+        "date_of_discharge": "2025-09-15",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "service_after_discharge"
+        }
+      ]
+    },
+    {
+      "id": "rc-182",
+      "claim": {
+        "_id": "rc-182",
+        "claim_number": "CLM-2026-62832",
+        "policy_number": "POL-2026-20934",
+        "patient_name": "Ashley Dixon",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 5502.61,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-357500",
+        "date_of_service": "2026-03-24",
+        "date_of_admission": "2026-03-24",
+        "date_of_discharge": "2026-03-25",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-183",
+      "claim": {
+        "_id": "rc-183",
+        "claim_number": "CLM-2026-52997",
+        "policy_number": "POL-2026-52189",
+        "patient_name": "Randall Wiggins",
+        "diagnosis": "Cellulitis of right lower limb (L03.115)",
+        "treatment_cost": 755.23,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-231891",
+        "date_of_service": "2025-11-04",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-184",
+      "claim": {
+        "_id": "rc-184",
+        "claim_number": "CLM-2026-11197",
+        "policy_number": "POL-2026-29455",
+        "patient_name": "Rachael Allen",
+        "diagnosis": "Primary osteoarthritis, left hip (M16.12) - elective total hip replacement",
+        "treatment_cost": 39258.45,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-759195",
+        "date_of_service": "2025-07-25",
+        "date_of_admission": "2025-07-25",
+        "date_of_discharge": "2025-07-27",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-185",
+      "claim": {
+        "_id": "rc-185",
+        "claim_number": "CLM-2026-92296",
+        "policy_number": "POL-2026-36245",
+        "patient_name": "Jesse Miller",
+        "diagnosis": "Asthma, uncomplicated (J45.909)",
+        "treatment_cost": null,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-608942",
+        "date_of_service": "2026-03-06",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    },
+    {
+      "id": "rc-186",
+      "claim": {
+        "_id": "rc-186",
+        "claim_number": "CLM-2026-61297",
+        "policy_number": "POL-2026-24791",
+        "patient_name": "Donna Ellis",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 10229.78,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-542986",
+        "date_of_service": "2026-01-31",
+        "date_of_admission": "2026-01-31",
+        "date_of_discharge": "2026-02-02",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        }
+      ]
+    },
+    {
+      "id": "rc-187",
+      "claim": {
+        "_id": "rc-187",
+        "claim_number": "CLM-2026-77772",
+        "policy_number": "POL-2026-25676",
+        "patient_name": "Susan Reyes",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 30088.36,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-979949",
+        "date_of_service": "2025-07-29",
+        "date_of_admission": "2025-07-29",
+        "date_of_discharge": "2025-08-01",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-188",
+      "claim": {
+        "_id": "rc-188",
+        "claim_number": "CLM-2026-64547",
+        "policy_number": "POL-2026-86277",
+        "patient_name": "Megan Peters",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 70855.03,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-688969",
+        "date_of_service": "2026-04-24",
+        "date_of_admission": "2026-04-24",
+        "date_of_discharge": "2026-05-03",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-189",
+      "claim": {
+        "_id": "rc-189",
+        "claim_number": "CLM-2026-13838",
+        "policy_number": "POL-2026-69597",
+        "patient_name": "Timothy Lamb",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 157.83,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-683981",
+        "date_of_service": "2025-12-31",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-190",
+      "claim": {
+        "_id": "rc-190",
+        "claim_number": "CLM-2026-13261",
+        "policy_number": "POL-2026-28062",
+        "patient_name": "Mason Jones",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 48515.22,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-685637",
+        "date_of_service": "2025-12-21",
+        "date_of_admission": "2025-12-21",
+        "date_of_discharge": "2025-12-26",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-191",
+      "claim": {
+        "_id": "rc-191",
+        "claim_number": "CLM-2026-48930",
+        "policy_number": "POL-2026-27311",
+        "patient_name": "Courtney Huff",
+        "diagnosis": "Sepsis, unspecified organism (A41.9)",
+        "treatment_cost": 54912.55,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-237266",
+        "date_of_service": "2026-05-22",
+        "date_of_admission": "2026-05-22",
+        "date_of_discharge": "2026-05-28",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-192",
+      "claim": {
+        "_id": "rc-192",
+        "claim_number": "CLM-2026-92132",
+        "policy_number": "POL-2026-95535",
+        "patient_name": "Kylie King",
+        "diagnosis": "Non-ST elevation myocardial infarction (I21.4)",
+        "treatment_cost": 44740.15,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-614237",
+        "date_of_service": "2025-09-07",
+        "date_of_admission": "2025-09-07",
+        "date_of_discharge": "2025-09-13",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-193",
+      "claim": {
+        "_id": "rc-193",
+        "claim_number": "CLM-2026-57003",
+        "policy_number": "POL-2026-92317",
+        "patient_name": "Eric Galloway",
+        "diagnosis": "Calculus of kidney (N20.0)",
+        "treatment_cost": 5929.89,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-495787",
+        "date_of_service": "2026-02-16",
+        "date_of_admission": "2026-02-16",
+        "date_of_discharge": "2026-02-17",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-194",
+      "claim": {
+        "_id": "rc-194",
+        "claim_number": "CLM-2026-50087",
+        "policy_number": "POL-2026-25845",
+        "patient_name": "Justin Vargas",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 16643.64,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-548772",
+        "date_of_service": "2026-03-23",
+        "date_of_admission": "2026-03-23",
+        "date_of_discharge": "2026-03-27",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-195",
+      "claim": {
+        "_id": "rc-195",
+        "claim_number": "CLM-2026-80391",
+        "policy_number": "POL-2026-82577",
+        "patient_name": "BRADLEY MELTON  ",
+        "diagnosis": "Fracture of right femoral neck (S72.001A)",
+        "treatment_cost": 38459.85,
+        "hospital_name": "Juniperwick Medical Center",
+        "hospital_address": "390 Scott Estate, East Kathyside, NC 20743",
+        "provider_id": "PRV-216867",
+        "date_of_service": "2025-12-08",
+        "date_of_admission": "2025-12-08",
+        "date_of_discharge": "2025-12-16",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_case_or_spacing"
+        }
+      ]
+    },
+    {
+      "id": "rc-196",
+      "claim": {
+        "_id": "rc-196",
+        "claim_number": "CLM-2026-96790",
+        "policy_number": "POL-2026-71279",
+        "patient_name": "Rebecca Combs",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 59128.08,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-703022",
+        "date_of_service": "2025-12-11",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "55k_to_140k"
+        }
+      ]
+    },
+    {
+      "id": "rc-197",
+      "claim": {
+        "_id": "rc-197",
+        "claim_number": "CLM-2026-49984",
+        "policy_number": "POL-2026-61145",
+        "patient_name": "Betty Velasquez",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 29868.13,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-817795",
+        "date_of_service": "2025-12-22",
+        "date_of_admission": "2025-12-22",
+        "date_of_discharge": "2025-12-23",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-198",
+      "claim": {
+        "_id": "rc-198",
+        "claim_number": "CLM-2026-74382",
+        "policy_number": "POL-2026-90609",
+        "patient_name": "Carl Kline",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 26800.13,
+        "hospital_name": "Wrenfield Crossing Hospital",
+        "hospital_address": "90296 Sanders Manor, Michaelville, WA 71111",
+        "provider_id": "PRV-125570",
+        "date_of_service": "2026-05-02",
+        "date_of_admission": "2026-05-02",
+        "date_of_discharge": "2026-05-03",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-199",
+      "claim": {
+        "_id": "rc-199",
+        "claim_number": "CLM-2026-83476",
+        "policy_number": "POL-2026-64594",
+        "patient_name": "Jessica Forbes",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 320.55,
+        "hospital_name": "Fernhollow Valley Medical Center",
+        "hospital_address": "94511 Steven Glen, New Melissamouth, MN 52189",
+        "provider_id": "PRV-990657",
+        "date_of_service": "2026-02-02",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-200",
+      "claim": {
+        "_id": "rc-200",
+        "claim_number": "CLM-2026-31405",
+        "policy_number": "POL-2026-32759",
+        "patient_name": "Timothy Mitchell",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 321305.21,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-350381",
+        "date_of_service": "2026-04-06",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "above_150k"
+        }
+      ]
+    },
+    {
+      "id": "rc-201",
+      "claim": {
+        "_id": "rc-201",
+        "claim_number": "CLM-2026-93512",
+        "policy_number": "POL-2026-39497",
+        "patient_name": "Anita Evans",
+        "diagnosis": "Acute appendicitis (K35.80)",
+        "treatment_cost": 22815.73,
+        "hospital_name": "Bramblemoor Community Clinic",
+        "hospital_address": "937 Hammond Throughway, Jameston, GA 62489",
+        "provider_id": "PRV-632272",
+        "date_of_service": "2025-08-30",
+        "date_of_admission": "2025-08-30",
+        "date_of_discharge": "2025-09-01",
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-202",
+      "claim": {
+        "_id": "rc-202",
+        "claim_number": "CLM-2026-60983",
+        "policy_number": "POL-2026-50111",
+        "patient_name": "Terri Hansen",
+        "diagnosis": "Type 2 diabetes mellitus without complications (E11.9)",
+        "treatment_cost": 255.95,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-610668",
+        "date_of_service": "2026-01-31",
+        "date_of_admission": "2026-01-31",
+        "date_of_discharge": "2026-01-16",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "date_inconsistency",
+          "variant": "discharge_before_admission"
+        }
+      ]
+    },
+    {
+      "id": "rc-203",
+      "claim": {
+        "_id": "rc-203",
+        "claim_number": "CLM-2026-79231",
+        "policy_number": "POL-2026-61026",
+        "patient_name": "Edward Flores",
+        "diagnosis": "Essential (primary) hypertension (I10)",
+        "treatment_cost": 486.22,
+        "hospital_name": "Cinderholt Memorial Hospital",
+        "hospital_address": "00499 Jonathan Coves, South Michaelchester, TX 47727",
+        "provider_id": "PRV-592301",
+        "date_of_service": "2025-12-06",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": false,
+      "anomalies": []
+    },
+    {
+      "id": "rc-204",
+      "claim": {
+        "_id": "rc-204",
+        "claim_number": "CLM-2026-64122",
+        "policy_number": "POL-2026-35061",
+        "patient_name": "Donna Arsmtrong",
+        "diagnosis": "Acute upper respiratory infection (J06.9)",
+        "treatment_cost": 259.36,
+        "hospital_name": "Tamarack Hollow General Hospital",
+        "hospital_address": "370 Dixon Underpass, Perkinsbury, CO 32941",
+        "provider_id": "PRV-290928",
+        "date_of_service": "2025-12-02",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "name_typo"
+        }
+      ]
+    },
+    {
+      "id": "rc-205",
+      "claim": {
+        "_id": "rc-205",
+        "claim_number": "CLM-2026-79951",
+        "policy_number": "POL-2026-93032",
+        "patient_name": "Brandon Garcia",
+        "diagnosis": "Migraine, not intractable (G43.909)",
+        "treatment_cost": 12561.71,
+        "hospital_name": "Larkspur Bay Health Center",
+        "hospital_address": "53920 Butler Ways, East Amyview, NY 05784",
+        "provider_id": "PRV-765242",
+        "date_of_service": "2026-03-17",
+        "date_of_admission": null,
+        "date_of_discharge": null,
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "cost_outlier",
+          "variant": "relative_under_50k"
+        }
+      ]
+    },
+    {
+      "id": "rc-206",
+      "claim": {
+        "_id": "rc-206",
+        "claim_number": "CLM-2026-28343",
+        "policy_number": null,
+        "patient_name": "John Moore",
+        "diagnosis": "Pneumonia, unspecified organism (J18.9)",
+        "treatment_cost": 12920.93,
+        "hospital_name": "Marigold Quarry Regional Hospital",
+        "hospital_address": "4961 Walker Manors, West Victoria, CA 35756",
+        "provider_id": "PRV-635373",
+        "date_of_service": "2025-11-06",
+        "date_of_admission": "2025-11-06",
+        "date_of_discharge": "2025-11-11",
+        "status": "pending"
+      },
+      "anomalous": true,
+      "anomalies": [
+        {
+          "type": "duplicate",
+          "variant": "exact"
+        },
+        {
+          "type": "missing_fields",
+          "variant": "one_or_two_required"
+        }
+      ]
+    }
+  ]
+}
