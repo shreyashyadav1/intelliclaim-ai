@@ -143,6 +143,22 @@ def at_threshold(labels: Sequence[bool], scores: Sequence[float], threshold: flo
     }
 
 
+def best_f1_threshold(labels: Sequence[bool], scores: Sequence[float]) -> dict[str, float] | None:
+    """The flag threshold with the highest F1, or None when no score is above zero.
+
+    Candidates are the distinct positive scores: a threshold between two
+    observed scores flags the same items as the next observed score, so
+    these are the only distinct choices. Ties go to the higher threshold,
+    which flags fewer items for the same F1.
+    """
+    best = None
+    for threshold in sorted({score for score in scores if score > 0}):
+        row = at_threshold(labels, scores, threshold)
+        if best is None or row["f1"] >= best["f1"]:
+            best = row
+    return best
+
+
 def average_precision(labels: Sequence[bool], scores: Sequence[float]) -> float:
     """Area under the precision-recall curve as average precision (step-wise, ties grouped).
 

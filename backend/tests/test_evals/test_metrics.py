@@ -59,6 +59,19 @@ def test_precision_recall_at_a_threshold():
     assert result["precision"] == result["recall"] == 0.5
 
 
+def test_best_f1_threshold_searches_observed_scores_and_breaks_ties_upwards():
+    labels = [True, True, True, False, False, False]
+    scores = [40, 25, 15, 15, 5, 0]
+    best = metrics.best_f1_threshold(labels, scores)
+    # >= 5: P 3/5, R 1 (F1 0.75); >= 15: P 3/4, R 1 (F1 0.857); >= 25: P 1, R 2/3 (F1 0.8)
+    assert (best["threshold"], best["precision"], best["recall"]) == (15, 0.75, 1.0)
+
+    # >= 10: P 1/2, R 1; >= 20: P 1, R 1/2. Both have F1 2/3, so the higher threshold wins the tie.
+    assert metrics.best_f1_threshold([True, True, False, False], [20, 10, 10, 10])["threshold"] == 20
+    assert metrics.best_f1_threshold([True, True, False], [15, 5, 0])["threshold"] == 5
+    assert metrics.best_f1_threshold([True, False], [0, 0]) is None
+
+
 def test_field_counts_treat_wrong_values_as_false_positive_and_negative():
     counts = metrics.field_counts([("A", "A", True), ("A", "B", False), (None, "C", False), ("D", None, False),
                                    (None, None, True)])

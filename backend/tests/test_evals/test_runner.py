@@ -111,6 +111,10 @@ async def test_risk_suite_scores_rules_against_labels(test_db):
     assert rules["rule_detection_rate"]["duplicate/exact"]["rate"] == 1.0
     assert rules["rule_detection_rate"]["duplicate/name_typo"]["rate"] == 0.0
     assert 0 < rules["pr_auc"] <= 1
+    assert set(rules["thresholds"]) == {"5", "10", "15", "20", "25", "30", "40", "50", "60"}
+    best = rules["best_f1"]
+    assert best["f1"] == max(row["f1"] for row in rules["thresholds"].values())
+    assert "Highest F1 over every observed score" in "\n".join(risk.summary(result))
 
 
 async def test_llm_suites_skip_without_a_key():

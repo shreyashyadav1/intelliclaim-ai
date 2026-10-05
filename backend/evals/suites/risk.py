@@ -7,8 +7,9 @@ every incoming claim with the AI review switched off, and scores the
 rule-based risk score against the labels (anomalous or clean):
 
 - PR-AUC (average precision) and ROC-AUC of the continuous score;
-- precision/recall/F1 at score thresholds 15, 25, 30 (the flagged-claims
-  list uses 30) and 60 ("high" risk);
+- precision/recall/F1 at a grid of score thresholds (the flagged-claims list
+  uses 30, "high" risk starts at 60) and the threshold that maximises F1,
+  searched over every observed score with ties going to the higher threshold;
 - per anomaly variant, the share of claims where the matching rule fired.
 
 With --llm and GROQ_API_KEY set, the same claims are scored again with the
@@ -21,10 +22,10 @@ from typing import Any
 
 from evals.common import Context, skipped
 from evals.config import eval_settings
-from evals.metrics import at_threshold, average_precision, roc_auc
+from evals.metrics import at_threshold, average_precision, best_f1_threshold, roc_auc
 
 NAME = "risk"
-THRESHOLDS = (15, 25, 30, 60)
+THRESHOLDS = (5, 10, 15, 20, 25, 30, 40, 50, 60)
 RULE_FLAGS = {
     "duplicate": {"duplicate_claim"},
     "cost_outlier": {"high_cost", "very_high_cost", "zero_cost", "invalid_cost"},
@@ -41,7 +42,8 @@ def _score_metrics(labels: list[bool], scores: list[float]) -> dict[str, Any]:
     return {
         "pr_auc": average_precision(labels, scores),
         "roc_auc": roc_auc(labels, scores),
-        "thresholds": {str(t): at_threshold(labels, scores, t) for t in THRESHOLDS},
+        "thresholds": {f"{t:g}": at_threshold(labels, scores, t) for t in THRESHOLDS},
+        "best_f1": best_f1_threshold(labels, scores),
         "mean_score": {
             "anomalous": round(sum(s for y, s in zip(labels, scores, strict=True) if y) / max(sum(labels), 1), 2),
             "clean": round(sum(s for y, s in zip(labels, scores, strict=True) if not y)
@@ -173,6 +175,11 @@ def _section(lines: list[str], title: str, m: dict[str, Any]) -> None:
     for threshold, row in m["thresholds"].items():
         lines.append(f"| {threshold} | {row['precision']:.3f} | {row['recall']:.3f} | {row['f1']:.3f} "
                      f"| {row['tp']} | {row['fp']} | {row['fn']} |")
+    best = m["best_f1"]
+    if best is not None:
+        lines += ["", f"Highest F1 over every observed score (ties to the higher threshold): score >= "
+                      f"{best['threshold']:g}, precision {best['precision']:.3f}, recall {best['recall']:.3f}, "
+                      f"F1 {best['f1']:.3f}."]
     lines += ["", "Rule detection by injected anomaly:", "", "| Anomaly | Claims | Matching rule fired |",
               "|---|---|---|"]
     for key, row in m["rule_detection_rate"].items():
