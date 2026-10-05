@@ -5,6 +5,8 @@ chat models are LangChain fakes or FakeGroq, so no test calls a provider.
 """
 
 import asyncio
+import os
+import tempfile
 
 import fastembed
 import numpy as np
@@ -57,6 +59,23 @@ def test_embedder_loads_the_explicit_model_once_from_the_cache_path(isolated_vec
     assert first is second
     assert created == [(EMBEDDING_MODEL_NAME, "/opt/fastembed-cache")]
     assert EMBEDDING_MODEL_NAME == "BAAI/bge-small-en-v1.5"
+
+
+def test_blank_cache_path_uses_fastembeds_default_directory(isolated_vector_store, monkeypatch):
+    """A blank FASTEMBED_CACHE_PATH (as copied from .env.example) must not mean the working directory."""
+    created = []
+
+    class _RecordingTextEmbedding:
+        def __init__(self, model_name, cache_dir=None, **kwargs):
+            created.append(cache_dir)
+
+    monkeypatch.setattr(fastembed, "TextEmbedding", _RecordingTextEmbedding)
+    monkeypatch.setattr(settings, "FASTEMBED_CACHE_PATH", None)  # the setting maps blank to None
+    monkeypatch.setenv("FASTEMBED_CACHE_PATH", "")  # fastembed would read this as "."
+
+    isolated_vector_store.get_embedder()
+
+    assert created == [os.path.join(tempfile.gettempdir(), "fastembed_cache")]
 
 
 def test_llamaindex_and_langchain_embed_with_the_same_model_instance(monkeypatch):

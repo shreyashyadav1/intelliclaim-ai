@@ -25,6 +25,7 @@ application startup light.
 import asyncio
 import logging
 import os
+import tempfile
 import threading
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
@@ -109,6 +110,18 @@ def _reset_collection():
     return _chroma_collection
 
 
+def _fastembed_cache_dir() -> str:
+    """Where the embedding model is cached: FASTEMBED_CACHE_PATH, or fastembed's default.
+
+    Given no cache_dir, fastembed reads FASTEMBED_CACHE_PATH from the
+    environment itself and turns a blank value into the working directory,
+    which the Docker image's non-root user cannot write to (a copy of
+    .env.example sets it blank). Passing the directory explicitly makes a
+    blank value behave like an unset one.
+    """
+    return settings.FASTEMBED_CACHE_PATH or os.path.join(tempfile.gettempdir(), "fastembed_cache")
+
+
 def _get_embedder():
     """Return the shared fastembed model, loading it on first use.
 
@@ -123,7 +136,7 @@ def _get_embedder():
             if _embedder is None:
                 from fastembed import TextEmbedding
 
-                _embedder = TextEmbedding(model_name=EMBEDDING_MODEL_NAME, cache_dir=settings.FASTEMBED_CACHE_PATH)
+                _embedder = TextEmbedding(model_name=EMBEDDING_MODEL_NAME, cache_dir=_fastembed_cache_dir())
                 logger.info("Loaded fastembed model %s", EMBEDDING_MODEL_NAME)
     return _embedder
 
