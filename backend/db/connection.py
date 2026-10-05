@@ -5,8 +5,9 @@ Provides async MongoDB connectivity via Motor, including lifecycle
 hooks for FastAPI startup/shutdown and index creation.
 """
 
+import asyncio
 import logging
-from typing import Optional
+import re
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
@@ -15,8 +16,24 @@ from config import settings
 logger = logging.getLogger(__name__)
 
 # Module-level connection state
-_client: Optional[AsyncIOMotorClient] = None
-_database: Optional[AsyncIOMotorDatabase] = None
+_client: AsyncIOMotorClient | None = None
+_database: AsyncIOMotorDatabase | None = None
+
+# scheme://[userinfo@]hosts[/database][?options]
+_URI_PATTERN = re.compile(r"^(?P<scheme>[a-z][a-z0-9+.\-]*://)(?:(?P<userinfo>[^@/]*)@)?(?P<rest>[^?]*)")
+
+
+def redact_mongo_uri(uri: str) -> str:
+    """Return the URI with credentials masked and query options removed, for logging.
+
+    Options are dropped as well because some of them (e.g. TLS key passwords
+    or AWS session tokens) can carry secrets.
+    """
+    match = _URI_PATTERN.match(uri or "")
+    if match is None:
+        return "<unparseable MongoDB URI>"
+    userinfo = "***@" if match.group("userinfo") is not None else ""
+    return f"{match.group('scheme')}{userinfo}{match.group('rest')}"
 
 
 def get_database() -> AsyncIOMotorDatabase:
@@ -32,6 +49,18 @@ def get_database() -> AsyncIOMotorDatabase:
     return _database
 
 
+async def ping_database(timeout: float = 2.0) -> bool:
+    """Whether MongoDB answers a ping within `timeout` seconds (never raises)."""
+    if _database is None:
+        return False
+    try:
+        await asyncio.wait_for(_database.command("ping"), timeout)
+    except Exception as exc:  # timeouts, network errors, auth failures
+        logger.warning("MongoDB ping failed: %s", type(exc).__name__)
+        return False
+    return True
+
+
 async def connect_db() -> None:
     """Establish the MongoDB connection and create required indexes.
 
@@ -39,7 +68,7 @@ async def connect_db() -> None:
     """
     global _client, _database
 
-    logger.info("Connecting to MongoDB at %s …", settings.MONGODB_URI)
+    logger.info("Connecting to MongoDB at %s", redact_mongo_uri(settings.MONGODB_URI))
     _client = AsyncIOMotorClient(
         settings.MONGODB_URI,
         serverSelectionTimeoutMS=5000,

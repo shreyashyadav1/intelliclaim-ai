@@ -1,32 +1,41 @@
-version: '3.8'
-
 services:
   mongodb:
     image: mongo:7.0
     container_name: intelliclaim-mongodb
     ports:
-      - "27017:27017"
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongodb_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: intelliclaim
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
+    # The same image Railway builds.
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: intelliclaim-backend
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - path: .env
+        required: false
+    environment:
+      # Overrides .env: inside compose the database is the mongodb service.
+      MONGODB_URI: mongodb://mongodb:27017
+      # Clients connect directly, so X-Forwarded-For must not be trusted.
+      TRUSTED_PROXY_COUNT: "0"
     volumes:
-      - ./backend:/app
       - uploads_data:/app/uploads
       - chroma_data:/app/chroma_data
     depends_on:
-      - mongodb
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      mongodb:
+        condition: service_healthy
 
   frontend:
     build:

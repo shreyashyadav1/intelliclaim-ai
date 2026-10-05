@@ -1,12 +1,24 @@
-backend/.env
-backend/venv
-backend/__pycache__
-backend/**/__pycache__
-backend/*.pyc
-backend/uploads/*
-backend/chroma_data/*
-backend/tests
-*.md
+# Only backend/ is copied into the image. Keep secrets, local state and
+# development files out of the build context.
 .git
 .github
+**/.env
+**/.env.*
+!.env.example
+*.md
+docs
 frontend
+
+backend/.venv
+backend/venv
+**/__pycache__
+**/*.py[cod]
+backend/.pytest_cache
+backend/.ruff_cache
+backend/.coverage
+backend/htmlcov
+backend/uploads
+backend/chroma_data
+backend/tests
+backend/pyproject.toml
+backend/requirements-dev.txt

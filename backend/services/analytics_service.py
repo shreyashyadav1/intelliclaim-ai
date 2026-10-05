@@ -9,7 +9,7 @@ MongoDB aggregation pipelines for dashboard analytics:
 """
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, time, timedelta
 
 from db.connection import get_database
 
@@ -25,6 +25,8 @@ class AnalyticsService:
 
         total_claims = await db.claims.count_documents({})
         total_documents = await db.documents.count_documents({})
+        processed_documents = await db.documents.count_documents({"processing_status": "processed"})
+        failed_documents = await db.documents.count_documents({"processing_status": "failed"})
 
         # Claims by status
         status_pipeline = [
@@ -32,7 +34,7 @@ class AnalyticsService:
         ]
         status_cursor = db.claims.aggregate(status_pipeline)
         status_results = await status_cursor.to_list(length=10)
-        claims_by_status = {r["_id"]: r["count"] for r in status_results}
+        claims_by_status = {r["_id"]: r["count"] for r in status_results if r["_id"] is not None}
 
         # Average treatment cost
         avg_pipeline = [
@@ -40,8 +42,9 @@ class AnalyticsService:
         ]
         avg_cursor = db.claims.aggregate(avg_pipeline)
         avg_results = await avg_cursor.to_list(length=1)
-        avg_cost = avg_results[0]["avg_cost"] if avg_results else 0
-        avg_risk = avg_results[0]["avg_risk"] if avg_results else 0
+        # $avg skips non-numeric values and yields null when there are none.
+        avg_cost = (avg_results[0].get("avg_cost") if avg_results else None) or 0
+        avg_risk = (avg_results[0].get("avg_risk") if avg_results else None) or 0
 
         # High risk count
         high_risk_count = await db.claims.count_documents({"risk_score": {"$gte": 60}})
@@ -52,7 +55,9 @@ class AnalyticsService:
 
         return {
             "total_claims": total_claims,
-            "documents_processed": total_documents,
+            "documents_processed": processed_documents,
+            "documents_failed": failed_documents,
+            "documents_total": total_documents,
             "claims_by_status": claims_by_status,
             "avg_treatment_cost": round(avg_cost, 2),
             "avg_risk_score": round(avg_risk, 1),
@@ -61,12 +66,13 @@ class AnalyticsService:
         }
 
     async def get_claims_trend(self, days: int = 30) -> list[dict]:
-        """Get daily claims count over the last N days."""
+        """Daily claim counts (UTC) for the last `days` days, ending with today."""
         db = get_database()
-        start_date = datetime.now(timezone.utc) - timedelta(days=days)
+        first_day = datetime.now(UTC).date() - timedelta(days=days - 1)
+        start = datetime.combine(first_day, time.min, tzinfo=UTC)
 
         pipeline = [
-            {"$match": {"created_at": {"$gte": start_date}}},
+            {"$match": {"created_at": {"$gte": start}}},
             {
                 "$group": {
                     "_id": {
@@ -79,13 +85,13 @@ class AnalyticsService:
         ]
 
         cursor = db.claims.aggregate(pipeline)
-        results = await cursor.to_list(length=days)
+        results = await cursor.to_list(length=None)
 
         # Fill in missing dates with 0
-        trend = []
         result_map = {r["_id"]: r["count"] for r in results}
-        for i in range(days):
-            date_str = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+        trend = []
+        for offset in range(days):
+            date_str = (first_day + timedelta(days=offset)).isoformat()
             trend.append({"date": date_str, "count": result_map.get(date_str, 0)})
 
         return trend
