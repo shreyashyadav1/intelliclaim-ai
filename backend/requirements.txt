@@ -15,13 +15,14 @@ openai==2.43.0
 
 # RAG: LlamaIndex ingests documents into ChromaDB with fastembed embeddings;
 # LangChain retrieves (vector or BM25 hybrid) and answers with ChatGroq/ChatOpenAI.
+# The fastembed and BM25 adapters for LangChain live in services/rag_index.py
+# (langchain-community, which had them, is no longer maintained).
 fastembed==0.8.1
 chromadb==1.5.9
 llama-index-core==0.14.25
 llama-index-vector-stores-chroma==0.5.5
 langchain-core==1.6.4
 langchain-classic==1.0.8
-langchain-community==0.4.2
 langchain-chroma==1.1.0
 langchain-groq==1.1.3
 langchain-openai==1.3.2

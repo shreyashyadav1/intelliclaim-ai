@@ -22,7 +22,7 @@ logger = logging.getLogger("evals")
 
 PACKAGES = (
     "fastembed", "chromadb", "llama-index-core", "llama-index-vector-stores-chroma", "langchain-core",
-    "langchain-chroma", "langchain-community", "langchain-classic", "langchain-groq", "rank-bm25", "groq",
+    "langchain-chroma", "langchain-classic", "langchain-groq", "rank-bm25", "groq",
     "PyMuPDF", "pytesseract", "Pillow", "numpy", "Faker", "RapidFuzz",
 )
 

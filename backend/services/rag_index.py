@@ -8,14 +8,18 @@ Every document chunk lives in one ChromaDB collection:
   cuts pages into chunks, the fastembed model embeds them and
   ChromaVectorStore writes them to the collection.
 - Retrieval (LangChain): a Chroma vector store over the same collection,
-  with FastEmbedEmbeddings wrapping the same fastembed model, answers
+  with LangChain embeddings wrapping the same fastembed model, answers
   cosine-similarity searches. Hybrid mode fuses those results with BM25
-  keyword search over the stored chunks (EnsembleRetriever, weighted
-  reciprocal rank fusion).
+  keyword search over the stored chunks (rank_bm25's BM25Okapi behind a
+  LangChain retriever; EnsembleRetriever, weighted reciprocal rank fusion).
 
 One fastembed model (BAAI/bge-small-en-v1.5) serves both frameworks, so
 documents and questions are embedded identically and the ONNX model is
 loaded only once per process.
+
+The LangChain adapters for fastembed and BM25 are defined here on top of
+langchain-core: langchain-community, which provided them, is no longer
+maintained, and neither has a standalone integration package.
 """
 
 import asyncio
@@ -28,10 +32,9 @@ from typing import Any
 import numpy as np
 from langchain_chroma import Chroma
 from langchain_classic.retrievers import EnsembleRetriever
-from langchain_community.embeddings import FastEmbedEmbeddings
-from langchain_community.retrievers import BM25Retriever
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.documents import Document as LCDocument
+from langchain_core.embeddings import Embeddings
 from langchain_core.retrievers import BaseRetriever
 from llama_index.core import Document
 from llama_index.core.base.embeddings.base import BaseEmbedding
@@ -39,7 +42,8 @@ from llama_index.core.bridge.pydantic import PrivateAttr
 from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.vector_stores.chroma import ChromaVectorStore
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field
+from rank_bm25 import BM25Okapi
 
 from config import (
     EMBEDDING_MODEL_NAME,
@@ -100,13 +104,32 @@ class SharedFastEmbedEmbedding(BaseEmbedding):
         return await asyncio.to_thread(self._get_text_embedding, text)
 
 
-def langchain_embeddings(model: Any) -> FastEmbedEmbeddings:
-    """LangChain FastEmbedEmbeddings around an already loaded fastembed model.
+class SharedFastEmbedEmbeddings(Embeddings):
+    """LangChain embeddings backed by an already loaded fastembed TextEmbedding.
 
-    model_construct skips the class's validator, which would load a second
-    copy of the model; embed_documents and embed_query call `model` directly.
+    The LangChain counterpart of SharedFastEmbedEmbedding. It calls fastembed
+    exactly as langchain-community's FastEmbedEmbeddings did with its
+    defaults (batches of 256, no data-parallel workers), so the vectors are
+    the same.
     """
-    return FastEmbedEmbeddings.model_construct(model_name=EMBEDDING_MODEL_NAME, model=model)
+
+    BATCH_SIZE = 256
+
+    def __init__(self, model: Any) -> None:
+        self.model = model
+        self.model_name = EMBEDDING_MODEL_NAME
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        vectors = self.model.embed(texts, batch_size=self.BATCH_SIZE, parallel=None)
+        return [vector.tolist() for vector in vectors]
+
+    def embed_query(self, text: str) -> list[float]:
+        return next(iter(self.model.query_embed(text, batch_size=self.BATCH_SIZE, parallel=None))).tolist()
+
+
+def langchain_embeddings(model: Any) -> SharedFastEmbedEmbeddings:
+    """LangChain embeddings around an already loaded fastembed model (no second copy is loaded)."""
+    return SharedFastEmbedEmbeddings(model)
 
 
 # ---------------------------------------------------------------------------
@@ -153,13 +176,31 @@ class VectorRetriever(BaseRetriever):
         return [_as_result(doc, score=1.0 - distance) for doc, distance in results]
 
 
-class KeywordRetriever(BM25Retriever):
-    """BM25 over the indexed chunks. Chunks that share no term with the query are dropped.
+class KeywordRetriever(BaseRetriever):
+    """BM25 (rank_bm25's BM25Okapi, default parameters) over the indexed chunks.
 
-    LangChain's BM25Retriever returns k chunks even when none of them matches,
-    which would feed arbitrary chunks into the fusion. Overlap is checked on
-    the terms themselves: in small corpora BM25Okapi can score a real match 0.
+    Chunks that share no term with the query are dropped: langchain-community's
+    BM25Retriever returned k chunks even when none of them matched, which
+    would feed arbitrary chunks into the fusion. Overlap is checked on the
+    terms themselves: in small corpora BM25Okapi can score a real match 0.
     """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    vectorizer: Any
+    docs: list[LCDocument] = Field(repr=False)
+    k: int = 4
+    preprocess_func: Callable[[str], list[str]] = keyword_tokens
+
+    @classmethod
+    def from_documents(
+        cls, documents: Sequence[LCDocument], *, preprocess_func: Callable[[str], list[str]] = keyword_tokens,
+        **kwargs: Any,
+    ) -> "KeywordRetriever":
+        """Index the documents' text with BM25Okapi; kwargs set the other fields (e.g. k)."""
+        docs = list(documents)
+        vectorizer = BM25Okapi([preprocess_func(doc.page_content) for doc in docs])
+        return cls(vectorizer=vectorizer, docs=docs, preprocess_func=preprocess_func, **kwargs)
 
     def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun) -> list[LCDocument]:
         terms = set(self.preprocess_func(query))
@@ -264,7 +305,7 @@ class VectorIndex:
         self._splitter = SentenceSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap, id_func=_chunk_id)
         self._embedder: Any = None
         self._embed_model: SharedFastEmbedEmbedding | None = None
-        self._embeddings: FastEmbedEmbeddings | None = None
+        self._embeddings: SharedFastEmbedEmbeddings | None = None
         self._vectorstore: Chroma | None = None
         self._dimension: int | None = None
         self._model_lock = threading.Lock()
@@ -289,7 +330,7 @@ class VectorIndex:
         return self._embed_model  # type: ignore[return-value]
 
     @property
-    def embeddings(self) -> FastEmbedEmbeddings:
+    def embeddings(self) -> SharedFastEmbedEmbeddings:
         """LangChain view of the same embedding model (retrieval)."""
         if self._embeddings is None:
             self._load_embedder()
