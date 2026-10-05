@@ -49,6 +49,11 @@ HYBRID_WEIGHTS = (0.5, 0.5)  # (vector, BM25) weights in reciprocal rank fusion
 HYBRID_CANDIDATES = 20  # results each retriever contributes to the fusion
 RRF_K = 60  # reciprocal rank fusion constant
 
+# Risk scores of at least this are rated "high" and validation marks the claim
+# as flagged. Medium risk, and the flagged-claims list, start at the
+# RISK_FLAG_THRESHOLD setting (services/risk_levels.py).
+HIGH_RISK_THRESHOLD = 60.0
+
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
@@ -103,6 +108,17 @@ class Settings(BaseSettings):
     )
     FASTEMBED_CACHE_PATH: str | None = Field(
         default=None, description="Directory holding the fastembed model files (the Docker image pre-downloads them)"
+    )
+
+    # Risk scoring
+    RISK_FLAG_THRESHOLD: float = Field(
+        default=15.0,
+        gt=0,
+        lt=HIGH_RISK_THRESHOLD,
+        description=(
+            "Risk score from which a claim is rated medium risk and listed as flagged; the default "
+            "maximises F1 on the risk evaluation (backend/evals/README.md)"
+        ),
     )
 
     # API protection

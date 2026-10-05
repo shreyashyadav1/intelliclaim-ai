@@ -6,6 +6,8 @@ Tests risk validation endpoints, batch validation, and flagged claims listing.
 
 import pytest
 
+from config import settings
+
 
 @pytest.mark.asyncio
 async def test_validate_single_claim(async_client):
@@ -64,8 +66,42 @@ async def test_get_flagged_claims(async_client):
     assert "total" in data
     # At least one claim is flagged in our seed data
     assert data["total"] >= 1
+    assert data["flag_threshold"] == settings.RISK_FLAG_THRESHOLD
     for claim in data["claims"]:
-        assert claim["status"] == "flagged" or claim["risk_score"] >= 30
+        assert claim["status"] == "flagged" or claim["risk_score"] >= settings.RISK_FLAG_THRESHOLD
+
+
+async def test_flagged_list_includes_medium_risk_claims_from_the_threshold(async_client, test_db, monkeypatch):
+    monkeypatch.setattr(settings, "RISK_FLAG_THRESHOLD", 15.0)
+    await test_db.claims.insert_many([
+        {"_id": "claim-medium", "claim_number": "CLM-MED", "status": "pending", "risk_score": 15.0},
+        {"_id": "claim-low", "claim_number": "CLM-LOW", "status": "pending", "risk_score": 14.9},
+    ])
+
+    data = (await async_client.get("/api/validate/flagged")).json()
+    listed = [claim["id"] for claim in data["claims"]]
+    # claim-test-002 is flagged (65), claim-test-001 is approved at 5: highest score first
+    assert listed == ["claim-test-002", "claim-medium"]
+    assert data["total"] == 2
+
+    monkeypatch.setattr(settings, "RISK_FLAG_THRESHOLD", 30.0)
+    data = (await async_client.get("/api/validate/flagged")).json()
+    assert [claim["id"] for claim in data["claims"]] == ["claim-test-002"]
+    assert data["flag_threshold"] == 30.0
+
+
+async def test_validation_flags_status_only_at_high_risk(async_client, test_db):
+    await test_db.claims.insert_one({
+        "_id": "claim-costly", "claim_number": "CLM-COSTLY", "policy_number": "POL-9", "patient_name": "Ana Ruiz",
+        "diagnosis": "Hip fracture", "treatment_cost": 70000, "hospital_name": "Mercy", "status": "pending",
+    })
+    data = (await async_client.post("/api/validate/claim-costly")).json()
+    assert (data["risk_score"], data["risk_level"]) == (15.0, "medium")  # high_cost only
+
+    stored = await test_db.claims.find_one({"_id": "claim-costly"})
+    assert stored["status"] == "pending"  # listed as flagged by score, status unchanged
+    listed = (await async_client.get("/api/validate/flagged")).json()["claims"]
+    assert "claim-costly" in [claim["id"] for claim in listed]
 
 
 # --- Provider failures and batch limits ----------------------------------------------------

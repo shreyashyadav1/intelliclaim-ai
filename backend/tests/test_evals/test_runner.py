@@ -5,6 +5,7 @@ import json
 import pytest
 
 import evals.dataset.render as render
+from config import Settings, settings
 from evals import run as runner
 from evals.common import Context
 from evals.suites import classification, extraction, ocr, rag_answer, risk
@@ -111,10 +112,13 @@ async def test_risk_suite_scores_rules_against_labels(test_db):
     assert rules["rule_detection_rate"]["duplicate/exact"]["rate"] == 1.0
     assert rules["rule_detection_rate"]["duplicate/name_typo"]["rate"] == 0.0
     assert 0 < rules["pr_auc"] <= 1
-    assert set(rules["thresholds"]) == {"5", "10", "15", "20", "25", "30", "40", "50", "60"}
+    assert {"5", "10", "15", "20", "25", "30", "40", "50", "60"} <= set(rules["thresholds"])
     best = rules["best_f1"]
     assert best["f1"] == max(row["f1"] for row in rules["thresholds"].values())
     assert "Highest F1 over every observed score" in "\n".join(risk.summary(result))
+    # RISK_FLAG_THRESHOLD's default was chosen by this rule; recalibrate it if the rules change.
+    assert best["threshold"] == Settings.model_fields["RISK_FLAG_THRESHOLD"].default
+    assert rules["flagged"]["threshold"] == settings.RISK_FLAG_THRESHOLD
 
 
 async def test_llm_suites_skip_without_a_key():

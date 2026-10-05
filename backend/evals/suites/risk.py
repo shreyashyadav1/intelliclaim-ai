@@ -7,9 +7,12 @@ every incoming claim with the AI review switched off, and scores the
 rule-based risk score against the labels (anomalous or clean):
 
 - PR-AUC (average precision) and ROC-AUC of the continuous score;
-- precision/recall/F1 at a grid of score thresholds (the flagged-claims list
-  uses 30, "high" risk starts at 60) and the threshold that maximises F1,
-  searched over every observed score with ties going to the higher threshold;
+- precision/recall/F1 at a grid of score thresholds and at the configured
+  RISK_FLAG_THRESHOLD (the flagged-claims list and medium risk; "high" risk
+  starts at 60);
+- the threshold that maximises F1, searched over every observed score with
+  ties going to the higher threshold. RISK_FLAG_THRESHOLD's default (15) was
+  chosen by this rule;
 - per anomaly variant, the share of claims where the matching rule fired.
 
 With --llm and GROQ_API_KEY set, the same claims are scored again with the
@@ -20,6 +23,7 @@ import os
 from collections import defaultdict
 from typing import Any
 
+from config import HIGH_RISK_THRESHOLD, settings
 from evals.common import Context, skipped
 from evals.config import eval_settings
 from evals.metrics import at_threshold, average_precision, best_f1_threshold, roc_auc
@@ -39,10 +43,12 @@ def _mongo_uri() -> str:
 
 
 def _score_metrics(labels: list[bool], scores: list[float]) -> dict[str, Any]:
+    thresholds = sorted({*THRESHOLDS, settings.RISK_FLAG_THRESHOLD})
     return {
         "pr_auc": average_precision(labels, scores),
         "roc_auc": roc_auc(labels, scores),
-        "thresholds": {f"{t:g}": at_threshold(labels, scores, t) for t in THRESHOLDS},
+        "thresholds": {f"{t:g}": at_threshold(labels, scores, t) for t in thresholds},
+        "flagged": at_threshold(labels, scores, settings.RISK_FLAG_THRESHOLD),
         "best_f1": best_f1_threshold(labels, scores),
         "mean_score": {
             "anomalous": round(sum(s for y, s in zip(labels, scores, strict=True) if y) / max(sum(labels), 1), 2),
@@ -154,7 +160,8 @@ async def run(ctx: Context) -> dict[str, Any]:
         "suite": NAME,
         "status": "ok",
         "config": {"history_claims": len(data["history"]), "incoming_claims": len(cases),
-                   "thresholds": list(THRESHOLDS)},
+                   "thresholds": list(THRESHOLDS), "risk_flag_threshold": settings.RISK_FLAG_THRESHOLD,
+                   "high_risk_threshold": HIGH_RISK_THRESHOLD},
         "metrics": metrics,
         "notes": notes,
         "details": {"rules": rule_outcomes},
@@ -172,14 +179,16 @@ def _section(lines: list[str], title: str, m: dict[str, Any]) -> None:
         "| Flag when score >= | Precision | Recall | F1 | TP | FP | FN |",
         "|---|---|---|---|---|---|---|",
     ]
+    row_notes = {f"{settings.RISK_FLAG_THRESHOLD:g}": " (flagged list, medium risk)",
+                 f"{HIGH_RISK_THRESHOLD:g}": " (high risk)"}
     for threshold, row in m["thresholds"].items():
-        lines.append(f"| {threshold} | {row['precision']:.3f} | {row['recall']:.3f} | {row['f1']:.3f} "
-                     f"| {row['tp']} | {row['fp']} | {row['fn']} |")
+        lines.append(f"| {threshold}{row_notes.get(threshold, '')} | {row['precision']:.3f} | {row['recall']:.3f} "
+                     f"| {row['f1']:.3f} | {row['tp']} | {row['fp']} | {row['fn']} |")
     best = m["best_f1"]
     if best is not None:
         lines += ["", f"Highest F1 over every observed score (ties to the higher threshold): score >= "
                       f"{best['threshold']:g}, precision {best['precision']:.3f}, recall {best['recall']:.3f}, "
-                      f"F1 {best['f1']:.3f}."]
+                      f"F1 {best['f1']:.3f}. Configured RISK_FLAG_THRESHOLD: {settings.RISK_FLAG_THRESHOLD:g}."]
     lines += ["", "Rule detection by injected anomaly:", "", "| Anomaly | Claims | Matching rule fired |",
               "|---|---|---|"]
     for key, row in m["rule_detection_rate"].items():
