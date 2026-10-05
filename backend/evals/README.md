@@ -29,7 +29,7 @@ package versions) and `summary.md` to `evals/results/<UTC timestamp>/`, or to
 | `retrieval` | nothing (fastembed downloads BAAI/bge-small-en-v1.5 once, about 67 MB) | recall@1/3/5, MRR@10 and answer-in-top-5 for vector and hybrid retrieval; grid over chunk size and fusion weights |
 | `ocr` | the `tesseract` binary; skipped cleanly when missing | character and word error rates of scanned PDFs (Tesseract) and text PDFs (text layer) against the ground truth |
 | `classification` | nothing (the LLM path needs `OPENAI_API_KEY`) | accuracy, per-class precision/recall/F1 and confusion matrix |
-| `risk` | MongoDB for the duplicate check; skipped when unreachable | PR-AUC, ROC-AUC and precision/recall at score thresholds of the rule-based risk score; per-anomaly rule detection. `--llm` adds the AI review (needs `GROQ_API_KEY`) |
+| `risk` | MongoDB for the duplicate check; skipped when unreachable | PR-AUC, ROC-AUC and precision/recall at score thresholds of the rule-based risk score, including the configured `RISK_FLAG_THRESHOLD` and the threshold with the best F1; per-anomaly rule detection. `--llm` adds the AI review (needs `GROQ_API_KEY`) |
 | `extraction` | `GROQ_API_KEY`; skipped with a message when unset | per-field precision/recall/F1 and exact match on text and scanned PDFs, latency p50/p95, tokens and cost per document |
 | `rag-answer` | `GROQ_API_KEY`; skipped with a message when unset | answer accuracy, citation hit rate and precision, abstention on unanswerable questions, latency, tokens and cost |
 
@@ -58,11 +58,10 @@ from a fresh build, and a unit test does the same check.
   NPI format; phone numbers use the 555-01xx range; every page says the
   document is synthetic and fictional. Nothing is modelled on insurer portals,
   call transcripts, identity checks or benefits verification.
-- **Ground truth** (`data/documents.json`): the class label, the exact page
-  texts, and the eleven extraction fields both normalised (ISO dates, numeric
-  cost) and as printed. Policy summaries are labelled `other` because the
-  application has no policy-summary class. Fields a document does not state
-  are `null`.
+- **Ground truth** (`data/documents.json`): the class label (policy summaries
+  are `policy_document`), the exact page texts, and the eleven extraction
+  fields both normalised (ISO dates, numeric cost) and as printed. Fields a
+  document does not state are `null`.
 - **228 questions** (`data/qa.json`) from templates over the ground truth, each
   tied to one source document: 96 identifier questions ("What is the total
   amount due on invoice INV-2632?"), 72 descriptive ones that name the patient
@@ -94,17 +93,25 @@ extraction and rag-answer suites were not run):
 
 | Run | Command (from `backend/`) | Date (UTC) | Commit | Platform |
 |---|---|---|---|---|
-| A | `python -m evals.run --suite retrieval --suite classification --suite risk` with `EVAL_MONGODB_URI=mongodb://localhost:27019` | 2026-09-29 03:06 | `4981e55` | macOS 26.5 arm64, Python 3.13.14 |
-| B | `python -m evals.run --suite offline --output-dir /out/offline` in `python:3.13-slim` with tesseract-ocr | 2026-09-29 03:13 | `64d8b45` | Debian 13 arm64 (Docker), Python 3.13.15, tesseract 5.5.0 |
+| A | `python -m evals.run --suite retrieval --suite classification --suite risk` with `EVAL_MONGODB_URI=mongodb://localhost:27020` | 2026-10-05 19:29 | `1d0030e` | macOS 26.5 arm64, Python 3.13.14 |
+| B | `python -m evals.run --suite offline --check-thresholds --output-dir /out/offline` in `python:3.13-slim` with tesseract-ocr | 2026-10-05 19:32 | `1d0030e` | Debian 13 arm64 (Docker), Python 3.13.15, tesseract 5.5.0 |
 | C | `python3 -m evals.run --suite ocr --output-dir /out` in `ubuntu:24.04` with tesseract-ocr | 2026-09-29 03:25 | `64d8b45` | Ubuntu 24.04 arm64 (Docker), Python 3.12.3, tesseract 5.3.4 |
 
-Commits `4981e55` and `64d8b45` differ only in the OCR suite's reporting. Run B
-repeated the other offline suites on Linux: classification and risk were
-identical, and retrieval differed only in near-ties (10 of 216 questions moved
-by a rank or so: recall@1, recall@5 and answer-in-top-5 identical, recall@3
-within 0.005, MRR within 0.001). Run C, with the tesseract version of CI's
-Ubuntu image, gave OCR metrics identical to run B. On one machine runs are
-deterministic: repeating run A gives identical metrics.
+Run B repeated every offline suite on Linux: classification and risk were
+identical to run A, and retrieval differed only in near-ties (10 of 216
+questions moved by a rank or so: recall@1, recall@5 and answer-in-top-5
+identical, recall@3 within 0.005, MRR within 0.001). Run C, with the tesseract
+version of CI's Ubuntu image, gave OCR metrics identical to run B; the OCR code
+and the page texts have not changed since its commit. On one machine runs are
+deterministic: repeating a run gives identical metrics.
+
+The first runs, on 2026-09-29 (commits `4981e55` and `64d8b45`), measured the
+same retrieval, OCR and risk-score results. Since then the keyword classifier
+gained a `policy_document` class (commit `6d52492`: accuracy 0.800 to 1.000),
+the flagged-claims list starts at a risk score of 15 instead of 30 (`eb66c86`:
+recall 0.093 to 0.767), and langchain-community was replaced by adapters on
+langchain-core (`1d0030e`), after which retrieval gave the same metrics and
+per-question ranks on both platforms as before.
 
 ### Retrieval (run A)
 
@@ -131,8 +138,8 @@ By source document (recall@1 / recall@5 / MRR): invoices 0.202 / 0.476 / 0.349
 vector vs 0.321 / 0.833 / 0.534 hybrid; policy summaries 0.500 / 0.667 / 0.595
 vs 0.875 / 0.979 / 0.918; medical reports 0.528 / 0.750 / 0.621 vs 0.667 /
 0.889 / 0.759; discharge summaries 0.771 / 0.875 / 0.817 vs 0.979 / 0.979 /
-0.979. Retrieval latency per question: vector p50 6.6 ms / p95 13.7 ms, hybrid
-9.2 / 20.3 ms (run A hardware).
+0.979. Retrieval latency per question: vector p50 5.1 ms / p95 6.3 ms, hybrid
+6.2 / 12.1 ms (run A hardware).
 
 Embeddings do not tell invoices apart by number: identifier questions reach a
 source chunk in the top five 24% of the time with vector search and 79% with
@@ -191,39 +198,84 @@ work. Hence `RAG_RETRIEVAL_MODE=hybrid`, `RAG_CHUNK_SIZE = 384`,
 Character errors on these mild scans are rare, but every miss lands on the
 diagnosis line: 15 of the 60 scans do not reproduce the printed diagnosis
 (description and ICD-10 code) character for character, which matters because
-extraction copies that field. OCR took 1.5 s per page (two CPU cores in
-Docker).
+extraction copies that field. OCR took 1.7 s per page in run B.
 
 ### Classification (runs A and B, identical)
 
 Keyword classifier (the path used whenever `OPENAI_API_KEY` is unset,
-including the Groq deployment): **accuracy 0.800, macro F1 0.750**. All 48
-invoices, medical reports and discharge summaries are classified correctly;
-all 12 policy summaries are predicted `claim_form` (true class `other`)
-because they share "policy number", "policyholder" and "coverage" with the
-claim-form keywords. The LLM classifier was not run: the application
-only uses it with OpenAI, and no key was configured.
+including the Groq deployment): **accuracy 1.000, macro F1 1.000** on the 60
+text-layer documents. Every invoice, medical report, discharge summary and
+policy summary gets its own class.
+
+Until commit `6d52492` the application had no class for insurance policies:
+accuracy was 0.800 and macro F1 0.750, because all 12 policy summaries were
+predicted `claim_form` (they share "policyholder" and "coverage" with the
+claim-form keywords). The fix adds `policy_document` with policy vocabulary
+(deductible, coinsurance, premium, coverage period and similar) and moves those
+two terms out of the claim-form list.
+
+Read the 1.000 with care: the keyword lists were revised with these documents
+in view, and the documents come from a few fixed templates, so this shows that
+the rules separate the classes, not how well they generalise. Unit tests
+(`tests/test_services/test_classification.py`) add a differently worded policy
+certificate and a claim form that names the policyholder. The dataset has no
+claim forms, so `claim_form` precision and recall are not measured. The LLM
+classifier was not run: the application only uses it with OpenAI, and no key
+was configured.
 
 ### Risk (runs A and B, identical)
 
 206 claims (86 anomalous, 120 clean), rules only: **PR-AUC 0.805, ROC-AUC
 0.844**; mean score 17.79 for anomalous claims and 2.25 for clean ones.
 
-| Flag when score >= | Precision | Recall | F1 |
-|---|---|---|---|
-| 15 | 0.795 | 0.767 | 0.781 |
-| 25 | 1.000 | 0.477 | 0.646 |
-| 30 (flagged-claims list) | 1.000 | 0.093 | 0.170 |
-| 60 ("high" risk) | 0.000 | 0.000 | 0.000 |
+| Flag when score >= | Precision | Recall | F1 | Flagged (true + false positives) |
+|---|---|---|---|---|
+| 5 | 0.767 | 0.767 | 0.767 | 86 (66 + 20) |
+| **15 (`RISK_FLAG_THRESHOLD`: flagged-claims list, medium risk)** | **0.795** | **0.767** | **0.781** | 83 (66 + 17) |
+| 25 | 1.000 | 0.477 | 0.646 | 41 (41 + 0) |
+| 30 (the flagged-claims list before commit `eb66c86`) | 1.000 | 0.093 | 0.170 | 8 (8 + 0) |
+| 40 | 1.000 | 0.081 | 0.150 | 7 (7 + 0) |
+| 50 | 1.000 | 0.023 | 0.045 | 2 (2 + 0) |
+| 60 (high risk) | 0.000 | 0.000 | 0.000 | 0 |
+
+Rule weights are 25 (high severity), 15 (medium) and 5 (low), so rule-only
+scores here take just the values 0, 5, 15, 25, 30, 40 and 50; a threshold
+between two of them flags the same claims as the next one (`summary.md` also
+lists 10 and 20).
 
 The matching rule fired for every exact or case/spacing duplicate, cost above
 $55,000, discharge before admission, stay over 90 days and missing required
 field, and for none of the name-typo duplicates, cost outliers under $50,000,
 services dated after discharge or claims missing only optional fields. 16.7%
 of clean claims raise at least one rule flag (the expensive and elective
-procedures). A single rule finding scores at most 25, so on rules alone only
-claims with two findings reach the flagged-claims list (score 30 or more): the
-AI review is what moves single findings over it.
+procedures). At 15, all 17 false positives are clean claims whose only finding
+is a cost between $50,000 and $150,000, and all 20 missed anomalies score 0:
+no rule covers them (7 cost outliers under $50,000, 6 name-typo duplicates, 5
+services after discharge, 2 claims missing only optional fields).
+
+### How the flagged-claims threshold was chosen
+
+The flagged-claims list used to start at 30. A single rule finding scores at
+most 25, so on rules alone only claims with two findings reached it, and it
+held 8 of the 86 anomalous claims. The rule for the new threshold, fixed before
+the sweep: the threshold with the highest F1 over every observed rule-based
+score, ties going to the higher threshold (fewer claims to review for the same
+F1).
+
+15 wins with F1 0.781; the runner-up, 5, flags 3 more clean claims (the
+elective-procedure keyword) and no more anomalies. So `RISK_FLAG_THRESHOLD`
+defaults to 15 in `config.py`: medium risk and the flagged-claims list start
+at 15, which one medium- or high-severity finding reaches, and high risk stays
+at 60, where validation also sets the claim's status to `flagged`. A test
+(`tests/test_evals/test_runner.py`) fails if the rule stops picking the
+configured default, for example after the rule weights change.
+
+Two caveats: the threshold is chosen and measured on the same 206 claims (with
+seven distinct scores there is little room to overfit, but it is still an
+in-sample choice), and the AI review, which adds up to 40 points
+(ai_risk_score x 0.4 x mean flag confidence), was not measured. With a Groq
+key, `python -m evals.run --suite risk --llm` scores the claims again with the
+review included and reports the same sweep.
 
 ### Extraction and RAG answers
 
@@ -246,10 +298,14 @@ Tesseract, starts MongoDB, runs `python -m evals.run --suite offline
 slightly below the measured value, with more room where the platform matters:
 retrieval near-ties shift between machines, and OCR could vary with the
 tesseract version (runs B and C agree for 5.5.0 and 5.3.4, the version on CI's
-Ubuntu image). All three runs meet every threshold. A suite that has
-thresholds but does not run (for example without tesseract) fails the check.
-After an intentional change to the pipeline or the dataset, re-run the suites
-and update the thresholds and this file from the new `summary.md`.
+Ubuntu image). Classification needs accuracy 0.98 and macro F1 0.97 (at most
+one of the 60 documents misclassified); risk checks PR-AUC, ROC-AUC, and
+precision and recall at the configured `RISK_FLAG_THRESHOLD`
+(`rules.flagged`). Runs A and B meet every threshold of the suites they ran
+(run B with `--check-thresholds`), and run C meets the OCR thresholds. A suite
+that has thresholds but does not run (for example without tesseract) fails the
+check. After an intentional change to the pipeline or the dataset, re-run the
+suites and update the thresholds and this file from the new `summary.md`.
 
 ## Limitations
 
