@@ -17,9 +17,13 @@ from utils.pdf_parser import DocumentReadError, count_pages, read_image, read_pd
 
 logger = logging.getLogger(__name__)
 
-DOCUMENT_CLASSES = ("medical_report", "invoice", "claim_form", "discharge_summary", "other")
+DOCUMENT_CLASSES = ("medical_report", "invoice", "claim_form", "discharge_summary", "policy_document", "other")
 
-# Keywords used for rule-based document classification fallback
+# Keywords used for rule-based document classification fallback. Each class
+# scores one point per distinct keyword found. Terms that describe the policy
+# itself (policyholder, coverage, cost sharing) belong to policy_document, not
+# claim_form: policy summaries used to be classified as claim forms because
+# they share "policyholder" and "coverage" with them.
 _CLASSIFICATION_KEYWORDS: dict[str, list[str]] = {
     "medical_report": [
         "medical report", "clinical report", "diagnostic report", "lab report",
@@ -32,12 +36,18 @@ _CLASSIFICATION_KEYWORDS: dict[str, list[str]] = {
     ],
     "claim_form": [
         "claim form", "insurance claim", "claim number", "policy number",
-        "claimant", "policyholder", "coverage", "reimbursement", "authorization",
+        "claimant", "reimbursement", "authorization",
     ],
     "discharge_summary": [
         "discharge summary", "discharged", "discharge date", "admission date",
         "hospital stay", "discharge instructions", "follow-up", "admitted",
         "inpatient", "length of stay",
+    ],
+    "policy_document": [
+        "policy summary", "policy schedule", "declarations page", "certificate of coverage",
+        "summary of coverage", "coverage period", "policy period", "policyholder", "premium",
+        "deductible", "out-of-pocket", "coinsurance", "copay", "covered services", "exclusions",
+        "member services",
     ],
 }
 
@@ -76,7 +86,8 @@ class OCRService:
         or if that call fails, falls back to keyword heuristics.
 
         Returns:
-            One of: medical_report, invoice, claim_form, discharge_summary, other.
+            One of DOCUMENT_CLASSES: medical_report, invoice, claim_form,
+            discharge_summary, policy_document or other.
         """
         if not text.strip():
             return "other"

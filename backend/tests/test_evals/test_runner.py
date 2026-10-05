@@ -83,6 +83,8 @@ async def test_classification_keyword_path(rendered_to_tmp):
     result = await classification.run(Context())
     report = result["metrics"]["keyword"]
     assert report["per_class"]["invoice"]["support"] == 24
+    assert report["per_class"]["policy_document"]["support"] == 12
+    assert report["per_class"]["policy_document"]["recall"] == 1.0
     assert "llm" not in result["metrics"]
     assert result["notes"]
 

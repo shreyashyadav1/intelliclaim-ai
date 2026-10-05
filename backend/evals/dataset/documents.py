@@ -13,10 +13,10 @@ Document families (60 documents from 24 patient episodes):
 - 12 outpatient medical reports and 12 two-page discharge summaries,
 - 12 insurance policy summaries.
 
-Each document records its class label, its pages (the exact text rendered
-into the PDF), the eleven extraction fields as normalised values, and the
-same values as printed. The application has no policy-summary class, so
-policy summaries are labelled "other".
+Each document records its class label (policy summaries are
+"policy_document"), its pages (the exact text rendered into the PDF), the
+eleven extraction fields as normalised values, and the same values as
+printed.
 """
 
 import random
@@ -464,7 +464,7 @@ def _policy_summary(episode: Episode, rng: random.Random) -> dict[str, Any]:
         DISCLAIMER,
     ]
     fields = _fields(policy_number=episode.policy_number, patient_name=episode.patient)
-    return {"kind": "policy_summary", "document_class": "other", "reference": episode.policy_number,
+    return {"kind": "policy_summary", "document_class": "policy_document", "reference": episode.policy_number,
             "pages": [lines], "fields": fields, "printed": dict(fields), "plan": plan,
             "deductible_cents": deductible, "out_of_pocket_cents": out_of_pocket, "coverage_end": end}
 

@@ -117,7 +117,7 @@
       "id": "doc-004",
       "filename": "doc-004.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-98805",
       "fields": {
         "policy_number": "POL-2026-98805",
@@ -450,7 +450,7 @@
       "id": "doc-013",
       "filename": "doc-013.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-73506",
       "fields": {
         "policy_number": "POL-2026-73506",
@@ -598,7 +598,7 @@
       "id": "doc-017",
       "filename": "doc-017.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-14045",
       "fields": {
         "policy_number": "POL-2026-14045",
@@ -784,7 +784,7 @@
       "id": "doc-022",
       "filename": "doc-022.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-46125",
       "fields": {
         "policy_number": "POL-2026-46125",
@@ -896,7 +896,7 @@
       "id": "doc-025",
       "filename": "doc-025.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-29885",
       "fields": {
         "policy_number": "POL-2026-29885",
@@ -1008,7 +1008,7 @@
       "id": "doc-028",
       "filename": "doc-028.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-88682",
       "fields": {
         "policy_number": "POL-2026-88682",
@@ -1045,7 +1045,7 @@
       "id": "doc-029",
       "filename": "doc-029.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-45039",
       "fields": {
         "policy_number": "POL-2026-45039",
@@ -1119,7 +1119,7 @@
       "id": "doc-031",
       "filename": "doc-031.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-22588",
       "fields": {
         "policy_number": "POL-2026-22588",
@@ -1194,7 +1194,7 @@
       "id": "doc-033",
       "filename": "doc-033.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-19089",
       "fields": {
         "policy_number": "POL-2026-19089",
@@ -1417,7 +1417,7 @@
       "id": "doc-039",
       "filename": "doc-039.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-95671",
       "fields": {
         "policy_number": "POL-2026-95671",
@@ -1565,7 +1565,7 @@
       "id": "doc-043",
       "filename": "doc-043.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-89272",
       "fields": {
         "policy_number": "POL-2026-89272",
@@ -1602,7 +1602,7 @@
       "id": "doc-044",
       "filename": "doc-044.pdf",
       "kind": "policy_summary",
-      "document_class": "other",
+      "document_class": "policy_document",
       "reference": "POL-2026-74654",
       "fields": {
         "policy_number": "POL-2026-74654",

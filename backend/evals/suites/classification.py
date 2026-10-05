@@ -7,8 +7,8 @@ Groq deployment) and reports accuracy, per-class precision/recall/F1 and the
 confusion matrix against the ground-truth labels.
 
 The application classifies with an LLM only when OPENAI_API_KEY is set; the
-LLM path is then evaluated as well. Policy summaries are labelled "other",
-since the application has no policy-summary class.
+LLM path is then evaluated as well. Policy summaries are labelled
+"policy_document".
 """
 
 from typing import Any

@@ -39,6 +39,7 @@ def test_documents_cover_the_three_families(dataset):
         "invoice": 24, "medical_report": 12, "discharge_summary": 12, "policy_summary": 12,
     }
     assert {doc["document_class"] for doc in documents} <= set(DOCUMENT_CLASSES)
+    assert {doc["document_class"] for doc in documents if doc["kind"] == "policy_summary"} == {"policy_document"}
     assert all(set(doc["fields"]) == set(CLAIM_FIELDS) for doc in documents)
     assert len({doc["id"] for doc in documents}) == 60
 
