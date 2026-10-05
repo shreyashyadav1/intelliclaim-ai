@@ -84,6 +84,27 @@ async def test_groq_chat_without_json_mode_omits_response_format(fake_groq):
     assert "response_format" not in fake_groq.calls[0]
 
 
+def test_default_groq_model_is_a_supported_reasoning_model():
+    # llama-3.3-70b-versatile was shut down for free and developer tiers on 2026-08-16.
+    assert settings.model_fields["GROQ_MODEL"].default == "openai/gpt-oss-120b"
+    assert settings.model_fields["GROQ_REASONING_EFFORT"].default == "low"
+
+
+async def test_groq_chat_sends_the_configured_reasoning_effort(fake_groq, monkeypatch):
+    monkeypatch.setattr(settings, "GROQ_REASONING_EFFORT", "medium")
+    fake_groq.respond("ok")
+    await llm.groq_chat([{"role": "user", "content": "hi"}], EXTRACTION_PARAMS)
+    assert fake_groq.calls[0]["reasoning_effort"] == "medium"
+
+
+async def test_groq_chat_omits_reasoning_effort_when_blank(fake_groq, monkeypatch):
+    # Models without reasoning support reject the parameter.
+    monkeypatch.setattr(settings, "GROQ_REASONING_EFFORT", "")
+    fake_groq.respond("ok")
+    await llm.groq_chat([{"role": "user", "content": "hi"}], EXTRACTION_PARAMS)
+    assert "reasoning_effort" not in fake_groq.calls[0]
+
+
 async def test_groq_failure_becomes_generic_provider_error(fake_groq, groq_errors):
     fake_groq.respond(groq_errors.connection())
     with pytest.raises(llm.LLMProviderError) as excinfo:

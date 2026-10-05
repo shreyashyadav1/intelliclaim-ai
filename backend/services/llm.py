@@ -141,6 +141,8 @@ async def groq_chat(messages: Messages, params: GenerationParams, *, json_mode: 
     """Run a Groq chat completion and return the message text."""
     client = get_groq_client()
     extra: dict[str, Any] = {"response_format": {"type": "json_object"}} if json_mode else {}
+    if settings.GROQ_REASONING_EFFORT:
+        extra["reasoning_effort"] = settings.GROQ_REASONING_EFFORT
     try:
         response = await client.chat.completions.create(
             model=settings.GROQ_MODEL,

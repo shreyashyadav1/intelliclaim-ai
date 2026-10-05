@@ -9,7 +9,7 @@ listed in the repository's .env.example.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
@@ -25,12 +25,14 @@ class GenerationParams:
     max_tokens: int
 
 
-# Per-task generation parameters, shared by every provider.
-EXTRACTION_PARAMS = GenerationParams(temperature=0.0, max_tokens=1024)
-VALIDATION_PARAMS = GenerationParams(temperature=0.2, max_tokens=1024)
-RAG_ANSWER_PARAMS = GenerationParams(temperature=0.1, max_tokens=500)
-CLASSIFICATION_PARAMS = GenerationParams(temperature=0.0, max_tokens=20)
-HEALTH_CHECK_PARAMS = GenerationParams(temperature=0.0, max_tokens=10)
+# Per-task generation parameters, shared by every provider. Token budgets for
+# the tasks that run on Groq include the reasoning tokens gpt-oss spends
+# before it answers.
+EXTRACTION_PARAMS = GenerationParams(temperature=0.0, max_tokens=2048)
+VALIDATION_PARAMS = GenerationParams(temperature=0.2, max_tokens=2048)
+RAG_ANSWER_PARAMS = GenerationParams(temperature=0.1, max_tokens=1024)
+CLASSIFICATION_PARAMS = GenerationParams(temperature=0.0, max_tokens=20)  # OpenAI only
+HEALTH_CHECK_PARAMS = GenerationParams(temperature=0.0, max_tokens=512)
 
 # Embedding models. Vectors from different models are not comparable, so
 # changing either one requires re-indexing (POST /api/rag/index-all).
@@ -50,7 +52,14 @@ class Settings(BaseSettings):
 
     # AI providers
     GROQ_API_KEY: str | None = Field(default=None, description="Groq API key")
-    GROQ_MODEL: str = Field(default="llama-3.3-70b-versatile", description="Groq chat model")
+    GROQ_MODEL: str = Field(
+        default="openai/gpt-oss-120b",
+        description="Groq chat model; Groq retires models over time (https://console.groq.com/docs/deprecations)",
+    )
+    GROQ_REASONING_EFFORT: Literal["low", "medium", "high", ""] = Field(
+        default="low",
+        description="reasoning_effort for Groq reasoning models such as gpt-oss; empty for models without it",
+    )
     OPENAI_API_KEY: str | None = Field(
         default=None, description="OpenAI API key; when set, OpenAI is tried before Groq"
     )
