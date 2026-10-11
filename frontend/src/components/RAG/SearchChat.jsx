@@ -67,8 +67,8 @@ function Citations({ sources }) {
 function Exchange({ exchange, onRetry, disabled }) {
   const { question, status, answer, error } = exchange;
   return (
-    <article className="exchange" aria-label={question}>
-      <p className="exchange-question">{question}</p>
+    <article className="exchange">
+      <h2 className="exchange-question">{question}</h2>
 
       {status === 'loading' && (
         <p className="exchange-pending" role="status">
@@ -108,6 +108,7 @@ export default function SearchChat() {
   const [input, setInput] = useState('');
   const loading = exchanges.some((exchange) => exchange.status === 'loading');
   const endRef = useRef(null);
+  const inputRef = useRef(null);
   const nextId = useRef(0);
 
   useEffect(() => {
@@ -151,6 +152,10 @@ export default function SearchChat() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!input.trim()) {
+      inputRef.current?.focus();
+      return;
+    }
     ask(input);
   };
 
@@ -184,6 +189,7 @@ export default function SearchChat() {
 
       <form className="search-composer" onSubmit={handleSubmit}>
         <input
+          ref={inputRef}
           type="text"
           name="question"
           autoComplete="off"
@@ -195,7 +201,7 @@ export default function SearchChat() {
           className="search-composer-input"
           id="rag-search-input"
         />
-        <button type="submit" className="btn btn-primary search-composer-send" disabled={loading || !input.trim()} id="rag-send-btn">
+        <button type="submit" className="btn btn-primary search-composer-send" disabled={loading} id="rag-send-btn">
           {loading && <Loader2 size={16} className="spin" aria-hidden="true" />}
           Ask
         </button>
