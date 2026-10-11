@@ -164,8 +164,7 @@ export default function SearchChat() {
       {exchanges.length === 0 ? (
         <div className="search-intro">
           <p className="search-intro-text">
-            Questions are answered from the text of indexed documents, and every answer lists the passages it used.
-            Index documents from the Documents page first.
+            Only indexed documents are searched. Index more from <Link to="/documents" className="text-link">Documents</Link>.
           </p>
           <h2 className="search-intro-title">Try one of these</h2>
           <ul className="suggested-questions" role="list">
