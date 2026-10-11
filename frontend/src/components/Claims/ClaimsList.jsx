@@ -1,23 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ClipboardList, Search, X } from 'lucide-react';
 import { getErrorMessage } from '../../services/api';
-import { formatCurrency, formatDate, formatScore, riskColor, riskLevel } from '../../utils/format';
+import { formatCurrency, formatDate } from '../../utils/format';
 import { StatusBadge } from '../Shared/Badge';
+import RiskValue from '../Shared/RiskValue';
 import { EmptyState, ErrorState, LoadingState } from '../Shared/StateMessage';
 import './ClaimsList.css';
 
 const STATUSES = ['all', 'pending', 'approved', 'rejected', 'flagged'];
-const LEVEL_WORDS = { high: 'High', medium: 'Medium', low: 'Low' };
-
-/** A claim's risk score in its band colour, with the band named beside it. */
-export function RiskValue({ score }) {
-  return (
-    <span className="risk-value">
-      <span className="risk-value-score" style={{ color: riskColor(score) }}>{formatScore(score)}</span>
-      <span className="risk-value-band">{LEVEL_WORDS[riskLevel(score)]}</span>
-    </span>
-  );
-}
 
 function ClaimsTable({ claims }) {
   const navigate = useNavigate();
@@ -49,7 +39,7 @@ function ClaimsTable({ claims }) {
         {claims.map((claim) => (
           <tr key={claim.id} role="row" className="claims-row" onClick={(event) => openRow(event, claim.id)}>
             <td role="cell" className="claims-cell-claim" translate="no">
-              <Link to={`/claims/${claim.id}`} className="claims-link">
+              <Link to={`/claims/${claim.id}`} className="record-link">
                 {claim.claim_number || 'Unnumbered claim'}
               </Link>
             </td>

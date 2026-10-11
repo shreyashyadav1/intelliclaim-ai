@@ -135,18 +135,8 @@
   text-align: right !important;
 }
 
-.claims-link {
-  color: var(--ink);
-  font-weight: 650;
-  text-decoration: underline;
-  text-decoration-color: var(--rule-strong);
-  text-underline-offset: 3px;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
 @media (hover: hover) {
-  .claims-row:hover .claims-link {
+  .claims-row:hover .record-link {
     text-decoration-color: var(--ink);
   }
 }
@@ -173,25 +163,6 @@
 
 .claims-cell-date {
   white-space: nowrap;
-}
-
-.risk-value {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-.risk-value-score {
-  min-width: 3.2ch;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.risk-value-band {
-  color: var(--ink-secondary);
-  font-size: var(--text-xs);
 }
 
 .claims-list-footnote {
@@ -273,7 +244,7 @@
     font-size: var(--text-xs);
   }
 
-  .claims-link {
+  .record-link {
     display: inline-flex;
     align-items: center;
     min-height: 32px;

@@ -177,6 +177,44 @@
   }
 }
 
+/* Link to a record by its ID (claim numbers in tables). */
+.record-link {
+  color: var(--ink);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: text-decoration-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .record-link:hover {
+    text-decoration-color: var(--ink);
+  }
+}
+
+/* Risk score in its band colour with the band in words. */
+.risk-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.risk-value-score {
+  min-width: 3.2ch;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.risk-value-band {
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+}
+
 /* ── Tags (Badge) ── */
 .badge {
   display: inline-flex;
