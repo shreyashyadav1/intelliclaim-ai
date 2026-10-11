@@ -18,7 +18,7 @@ const doc = (id, filename, extra = {}) => ({
 const documentNames = () => screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent);
 
 describe('DocumentsPage', () => {
-  it('opens the document viewer outside the animated page container', async () => {
+  it('opens the document viewer outside the page container', async () => {
     mockApi({
       'GET /documents': { data: { documents: [doc('doc-a', 'invoice_a.pdf')], total: 1 } },
       'GET /documents/doc-a': { data: doc('doc-a', 'invoice_a.pdf', { extracted_text: 'Total due: $10.00' }) },
@@ -29,7 +29,7 @@ describe('DocumentsPage', () => {
 
     const dialog = await screen.findByRole('dialog');
     expect(container).not.toContainElement(dialog);
-    expect(dialog.closest('.page-enter')).toBeNull();
+    expect(dialog.closest('#documents-page')).toBeNull();
     expect(await screen.findByText('Total due: $10.00')).toBeInTheDocument();
   });
 
