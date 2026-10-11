@@ -93,6 +93,7 @@ describe('DocumentsPage', () => {
           document_id: 'doc-a',
           extracted_data: { patient_name: 'Dana Whitfield', treatment_cost: 18250 },
           confidence_score: 0.82,
+          completeness: 0.82,
           is_new_claim: true,
         },
       },
@@ -104,7 +105,7 @@ describe('DocumentsPage', () => {
 
     expect(await screen.findByText('Dana Whitfield')).toBeInTheDocument();
     expect(screen.getByText('$18,250')).toBeInTheDocument();
-    expect(screen.getByText('82% confidence')).toBeInTheDocument();
+    expect(screen.getByText('82% complete')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View claim' })).toHaveAttribute('href', '/claims/clm-9');
 
     await user.click(screen.getByRole('button', { name: 'Index for search' }));

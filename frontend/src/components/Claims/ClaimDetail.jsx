@@ -32,8 +32,9 @@ export default function ClaimDetail({
   onDismissValidationError,
 }) {
   const busy = Boolean(pendingStatus) || validation.running;
-  const confidence = claim.extraction_confidence;
-  const hasConfidence = typeof confidence === 'number';
+  // extraction_confidence is the share of the eleven claim fields that extraction found.
+  const completeness = claim.extraction_confidence;
+  const hasCompleteness = typeof completeness === 'number';
   const flags = claim.risk_flags ?? [];
   const color = riskColor(claim.risk_score);
 
@@ -110,20 +111,20 @@ export default function ClaimDetail({
 
         <div className="claim-info-card glass-card">
           <div className="card-section-header">
-            <DollarSign size={16} /> Cost & Confidence
+            <DollarSign size={16} /> Cost & Completeness
           </div>
           <div className="card-field">
             <span className="field-label">Treatment Cost</span>
             <span className="field-value cost">{formatCurrency(claim.treatment_cost)}</span>
           </div>
           <div className="card-field">
-            <span className="field-label">AI Confidence</span>
-            {hasConfidence ? (
+            <span className="field-label" title="Share of the 11 claim fields found by extraction">Completeness</span>
+            {hasCompleteness ? (
               <div className="confidence-bar-wrapper">
                 <div className="confidence-bar">
-                  <div className="confidence-fill" style={{ width: `${confidence * 100}%` }} />
+                  <div className="confidence-fill" style={{ width: `${completeness * 100}%` }} />
                 </div>
-                <span className="confidence-pct">{(confidence * 100).toFixed(0)}%</span>
+                <span className="confidence-pct">{(completeness * 100).toFixed(0)}%</span>
               </div>
             ) : (
               <span className="field-value">N/A</span>

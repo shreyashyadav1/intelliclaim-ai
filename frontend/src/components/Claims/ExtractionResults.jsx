@@ -19,9 +19,9 @@ const FIELDS = [
   { label: 'Discharge Date', key: 'date_of_discharge', format: formatDate },
 ];
 
-function confidenceColor(confidence) {
-  if (confidence > 0.8) return 'var(--status-success)';
-  if (confidence > 0.5) return 'var(--status-warning)';
+function completenessColor(completeness) {
+  if (completeness > 0.8) return 'var(--status-success)';
+  if (completeness > 0.5) return 'var(--status-warning)';
   return 'var(--status-danger)';
 }
 
@@ -29,7 +29,8 @@ function confidenceColor(confidence) {
 export default function ExtractionResults({ document, result, onDismiss, children }) {
   const panelRef = useRef(null);
   const data = result.extracted_data ?? {};
-  const confidence = Number(result.confidence_score) || 0;
+  // Share of the eleven claim fields found; confidence_score is the older name for the same value.
+  const completeness = Number(result.completeness ?? result.confidence_score) || 0;
 
   useEffect(() => {
     panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -48,8 +49,12 @@ export default function ExtractionResults({ document, result, onDismiss, childre
         </h3>
         <div className="extraction-title-meta">
           <MockBadge source={result.source} />
-          <span className="extraction-confidence" style={{ color: confidenceColor(confidence) }}>
-            {(confidence * 100).toFixed(0)}% confidence
+          <span
+            className="extraction-confidence"
+            style={{ color: completenessColor(completeness) }}
+            title="Share of the 11 claim fields found in the document"
+          >
+            {(completeness * 100).toFixed(0)}% complete
           </span>
           <button type="button" className="extraction-dismiss" onClick={onDismiss} aria-label="Close extraction results">
             <X size={16} />

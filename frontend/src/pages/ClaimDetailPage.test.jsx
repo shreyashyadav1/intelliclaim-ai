@@ -41,6 +41,11 @@ describe('ClaimDetailPage', () => {
     });
     const { user } = renderClaim();
 
+    // extraction_confidence is shown as completeness, not as a model confidence.
+    expect(await screen.findByText('Completeness')).toBeInTheDocument();
+    expect(screen.getByText('90%')).toBeInTheDocument();
+    expect(screen.queryByText(/confidence/i)).not.toBeInTheDocument();
+
     await user.click(await screen.findByRole('button', { name: 'Validate' }));
 
     expect(await screen.findByText('Cost is high for an outpatient procedure.')).toBeInTheDocument();
