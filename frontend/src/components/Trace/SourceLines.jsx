@@ -10,7 +10,7 @@ function SourceLines({ text, marks, activeKey, activeLines, labels = {}, onHover
   const lines = useMemo(() => layoutLines(text, marks), [text, marks]);
 
   return (
-    <ol className="source-lines" role="list">
+    <ol className="source-lines" role="list" data-has-active={activeLines?.length ? true : undefined}>
       {lines.map((line) => (
         <li
           key={line.number}

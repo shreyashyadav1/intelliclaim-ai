@@ -230,6 +230,12 @@
   box-shadow: inset 0 -2px 0 var(--ink);
 }
 
+/* While one field is being checked, the other highlights step back. */
+.source-lines[data-has-active] .trace-mark:not([data-active]) {
+  background: color-mix(in oklab, var(--mark) 45%, var(--sheet));
+  box-shadow: none;
+}
+
 @media (forced-colors: active) {
   .trace-mark {
     forced-color-adjust: none;
