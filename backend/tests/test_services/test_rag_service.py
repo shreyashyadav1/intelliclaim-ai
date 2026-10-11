@@ -446,6 +446,16 @@ async def test_chat_groq_answers_with_the_content_of_a_reasoning_model(fake_groq
     assert RAG_ANSWER_PARAMS.max_tokens >= 1024  # gpt-oss reasoning counts toward the limit
 
 
+@pytest.mark.parametrize(("effort", "sent"), [("low", "low"), ("high", "high"), ("", None)])
+async def test_chat_groq_sends_the_same_reasoning_effort_as_groq_chat(fake_groq, monkeypatch, effort, sent):
+    monkeypatch.setattr(settings, "GROQ_REASONING_EFFORT", effort)
+    fake_groq.respond("Hello.")
+
+    await llm.chat_model("groq", RAG_ANSWER_PARAMS).ainvoke("Hi")
+
+    assert fake_groq.calls[0].get("reasoning_effort") == sent
+
+
 def test_chat_model_requires_a_configured_provider():
     with pytest.raises(llm.LLMNotConfiguredError):
         llm.chat_model("groq", RAG_ANSWER_PARAMS)

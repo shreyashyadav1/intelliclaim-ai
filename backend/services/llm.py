@@ -140,7 +140,8 @@ class _NoSyncClient:
 def chat_model(provider: str, params: GenerationParams) -> Any:
     """A LangChain chat model for `provider` that sends requests through the shared async client.
 
-    Groq: ChatGroq with GROQ_MODEL. OpenAI: ChatOpenAI with OPENAI_MODEL.
+    Groq: ChatGroq with GROQ_MODEL and, when set, GROQ_REASONING_EFFORT (as in
+    groq_chat). OpenAI: ChatOpenAI with OPENAI_MODEL.
     Raises LLMNotConfiguredError when the provider has no API key.
     """
     if provider == "groq":
@@ -151,6 +152,7 @@ def chat_model(provider: str, params: GenerationParams) -> Any:
             api_key=settings.GROQ_API_KEY,
             temperature=params.temperature,
             max_tokens=params.max_tokens,
+            reasoning_effort=settings.GROQ_REASONING_EFFORT or None,
             async_client=get_groq_client().chat.completions,
             client=_NoSyncClient(),
         )
