@@ -91,7 +91,7 @@
   display: block;
   height: 6px;
   overflow: hidden;
-  border-radius: 3px;
+  border-radius: var(--radius-pill);
   background: var(--desk-raised);
 }
 

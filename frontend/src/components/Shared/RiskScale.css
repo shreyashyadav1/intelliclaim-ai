@@ -14,7 +14,7 @@
 .risk-scale-band {
   flex-basis: 0;
   min-width: 2px;
-  border-radius: 2px;
+  border-radius: var(--radius-sheet);
 }
 
 .risk-scale-band[data-band='low'] {
@@ -48,7 +48,7 @@
   top: -5px;
   width: 4px;
   height: 18px;
-  border-radius: 2px;
+  border-radius: var(--radius-sheet);
   background: var(--ink);
   box-shadow: 0 0 0 2px var(--desk);
   transform: translateX(-50%);
@@ -59,7 +59,7 @@
   top: -4px;
   width: 2px;
   height: 16px;
-  border-radius: 1px;
+  border-radius: var(--radius-sheet);
   background: var(--ink);
   box-shadow: 0 0 0 1px var(--desk);
   transform: translateX(-50%);

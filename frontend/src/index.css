@@ -57,6 +57,7 @@
   --radius-tag: 4px;
   --radius-control: 6px;
   --radius-panel: 10px;
+  --radius-pill: 999px;
 
   /* Depth: only paper and overlays lift */
   --shadow-paper: 0 1px 2px oklch(0.255 0.035 262 / 0.08), 0 10px 28px -14px oklch(0.255 0.035 262 / 0.22);

@@ -80,14 +80,14 @@
   display: block;
   height: 10px;
   overflow: hidden;
-  border-radius: 2px;
+  border-radius: var(--radius-sheet);
   background: var(--desk-raised);
 }
 
 .status-bar-fill {
   display: block;
   height: 100%;
-  border-radius: 2px;
+  border-radius: var(--radius-sheet);
   background: var(--ink-secondary);
   transform-origin: left center;
 }
