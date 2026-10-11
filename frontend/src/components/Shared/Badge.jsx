@@ -1,36 +1,33 @@
 import './Shared.css';
 
 const variantMap = {
+  info: 'badge-info',
   success: 'badge-success',
   warning: 'badge-warning',
   danger: 'badge-danger',
-  info: 'badge-info',
   pending: 'badge-pending',
-  // Claim statuses are passed straight through as the variant (see ClaimsList,
-  // ClaimDetail and ValidationPage), so each one needs its own distinct colour
-  // rather than falling back to the shared "badge-info" default.
+  mock: 'badge-mock',
+  // Claim statuses are passed straight through as the variant (see StatusBadge),
+  // so each one needs its own distinct style rather than the shared default.
   approved: 'badge-success',
   rejected: 'badge-danger',
-  flagged: 'badge-info',
+  flagged: 'badge-warning',
 };
 
-export default function Badge({
-  id,
-  children,
-  variant = 'info',
-  pulse = false,
-  icon: Icon,
-  className = '',
-  title,
-}) {
+export default function Badge({ id, children, variant = 'info', icon: Icon, className = '', title }) {
   return (
-    <span
-      id={id}
-      title={title}
-      className={`badge ${variantMap[variant] || 'badge-info'} ${pulse ? 'badge-pulse' : ''} ${className}`}
-    >
-      {Icon && <Icon size={11} />}
+    <span id={id} title={title} className={`badge ${variantMap[variant] || 'badge-info'} ${className}`.trim()}>
+      {Icon && <Icon size={12} aria-hidden="true" />}
       {children}
     </span>
+  );
+}
+
+/** A claim's status (pending, approved, rejected or flagged), shown in sentence case. */
+export function StatusBadge({ status }) {
+  return (
+    <Badge variant={status} className="badge--status">
+      {status || 'unknown'}
+    </Badge>
   );
 }

@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import Badge from './Badge';
 
 // Claim statuses are passed straight through as the `variant` prop (see
-// ClaimsList, ClaimDetail and ValidationPage), so each one must resolve to
-// its own badge class rather than sharing one colour.
+// StatusBadge), so each one must resolve to its own badge class rather than
+// sharing one colour.
 describe('Badge', () => {
   it('gives approved, rejected and flagged claim statuses distinct classes', () => {
     render(
@@ -26,7 +26,7 @@ describe('Badge', () => {
 
     expect(classes.approved).toContain('badge-success');
     expect(classes.rejected).toContain('badge-danger');
-    expect(classes.flagged).toContain('badge-info');
+    expect(classes.flagged).toContain('badge-warning');
     expect(classes.pending).toContain('badge-pending');
 
     // No two statuses should share a colour class.
