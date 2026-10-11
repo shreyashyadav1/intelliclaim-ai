@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Brain, FileText, X } from 'lucide-react';
 import { formatDate, humanize } from '../../utils/format';
 import Badge from '../Shared/Badge';
@@ -37,7 +38,9 @@ export default function DocumentViewer({ document, loading, error, extracting, o
 
   const processed = document.processing_status === 'processed';
 
-  return (
+  // Rendered into <body>: the page's entry animation leaves a transform on its container,
+  // which would otherwise position this fixed overlay against the whole (long) page.
+  return createPortal(
     <div className="doc-viewer-overlay" onClick={onClose}>
       <div
         className="doc-viewer glass-card"
@@ -93,6 +96,7 @@ export default function DocumentViewer({ document, loading, error, extracting, o
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    window.document.body,
   );
 }

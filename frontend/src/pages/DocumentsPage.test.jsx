@@ -18,6 +18,21 @@ const doc = (id, filename, extra = {}) => ({
 const documentNames = () => screen.getAllByRole('heading', { level: 4 }).map((heading) => heading.textContent);
 
 describe('DocumentsPage', () => {
+  it('opens the document viewer outside the animated page container', async () => {
+    mockApi({
+      'GET /documents': { data: { documents: [doc('doc-a', 'invoice_a.pdf')], total: 1 } },
+      'GET /documents/doc-a': { data: doc('doc-a', 'invoice_a.pdf', { extracted_text: 'Total due: $10.00' }) },
+    });
+    const { user, container } = renderWithRouter(<DocumentsPage />);
+
+    await user.click(await screen.findByRole('button', { name: 'View invoice_a.pdf' }));
+
+    const dialog = await screen.findByRole('dialog');
+    expect(container).not.toContainElement(dialog);
+    expect(dialog.closest('.page-enter')).toBeNull();
+    expect(await screen.findByText('Total due: $10.00')).toBeInTheDocument();
+  });
+
   it('restores a document in place when the delete request fails', async () => {
     const pendingDelete = deferred();
     mockApi({
