@@ -78,14 +78,16 @@ export default function SourceDocument({
   onHover,
   labels,
   sheetRef,
+  headingLevel = 2,
 }) {
   const headingId = useId();
+  const Heading = `h${headingLevel}`;
   const filename = document?.filename;
 
   return (
     <section className="source-panel" aria-labelledby={headingId}>
       <div className="source-panel-head">
-        <h2 id={headingId} className="source-panel-title">Source document</h2>
+        <Heading id={headingId} className="source-panel-title">Source document</Heading>
         {documents?.length > 1 && (
           <DocumentChooser documents={documents} selectedId={selectedId} onSelect={onSelect} />
         )}

@@ -41,6 +41,7 @@ function TraceReference({ field, trace, onActivate, onLocate }) {
  */
 export default function FieldSheet({
   title = 'Extracted fields',
+  headingLevel = 2,
   fields,
   trace,
   completeness,
@@ -50,6 +51,7 @@ export default function FieldSheet({
   children,
 }) {
   const headingId = useId();
+  const Heading = `h${headingLevel}`;
   const present = fields.filter((field) => !isBlank(field.value));
   const traced = trace ? present.filter((field) => trace.fields[field.key]?.status === 'found').length : 0;
   const hasCompleteness = typeof completeness === 'number' && Number.isFinite(completeness);
@@ -58,7 +60,7 @@ export default function FieldSheet({
   return (
     <section className="field-sheet" aria-labelledby={headingId}>
       <div className="field-sheet-head">
-        <h2 id={headingId} className="field-sheet-title">{title}</h2>
+        <Heading id={headingId} className="field-sheet-title">{title}</Heading>
         <p className="field-sheet-summary">
           {trace
             ? `${traced} of ${present.length} values found in this document.`

@@ -1,87 +1,143 @@
-import { Brain, DatabaseZap, Eye, FileText, Image, Loader, RefreshCw, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Brain, DatabaseZap, FileImage, FileText, Loader2, RefreshCw, Trash2 } from 'lucide-react';
 import { getErrorMessage } from '../../services/api';
 import { formatDate, formatFileSize, humanize } from '../../utils/format';
 import Badge from '../Shared/Badge';
 import { EmptyState, ErrorState, LoadingState } from '../Shared/StateMessage';
 import './DocumentList.css';
 
-const CLASS_BADGES = {
-  medical_report: 'info',
-  invoice: 'warning',
-  claim_form: 'success',
-  discharge_summary: 'pending',
-};
+function sentenceCase(value) {
+  const text = humanize(value);
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+}
 
-function DocumentCard({ doc, busyAction, indexed, onView, onDelete, onExtract, onIndex }) {
-  const failed = doc.processing_status === 'failed';
-  const processed = doc.processing_status === 'processed';
+/** Second step of a delete: names the document and waits for an explicit confirmation. */
+function ConfirmDelete({ doc, onConfirm, onCancel }) {
+  const confirmRef = useRef(null);
+  useEffect(() => {
+    confirmRef.current?.focus();
+  }, []);
 
   return (
-    <div className={`document-card glass-card ${failed ? 'document-card--failed' : ''}`} id={`doc-${doc.id}`}>
-      <div className="document-card-icon">
-        {doc.file_type === 'image' ? <Image size={24} /> : <FileText size={24} />}
-      </div>
-      <div className="document-card-info">
-        <h4 className="document-card-name" title={doc.filename}>{doc.filename}</h4>
-        <div className="document-card-meta">
+    <div
+      className="document-confirm"
+      role="group"
+      aria-label={`Delete ${doc.filename}?`}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') onCancel();
+      }}
+    >
+      <span className="document-confirm-text">Delete this document and its search index entries?</span>
+      <button ref={confirmRef} type="button" className="btn btn-danger btn-sm" onClick={onConfirm}>
+        Delete
+      </button>
+      <button type="button" className="btn btn-quiet btn-sm" onClick={onCancel}>
+        Keep
+      </button>
+    </div>
+  );
+}
+
+function DocumentRow({ doc, busyAction, indexed, onView, onDelete, onExtract, onIndex }) {
+  const [confirming, setConfirming] = useState(false);
+  const deleteRef = useRef(null);
+  const failed = doc.processing_status === 'failed';
+  const processed = doc.processing_status === 'processed';
+  const Icon = doc.file_type === 'image' ? FileImage : FileText;
+
+  const cancelDelete = () => {
+    setConfirming(false);
+    requestAnimationFrame(() => deleteRef.current?.focus());
+  };
+
+  return (
+    <li className={`document-row ${failed ? 'document-row--failed' : ''}`} id={`doc-${doc.id}`}>
+      <Icon size={20} className="document-row-icon" aria-hidden="true" />
+      <div className="document-row-main">
+        <h3 className="document-row-name">
+          <button
+            type="button"
+            className="document-row-open"
+            onClick={() => onView(doc)}
+            aria-label={`View ${doc.filename}`}
+            id={`view-${doc.id}`}
+            translate="no"
+            title={doc.filename}
+          >
+            {doc.filename}
+          </button>
+        </h3>
+        <div className="document-row-tags">
           {failed ? (
             <Badge variant="danger">Processing failed</Badge>
           ) : (
-            <Badge variant={CLASS_BADGES[doc.document_class] ?? 'info'}>
-              {humanize(doc.document_class) || 'unclassified'}
-            </Badge>
+            <Badge>{sentenceCase(doc.document_class) || 'Unclassified'}</Badge>
           )}
-          {!failed && !processed && <Badge variant="pending">{humanize(doc.processing_status)}</Badge>}
-          {indexed && <Badge variant="success">indexed</Badge>}
-          <span className="document-card-size">{formatFileSize(doc.file_size)}</span>
-          <span className="document-card-date">{formatDate(doc.created_at)}</span>
+          {!failed && !processed && <Badge variant="pending">{sentenceCase(doc.processing_status)}</Badge>}
+          {indexed && <Badge variant="success">Indexed</Badge>}
         </div>
         {failed && (
-          <p className="document-card-error">{doc.error_message || 'The document could not be processed.'}</p>
+          <p className="document-row-error">{doc.error_message || 'The document could not be processed.'}</p>
         )}
       </div>
-      <div className="document-card-actions">
-        <button
-          className="doc-action-btn"
-          onClick={() => onView(doc)}
-          title="View"
-          aria-label={`View ${doc.filename}`}
-          id={`view-${doc.id}`}
-        >
-          <Eye size={16} />
-        </button>
-        <button
-          className="doc-action-btn doc-action-btn--accent"
-          onClick={() => onExtract(doc)}
-          disabled={!processed || Boolean(busyAction)}
-          title={processed ? 'Extract claim data' : 'Only processed documents can be extracted'}
-          aria-label={`Extract claim data from ${doc.filename}`}
-          id={`extract-${doc.id}`}
-        >
-          {busyAction === 'extracting' ? <Loader size={16} className="doc-action-spinner" /> : <Brain size={16} />}
-        </button>
-        <button
-          className="doc-action-btn doc-action-btn--accent"
-          onClick={() => onIndex(doc)}
-          disabled={!processed || Boolean(busyAction)}
-          title={processed ? 'Index for AI search' : 'Only processed documents can be indexed'}
-          aria-label={`Index ${doc.filename} for search`}
-          id={`index-${doc.id}`}
-        >
-          {busyAction === 'indexing' ? <Loader size={16} className="doc-action-spinner" /> : <DatabaseZap size={16} />}
-        </button>
-        <button
-          className="doc-action-btn doc-action-btn--danger"
-          onClick={() => onDelete(doc)}
-          disabled={Boolean(busyAction)}
-          title="Delete"
-          aria-label={`Delete ${doc.filename}`}
-          id={`delete-${doc.id}`}
-        >
-          <Trash2 size={16} />
-        </button>
-      </div>
-    </div>
+      <p className="document-row-meta tabular">
+        <span>{doc.file_type ? doc.file_type.toUpperCase() : 'File'}, {formatFileSize(doc.file_size)}</span>
+        <span>{formatDate(doc.created_at)}</span>
+      </p>
+      {confirming ? (
+        <ConfirmDelete
+          doc={doc}
+          onConfirm={() => {
+            setConfirming(false);
+            onDelete(doc);
+          }}
+          onCancel={cancelDelete}
+        />
+      ) : (
+        <div className="document-row-actions">
+          <button
+            type="button"
+            className="btn btn-quiet btn-sm"
+            onClick={() => onExtract(doc)}
+            disabled={!processed || Boolean(busyAction)}
+            title={processed ? 'Extract claim data' : 'Only processed documents can be extracted'}
+            aria-label={`Extract claim data from ${doc.filename}`}
+            id={`extract-${doc.id}`}
+          >
+            {busyAction === 'extracting'
+              ? <Loader2 size={16} className="spin" aria-hidden="true" />
+              : <Brain size={16} aria-hidden="true" />}
+            Extract
+          </button>
+          <button
+            type="button"
+            className="btn btn-quiet btn-sm"
+            onClick={() => onIndex(doc)}
+            disabled={!processed || Boolean(busyAction)}
+            title={processed ? 'Index for AI search' : 'Only processed documents can be indexed'}
+            aria-label={`Index ${doc.filename} for search`}
+            id={`index-${doc.id}`}
+          >
+            {busyAction === 'indexing'
+              ? <Loader2 size={16} className="spin" aria-hidden="true" />
+              : <DatabaseZap size={16} aria-hidden="true" />}
+            Index
+          </button>
+          <button
+            ref={deleteRef}
+            type="button"
+            className="icon-btn icon-btn--danger"
+            onClick={() => setConfirming(true)}
+            disabled={Boolean(busyAction)}
+            title="Delete"
+            aria-label={`Delete ${doc.filename}`}
+            id={`delete-${doc.id}`}
+          >
+            <Trash2 size={16} aria-hidden="true" />
+          </button>
+        </div>
+      )}
+    </li>
   );
 }
 
@@ -101,30 +157,20 @@ export default function DocumentList({
 }) {
   let content;
   if (error) {
-    content = (
-      <div className="glass-card document-list-state">
-        <ErrorState title="Couldn't load documents" message={getErrorMessage(error)} onRetry={onRetry} />
-      </div>
-    );
+    content = <ErrorState title="Couldn't load documents" message={getErrorMessage(error)} onRetry={onRetry} />;
   } else if (!documents) {
-    content = (
-      <div className="glass-card document-list-state">
-        <LoadingState label="Loading documents…" />
-      </div>
-    );
+    content = <LoadingState label="Loading documents…" />;
   } else if (documents.length === 0) {
     content = (
-      <div className="glass-card document-list-state">
-        <EmptyState icon={FileText} title="No documents yet">
-          Upload a PDF or image above to run OCR and classification.
-        </EmptyState>
-      </div>
+      <EmptyState icon={FileText} title="No documents yet">
+        Upload a PDF or scan above. Its text is read with OCR and classified, then you can extract the claim.
+      </EmptyState>
     );
   } else {
     content = (
-      <div className="document-grid">
+      <ul className="document-rows" role="list">
         {documents.map((doc) => (
-          <DocumentCard
+          <DocumentRow
             key={doc.id}
             doc={doc}
             busyAction={busy[doc.id]}
@@ -135,23 +181,23 @@ export default function DocumentList({
             onIndex={onIndex}
           />
         ))}
-      </div>
+      </ul>
     );
   }
 
   return (
-    <div className="document-list" id="document-list">
-      <div className="document-list-header">
-        <h3>Documents{documents ? ` (${total ?? documents.length})` : ''}</h3>
+    <section className="document-list" id="document-list" aria-labelledby="document-list-title">
+      <div className="section-head">
+        <h2 id="document-list-title">Documents{documents ? ` (${total ?? documents.length})` : ''}</h2>
         <button
           type="button"
-          className="document-list-action"
+          className="btn btn-secondary btn-sm"
           onClick={onIndexAll}
           disabled={indexingAll || !documents?.length}
           title="Rebuild the AI search index from every processed document"
           id="index-all-btn"
         >
-          <RefreshCw size={14} className={indexingAll ? 'doc-action-spinner' : ''} />
+          <RefreshCw size={14} className={indexingAll ? 'spin' : ''} aria-hidden="true" />
           {indexingAll ? 'Re-indexing…' : 'Re-index all'}
         </button>
       </div>
@@ -161,6 +207,6 @@ export default function DocumentList({
           Showing the {documents.length} most recent of {total} documents.
         </p>
       )}
-    </div>
+    </section>
   );
 }

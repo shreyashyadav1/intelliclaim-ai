@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
-import { DatabaseZap } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import UploadZone from '../components/Documents/UploadZone';
 import DocumentList from '../components/Documents/DocumentList';
 import DocumentViewer from '../components/Documents/DocumentViewer';
-import ExtractionResults from '../components/Claims/ExtractionResults';
 import Notice from '../components/Shared/Notice';
+import PageHeader from '../components/Shared/PageHeader';
 import { useApiQuery } from '../hooks/useApiQuery';
 import { documentsApi, extractionApi, getErrorMessage, ragApi } from '../services/api';
 
@@ -30,12 +30,21 @@ function withDocumentAt(list, doc, index) {
 export default function DocumentsPage() {
   const documents = useApiQuery(loadDocuments);
   const { setData: setDocuments } = documents;
-  const [viewer, setViewer] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [busy, setBusy] = useState({});
   const [notice, setNotice] = useState(null);
-  const [extraction, setExtraction] = useState(null);
+  const [extractions, setExtractions] = useState({});
   const [indexedIds, setIndexedIds] = useState(() => new Set());
   const [indexingAll, setIndexingAll] = useState(false);
+  // Documents opened from an upload result, before the refreshed list includes them.
+  const [opened, setOpened] = useState({});
+
+  // The open document lives in the URL (?doc=<id>), so a review can be linked to.
+  const openId = searchParams.get('doc');
+  const loadOpenDocument = useCallback(() => (openId ? documentsApi.get(openId) : Promise.resolve(null)), [openId]);
+  const openDocument = useApiQuery(loadOpenDocument);
+  const openSummary = documents.data?.documents.find((doc) => doc.id === openId) ?? opened[openId];
+  const sheetDocument = openDocument.data ?? openSummary ?? (openId ? { id: openId, filename: 'Document' } : null);
 
   const setDocumentBusy = (id, action) => {
     setBusy((current) => {
@@ -46,29 +55,43 @@ export default function DocumentsPage() {
     });
   };
 
-  const handleView = async (doc) => {
-    setViewer({ document: doc, loading: true, error: null });
-    try {
-      const full = await documentsApi.get(doc.id);
-      setViewer((current) => (current?.document.id === doc.id ? { document: full, loading: false, error: null } : current));
-    } catch (err) {
-      setViewer((current) => (
-        current?.document.id === doc.id ? { ...current, loading: false, error: getErrorMessage(err) } : current
-      ));
-    }
+  const setOpenId = (id) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      if (id) next.set('doc', id);
+      else next.delete('doc');
+      return next;
+    }, { replace: true });
   };
 
-  const closeViewer = useCallback(() => setViewer(null), []);
+  const handleView = (doc) => {
+    setNotice(null);
+    setOpened((current) => ({ ...current, [doc.id]: doc }));
+    setOpenId(doc.id);
+  };
+
+  const closeViewer = useCallback(() => {
+    setNotice(null);
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.delete('doc');
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
 
   const handleDelete = async (doc) => {
     const index = documents.data?.documents.findIndex((existing) => existing.id === doc.id) ?? -1;
     setNotice(null);
-    // Optimistic: hide the card immediately and put it back if the server refuses.
+    // Optimistic: hide the row immediately and put it back if the server refuses.
     setDocuments((current) => withoutDocument(current, doc.id));
     try {
       await documentsApi.delete(doc.id);
       setNotice({ tone: 'success', message: `Deleted ${doc.filename}.` });
-      setExtraction((current) => (current?.document.id === doc.id ? null : current));
+      setExtractions((current) => {
+        const next = { ...current };
+        delete next[doc.id];
+        return next;
+      });
     } catch (err) {
       if (err.status === 404) {
         setNotice({ tone: 'info', message: `${doc.filename} had already been deleted.` });
@@ -82,14 +105,13 @@ export default function DocumentsPage() {
     }
   };
 
+  // Extraction runs with the document open, so its fields appear beside the text they came from.
   const handleExtract = async (doc) => {
-    setViewer(null);
-    setNotice(null);
-    setExtraction(null);
+    handleView(doc);
     setDocumentBusy(doc.id, 'extracting');
     try {
       const result = await extractionApi.extract(doc.id);
-      setExtraction({ document: doc, result });
+      setExtractions((current) => ({ ...current, [doc.id]: result }));
     } catch (err) {
       setNotice({ tone: 'error', message: `Extraction failed for ${doc.filename}: ${getErrorMessage(err)}` });
     } finally {
@@ -136,39 +158,22 @@ export default function DocumentsPage() {
     }
   };
 
-  const extractedDocId = extraction?.document.id;
-  const extractedIndexed = indexedIds.has(extractedDocId);
-  let indexLabel = 'Index for search';
-  if (extractedIndexed) indexLabel = 'Indexed for search';
-  else if (busy[extractedDocId] === 'indexing') indexLabel = 'Indexing…';
+  const noticeElement = notice && (
+    <Notice tone={notice.tone} onDismiss={() => setNotice(null)}>
+      {notice.message}
+    </Notice>
+  );
 
   return (
-    <div className="page-enter" id="documents-page">
-      <UploadZone onUploadComplete={documents.refetch} />
+    <div id="documents-page">
+      <PageHeader
+        title="Documents"
+        description="Upload scans and PDFs, check the text that was read from them, and extract each one into a claim."
+      />
 
-      {notice && (
-        <Notice tone={notice.tone} onDismiss={() => setNotice(null)}>
-          {notice.message}
-        </Notice>
-      )}
+      <UploadZone onUploadComplete={documents.refetch} onReview={handleView} />
 
-      {extraction && (
-        <ExtractionResults
-          document={extraction.document}
-          result={extraction.result}
-          onDismiss={() => setExtraction(null)}
-        >
-          <button
-            type="button"
-            className="btn btn-primary btn-sm"
-            onClick={() => handleIndex(extraction.document)}
-            disabled={Boolean(busy[extractedDocId]) || extractedIndexed}
-            id="index-extracted-btn"
-          >
-            <DatabaseZap size={14} /> {indexLabel}
-          </button>
-        </ExtractionResults>
-      )}
+      {!sheetDocument && noticeElement && <div className="documents-notice">{noticeElement}</div>}
 
       <DocumentList
         documents={documents.data?.documents}
@@ -185,14 +190,21 @@ export default function DocumentsPage() {
         onIndexAll={handleIndexAll}
       />
 
-      {viewer && (
+      {sheetDocument && (
         <DocumentViewer
-          document={viewer.document}
-          loading={viewer.loading}
-          error={viewer.error}
-          extracting={busy[viewer.document.id] === 'extracting'}
+          key={sheetDocument.id}
+          document={sheetDocument}
+          loading={!openDocument.data && !openDocument.error}
+          error={openDocument.error ? getErrorMessage(openDocument.error) : null}
+          onRetry={openDocument.refetch}
+          extraction={extractions[sheetDocument.id]}
+          extracting={busy[sheetDocument.id] === 'extracting'}
+          indexing={busy[sheetDocument.id] === 'indexing'}
+          indexed={indexedIds.has(sheetDocument.id)}
+          notice={noticeElement}
           onClose={closeViewer}
           onExtract={handleExtract}
+          onIndex={handleIndex}
         />
       )}
     </div>
