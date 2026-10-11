@@ -2,18 +2,22 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { traceFields } from '../../utils/trace';
 
 const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  typeof window !== 'undefined' && Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
 
 /**
- * Shared state for a source document and the fields traced into it: which
- * field is active (hovered or focused), and `locate(key)`, which scrolls the
- * document to the first line the value was found on and flashes it.
+ * Shared state for a source document and the fields traced into it.
+ *
+ * Hovering or focusing a field (or a highlighted value) previews it;
+ * `locate(key)` pins it, scrolls the document to the first line the value was
+ * found on and flashes that line. The pinned field stays highlighted while the
+ * reader moves over to the document, until another field is pinned.
  *
  * `text` is null when no document text is available; every field then has
  * no trace rather than a "not in this document" result.
  */
 export function useTrace(text, fields) {
-  const [activeKey, setActiveKey] = useState(null);
+  const [pinnedKey, setPinnedKey] = useState(null);
+  const [previewKey, setPreviewKey] = useState(null);
   const sheetRef = useRef(null);
 
   const trace = useMemo(
@@ -22,7 +26,7 @@ export function useTrace(text, fields) {
   );
 
   const locate = useCallback((key) => {
-    setActiveKey(key);
+    setPinnedKey(key);
     const line = trace?.fields[key]?.lines[0];
     const container = sheetRef.current;
     const target = line && container?.querySelector(`[data-line="${line}"]`);
@@ -50,5 +54,5 @@ export function useTrace(text, fields) {
     }
   }, [trace]);
 
-  return { trace, activeKey, setActiveKey, locate, sheetRef };
+  return { trace, activeKey: previewKey ?? pinnedKey, preview: setPreviewKey, locate, sheetRef };
 }

@@ -49,7 +49,7 @@ describe('ClaimDetailPage', () => {
     await user.click(await screen.findByRole('button', { name: 'Validate' }));
 
     expect(await screen.findByText('Cost is high for an outpatient procedure.')).toBeInTheDocument();
-    expect(screen.getByText('High risk · 72.5')).toBeInTheDocument();
+    expect(screen.getByText('High risk, score 72.5')).toBeInTheDocument();
     expect(screen.getByText('Treatment cost exceeds $50,000')).toBeInTheDocument();
     expect(screen.getByText('medium')).toBeInTheDocument();
     expect(screen.getByText('Mock AI')).toBeInTheDocument();
@@ -70,6 +70,28 @@ describe('ClaimDetailPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Changing a claim status is disabled on the public demo.');
     expect(screen.getByText('pending')).toBeInTheDocument();
     expect(screen.queryByText('approved')).not.toBeInTheDocument();
+  });
+
+  it('traces each field to the line of the source document it came from', async () => {
+    const sourceDoc = { id: 'doc-1', filename: 'invoice_dana.pdf', document_class: 'invoice', processing_status: 'processed' };
+    mockApi({
+      'GET /claims/clm-1': { data: { ...claim, document_ids: ['doc-1'] } },
+      'GET /claims/clm-1/documents': { data: { documents: [sourceDoc] } },
+      'GET /documents/doc-1': {
+        data: { ...sourceDoc, extracted_text: 'Patient: Dana Whitfield\nPolicy: POL-2026-00001\nTotal due: $72,000.00' },
+      },
+    });
+    const { user } = renderClaim();
+
+    const patientLine = await screen.findByRole('button', { name: 'Show patient name in the document: Line 1' });
+    expect(screen.getByRole('button', { name: 'Show treatment cost in the document: Line 3' })).toBeInTheDocument();
+    // The claim's diagnosis, hospital and claim number are not in this invoice.
+    expect(screen.getAllByText('Not in this document')).toHaveLength(3);
+    expect(screen.getByText('3 of 6 values found in this document.')).toBeInTheDocument();
+
+    await user.click(patientLine);
+
+    expect(screen.getByText('Dana Whitfield', { selector: 'mark' })).toHaveAttribute('data-active', 'true');
   });
 
   it('shows a not-found message instead of a sample claim', async () => {
