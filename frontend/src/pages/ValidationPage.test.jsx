@@ -73,6 +73,24 @@ describe('ValidationPage', () => {
     expect(requests[2].body).toEqual({ claim_ids: ['clm-1', 'clm-2'] });
   });
 
+  it('says when the batch was reviewed by the mock LLM', async () => {
+    mockApi({
+      'GET /validate/flagged': { data: { claims: [], total: 0 } },
+      'GET /claims': { data: { claims: [{ id: 'clm-1' }], total: 1 } },
+      'POST /batch-validate': {
+        data: {
+          results: [{ claim_id: 'clm-1', risk_score: 15, risk_level: 'medium', flags: [], ai_review: { source: 'mock' } }],
+          total_validated: 1,
+        },
+      },
+    });
+    const { user } = renderWithRouter(<ValidationPage />);
+
+    await user.click(await screen.findByRole('button', { name: 'Validate pending' }));
+
+    expect(await screen.findByText(/AI review used the mock LLM\./)).toBeInTheDocument();
+  });
+
   it('does not call the batch endpoint when nothing is pending', async () => {
     const requests = mockApi({
       'GET /validate/flagged': { data: { claims: [flaggedClaim], total: 1 } },

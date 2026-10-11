@@ -25,7 +25,10 @@ function describeBatch(results, pendingTotal) {
   if (pendingTotal > results.length) {
     parts.push(`Only the ${results.length} most recent of ${pendingTotal} pending claims were included.`);
   }
-  if (results.some((result) => result.source === 'mock')) parts.push('AI review used the mock LLM.');
+  // Validation results report where the AI review came from in ai_review.source.
+  if (results.some((result) => (result.ai_review?.source ?? result.source) === 'mock')) {
+    parts.push('AI review used the mock LLM.');
+  }
   return { tone: failed > 0 ? 'error' : 'success', message: parts.join(' ') };
 }
 

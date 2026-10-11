@@ -21,7 +21,7 @@ export default function ValidationSummary({ result }) {
           {LEVEL_LABELS[level] ?? level} · {formatScore(result.risk_score)}
         </span>
         {result.is_duplicate && <Badge variant="danger">Possible duplicate</Badge>}
-        <MockBadge source={result.source} />
+        <MockBadge source={result.ai_review?.source ?? result.source} />
       </div>
 
       {summary && <p className="validation-summary-text">{summary}</p>}

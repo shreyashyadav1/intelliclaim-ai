@@ -34,8 +34,7 @@ describe('ClaimDetailPage', () => {
             risk_level: 'high',
             flags: [{ type: 'high_cost', description: 'Treatment cost exceeds $50,000', severity: 'medium' }],
             is_duplicate: false,
-            ai_review: { ai_summary: 'Cost is high for an outpatient procedure.' },
-            source: 'mock',
+            ai_review: { ai_summary: 'Cost is high for an outpatient procedure.', status: 'mock', source: 'mock' },
           },
         };
       },
