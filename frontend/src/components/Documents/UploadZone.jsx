@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { AlertCircle, AlertTriangle, CheckCircle, FileText, Loader, Upload } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle2, FileUp } from 'lucide-react';
 import { documentsApi, getErrorMessage } from '../../services/api';
 import { humanize } from '../../utils/format';
 import './UploadZone.css';
@@ -24,21 +24,17 @@ function describeRejection({ file, errors }) {
   return errors[0]?.message ?? `${file.name} cannot be uploaded.`;
 }
 
-function UploadResult({ result, onReset }) {
+function UploadResult({ result, onReset, onReview }) {
   const failed = result.processing_status === 'failed';
   return (
-    <div className="upload-result glass-card" role="status">
-      <div className="upload-result-icon">
-        {failed
-          ? <AlertTriangle size={20} color="var(--status-warning)" />
-          : <CheckCircle size={20} color="var(--status-success)" />}
-      </div>
+    <div className={`upload-result ${failed ? 'upload-result--failed' : ''}`} role="status">
+      {failed
+        ? <AlertTriangle size={18} className="upload-result-icon" aria-hidden="true" />
+        : <CheckCircle2 size={18} className="upload-result-icon" aria-hidden="true" />}
       <div className="upload-result-info">
-        <p className="upload-result-filename">
-          <FileText size={14} /> {result.filename}
-        </p>
+        <p className="upload-result-filename" translate="no">{result.filename}</p>
         {failed ? (
-          <p className="upload-result-class upload-result-class--failed">
+          <p className="upload-result-class">
             Uploaded, but processing failed: {result.error_message || 'the document could not be read.'}
           </p>
         ) : (
@@ -47,15 +43,23 @@ function UploadResult({ result, onReset }) {
           </p>
         )}
       </div>
-      <button className="upload-result-reset" onClick={onReset} id="upload-reset-btn">
-        Upload Another
-      </button>
+      <div className="upload-result-actions">
+        {onReview && !failed && (
+          <button type="button" className="btn btn-primary btn-sm" onClick={() => onReview(result)}>
+            Review document
+          </button>
+        )}
+        <button type="button" className="btn btn-secondary btn-sm" onClick={onReset} id="upload-reset-btn">
+          Upload another
+        </button>
+      </div>
     </div>
   );
 }
 
-export default function UploadZone({ onUploadComplete }) {
+export default function UploadZone({ onUploadComplete, onReview }) {
   const [uploading, setUploading] = useState(false);
+  const [fileName, setFileName] = useState('');
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -70,6 +74,7 @@ export default function UploadZone({ onUploadComplete }) {
     if (!file) return;
 
     setUploading(true);
+    setFileName(file.name);
     setProgress(0);
     setResult(null);
     setError(null);
@@ -102,6 +107,8 @@ export default function UploadZone({ onUploadComplete }) {
     setProgress(0);
   };
 
+  const reading = progress >= 100;
+
   return (
     <div className="upload-zone-container">
       <div
@@ -113,33 +120,39 @@ export default function UploadZone({ onUploadComplete }) {
 
         {uploading ? (
           <div className="upload-progress" role="status">
-            <Loader size={40} className="upload-spinner" />
             <p className="upload-progress-text">
-              {progress < 100 ? 'Uploading document…' : 'Extracting text and classifying…'}
+              <span translate="no">{fileName}</span>
+              <span>{reading ? 'Reading the text and classifying…' : `Uploading… ${progress}%`}</span>
             </p>
-            <div className="upload-progress-bar">
-              <div className="upload-progress-fill" style={{ width: `${progress}%` }} />
-            </div>
-            <span className="upload-progress-pct">{progress}%</span>
+            <span className="upload-progress-bar" aria-hidden="true">
+              <span
+                className={`upload-progress-fill ${reading ? 'upload-progress-fill--reading' : ''}`}
+                style={{ transform: `scaleX(${progress / 100})` }}
+              />
+            </span>
           </div>
         ) : (
           <div className="upload-prompt">
-            <div className="upload-icon-wrapper">
-              <Upload size={32} />
+            <FileUp size={22} className="upload-prompt-icon" aria-hidden="true" />
+            <div>
+              <p className="upload-title">
+                {isDragActive ? 'Drop the file to upload it' : (
+                  <>Drop a document here, or <span className="upload-choose">choose a file</span></>
+                )}
+              </p>
+              <p className="upload-subtitle">
+                PDF, PNG, JPG or TIFF up to 50&nbsp;MB. Scans are read with OCR and classified as they upload.
+              </p>
             </div>
-            <p className="upload-title">
-              {isDragActive ? 'Drop your file here' : 'Drag & drop a document'}
-            </p>
-            <p className="upload-subtitle">or click to browse — PDF, PNG, JPG or TIFF, up to 50 MB</p>
           </div>
         )}
       </div>
 
-      {result && <UploadResult result={result} onReset={resetUpload} />}
+      {result && <UploadResult result={result} onReset={resetUpload} onReview={onReview} />}
 
       {error && (
         <div className="upload-error" role="alert">
-          <AlertCircle size={16} /> {error}
+          <AlertCircle size={16} aria-hidden="true" /> {error}
         </div>
       )}
     </div>
