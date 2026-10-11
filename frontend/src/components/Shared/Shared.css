@@ -75,12 +75,21 @@
   }
 }
 
+/* Disabled buttons keep their shape so a row of actions still reads as one set. */
 .btn:disabled,
 .btn[aria-disabled='true'] {
   cursor: not-allowed;
   color: var(--ink-disabled);
+}
+
+.btn-primary:disabled {
   background: var(--desk-raised);
-  border-color: transparent;
+}
+
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  background: transparent;
+  border-color: var(--rule);
 }
 
 .btn-quiet:disabled {
