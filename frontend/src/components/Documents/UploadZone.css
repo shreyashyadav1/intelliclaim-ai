@@ -52,6 +52,21 @@
   font-weight: 650;
 }
 
+.upload-title-touch {
+  display: none;
+}
+
+/* Touch screens can't drag files in, so the prompt only offers to choose one. */
+@media (pointer: coarse) {
+  .upload-title-pointer {
+    display: none;
+  }
+
+  .upload-title-touch {
+    display: inline;
+  }
+}
+
 .upload-choose {
   text-decoration: underline;
   text-decoration-color: var(--rule-strong);

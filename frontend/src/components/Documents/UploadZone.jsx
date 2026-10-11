@@ -137,7 +137,14 @@ export default function UploadZone({ onUploadComplete, onReview }) {
             <div>
               <p className="upload-title">
                 {isDragActive ? 'Drop the file to upload it' : (
-                  <>Drop a document here, or <span className="upload-choose">choose a file</span></>
+                  <>
+                    <span className="upload-title-pointer">
+                      Drop a document here, or <span className="upload-choose">choose a file</span>
+                    </span>
+                    <span className="upload-title-touch">
+                      <span className="upload-choose">Choose a document</span> to upload
+                    </span>
+                  </>
                 )}
               </p>
               <p className="upload-subtitle">
