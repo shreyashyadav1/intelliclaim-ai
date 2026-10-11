@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, RefreshCw, Shield, ShieldCheck } from 'lucide-react';
-import Badge from '../components/Shared/Badge';
+import { AlertTriangle, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
+import Badge, { StatusBadge } from '../components/Shared/Badge';
 import Notice from '../components/Shared/Notice';
+import PageHeader from '../components/Shared/PageHeader';
+import RiskScale from '../components/Shared/RiskScale';
 import { EmptyState, ErrorState, LoadingState } from '../components/Shared/StateMessage';
 import { useApiQuery } from '../hooks/useApiQuery';
 import { claimsApi, getErrorMessage, validationApi } from '../services/api';
-import { formatCurrency, formatScore, getFlagThreshold, riskColor } from '../utils/format';
+import { formatCurrency, formatScore, getFlagThreshold, HIGH_RISK_THRESHOLD, riskColor, riskLevel } from '../utils/format';
 import './ValidationPage.css';
 
 // GET /validate/flagged and GET /claims both cap `limit` at 100.
 const PAGE_SIZE = 100;
 const loadFlagged = () => validationApi.getFlagged({ limit: PAGE_SIZE });
+const LEVEL_WORDS = { high: 'High', medium: 'Medium', low: 'Low' };
 
 const plural = (count, word) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
@@ -32,36 +35,47 @@ function describeBatch(results, pendingTotal) {
   return { tone: failed > 0 ? 'error' : 'success', message: parts.join(' ') };
 }
 
-function FlaggedClaimCard({ claim }) {
+/** Where the listed claims fall on the risk bands, one tick per claim. */
+function QueueSpread({ claims }) {
+  const scores = claims.map((claim) => Number(claim.risk_score) || 0);
+  const high = scores.filter((score) => score >= HIGH_RISK_THRESHOLD).length;
+  return (
+    <div className="queue-spread">
+      <RiskScale
+        markers={scores}
+        description={`${plural(scores.length, 'listed claim')} on the risk bands: ${high} high risk, ${scores.length - high} below ${HIGH_RISK_THRESHOLD}.`}
+      />
+    </div>
+  );
+}
+
+function FlaggedClaimRow({ claim }) {
   const color = riskColor(claim.risk_score);
   const flags = claim.risk_flags ?? [];
 
   return (
-    <div className="glass-card flagged-claim-card" id={`flagged-${claim.id}`}>
-      <div className="flagged-claim-header">
-        <div className="flagged-claim-left">
-          <AlertTriangle size={18} style={{ color, flexShrink: 0 }} />
-          <Link to={`/claims/${claim.id}`} className="flagged-claim-number">
-            {claim.claim_number || 'Unnumbered claim'}
-          </Link>
-          <span className="flagged-claim-patient">{claim.patient_name || '—'}</span>
-          <Badge variant={claim.status}>{claim.status}</Badge>
-        </div>
-        <div className="flagged-claim-right">
-          <span className="flagged-claim-cost">{formatCurrency(claim.treatment_cost)}</span>
-          <span className="flagged-risk-pill" style={{ color, background: `${color}15` }}>
-            Risk: {formatScore(claim.risk_score)}
-          </span>
-        </div>
+    <li className="flagged-row" id={`flagged-${claim.id}`}>
+      <div className="flagged-row-claim">
+        <Link to={`/claims/${claim.id}`} className="record-link" translate="no">
+          {claim.claim_number || 'Unnumbered claim'}
+        </Link>
+        <span className="flagged-row-patient">{claim.patient_name || '—'}</span>
+        <StatusBadge status={claim.status} />
       </div>
-      {flags.length > 0 && (
-        <div className="flagged-flags">
-          {flags.map((flag, index) => (
-            <span key={index} className="flagged-flag-tag">{flag}</span>
-          ))}
-        </div>
-      )}
-    </div>
+      <ul className="flagged-row-flags" role="list" aria-label="Risk flags">
+        {flags.length > 0 ? flags.map((flag, index) => (
+          <li key={index} className="flag-chip">
+            <AlertTriangle size={12} aria-hidden="true" />
+            {flag}
+          </li>
+        )) : <li className="flag-chip flag-chip--none">No flags recorded</li>}
+      </ul>
+      <span className="flagged-row-amount tabular">{formatCurrency(claim.treatment_cost)}</span>
+      <span className="flagged-row-risk">
+        <span className="flagged-risk tabular" style={{ color }}>Risk: {formatScore(claim.risk_score)}</span>
+        <span className="flagged-risk-band">{LEVEL_WORDS[riskLevel(claim.risk_score)]}</span>
+      </span>
+    </li>
   );
 }
 
@@ -94,68 +108,64 @@ export default function ValidationPage() {
 
   let content;
   if (flagged.error) {
-    content = (
-      <div className="glass-card validation-state-card">
-        <ErrorState title="Couldn't load flagged claims" message={getErrorMessage(flagged.error)} onRetry={flagged.refetch} />
-      </div>
-    );
+    content = <ErrorState title="Couldn't load flagged claims" message={getErrorMessage(flagged.error)} onRetry={flagged.refetch} />;
   } else if (!claims) {
-    content = (
-      <div className="glass-card validation-state-card">
-        <LoadingState label="Loading flagged claims…" />
-      </div>
-    );
+    content = <LoadingState label="Loading flagged claims…" />;
   } else if (claims.length === 0) {
     content = (
-      <div className="glass-card validation-state-card">
-        <EmptyState icon={ShieldCheck} title="No flagged claims">
-          Claims appear here when they are flagged or score {formatScore(threshold)} or more. Validate pending claims
-          to check them.
-        </EmptyState>
-      </div>
+      <EmptyState icon={ShieldCheck} title="No flagged claims">
+        Claims appear here when they are flagged or score {formatScore(threshold)} or more. Validate pending claims
+        to check them.
+      </EmptyState>
     );
   } else {
     content = (
-      <div className="flagged-claims-list">
-        {claims.map((claim) => <FlaggedClaimCard key={claim.id} claim={claim} />)}
-      </div>
+      <>
+        <QueueSpread claims={claims} />
+        <ul className="flagged-rows" role="list">
+          {claims.map((claim) => <FlaggedClaimRow key={claim.id} claim={claim} />)}
+        </ul>
+      </>
     );
   }
 
   return (
-    <div className="page-enter" id="validation-page">
-      <div className="validation-toolbar">
-        <div className="validation-toolbar-left">
-          <Shield size={22} color="var(--accent-primary)" />
-          <h2 className="validation-title">Risk & Validation</h2>
-          {flagged.data && <Badge variant="danger">{flagged.data.total ?? claims.length} flagged</Badge>}
-        </div>
-        <div className="validation-toolbar-actions">
-          <button
-            type="button"
-            onClick={handleValidatePending}
-            disabled={batch.running}
-            className="validation-refresh-btn validation-refresh-btn--accent"
-            id="validate-pending-btn"
-          >
-            <ShieldCheck size={14} /> {batch.running ? 'Validating…' : 'Validate pending'}
-          </button>
-          <button
-            type="button"
-            onClick={flagged.refetch}
-            disabled={flagged.loading}
-            className="validation-refresh-btn"
-            id="refresh-flagged-btn"
-          >
-            <RefreshCw size={14} className={flagged.loading ? 'is-spinning' : ''} /> Refresh
-          </button>
-        </div>
-      </div>
+    <div id="validation-page">
+      <PageHeader
+        title="Validation"
+        description="Claims that were flagged or scored at or above the flag threshold, highest risk first."
+        meta={flagged.data && <Badge variant="warning">{flagged.data.total ?? claims.length} flagged</Badge>}
+        actions={(
+          <>
+            <button
+              type="button"
+              onClick={handleValidatePending}
+              disabled={batch.running}
+              className="btn btn-primary"
+              id="validate-pending-btn"
+            >
+              {batch.running ? <Loader2 size={16} className="spin" aria-hidden="true" /> : <ShieldCheck size={16} aria-hidden="true" />}
+              {batch.running ? 'Validating…' : 'Validate pending'}
+            </button>
+            <button
+              type="button"
+              onClick={flagged.refetch}
+              disabled={flagged.loading}
+              className="btn btn-secondary"
+              id="refresh-flagged-btn"
+            >
+              <RefreshCw size={16} className={flagged.loading ? 'spin' : ''} aria-hidden="true" /> Refresh
+            </button>
+          </>
+        )}
+      />
 
       {batch.notice && (
-        <Notice tone={batch.notice.tone} onDismiss={() => setBatch({ running: false, notice: null })}>
-          {batch.notice.message}
-        </Notice>
+        <div className="validation-notice">
+          <Notice tone={batch.notice.tone} onDismiss={() => setBatch({ running: false, notice: null })}>
+            {batch.notice.message}
+          </Notice>
+        </div>
       )}
 
       {content}

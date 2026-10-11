@@ -54,6 +54,17 @@
   transform: translateX(-50%);
 }
 
+.risk-scale-tick-mark {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  border-radius: 1px;
+  background: var(--ink);
+  box-shadow: 0 0 0 1px var(--desk);
+  transform: translateX(-50%);
+}
+
 .risk-scale-labels {
   display: flex;
   gap: 2px;

@@ -7,17 +7,20 @@ const LEVEL_NAMES = { low: 'Low', medium: 'Medium', high: 'High' };
  * A 0-100 risk score on the validator's bands: low below the flag threshold
  * (reported by the API), medium from the threshold, high from 60. Without a
  * score the bands are drawn with no marker and `emptyLabel` is announced.
+ * `markers` plots several scores as thin ticks instead (e.g. a whole queue);
+ * pass `description` to say what they are.
  */
-export default function RiskScale({ score, label = 'Risk score', emptyLabel = 'Not scored yet' }) {
+export default function RiskScale({ score, markers, label = 'Risk score', emptyLabel = 'Not scored yet', description: summary }) {
   const threshold = getFlagThreshold();
   const value = Number(score);
   const hasScore = score !== null && score !== undefined && score !== '' && Number.isFinite(value);
   const clamped = hasScore ? Math.min(Math.max(value, 0), 100) : null;
   const level = hasScore ? riskLevel(clamped) : null;
 
-  const description = hasScore
-    ? `${label} ${formatScore(clamped)} out of 100: ${level} risk. Medium from ${formatScore(threshold)}, high from ${HIGH_RISK_THRESHOLD}.`
-    : emptyLabel;
+  const bandsText = `Medium from ${formatScore(threshold)}, high from ${HIGH_RISK_THRESHOLD}.`;
+  let description = emptyLabel;
+  if (summary) description = `${summary} ${bandsText}`;
+  else if (hasScore) description = `${label} ${formatScore(clamped)} out of 100: ${level} risk. ${bandsText}`;
 
   const bands = [
     { band: 'low', start: 0, size: threshold },
@@ -32,6 +35,13 @@ export default function RiskScale({ score, label = 'Risk score', emptyLabel = 'N
           <span key={band} className="risk-scale-band" data-band={band} data-current={band === level || undefined} style={{ flexGrow: size }} />
         ))}
         {hasScore && <span className="risk-scale-marker" style={{ left: `${clamped}%` }} />}
+        {markers?.map((marker, index) => (
+          <span
+            key={index}
+            className="risk-scale-tick-mark"
+            style={{ left: `${Math.min(Math.max(Number(marker) || 0, 0), 100)}%` }}
+          />
+        ))}
       </div>
       <div className="risk-scale-labels" aria-hidden="true">
         {bands.map(({ band, start, size }) => (

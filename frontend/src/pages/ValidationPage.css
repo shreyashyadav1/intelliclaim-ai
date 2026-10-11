@@ -1,158 +1,125 @@
-.validation-toolbar {
-  display: flex;
+.validation-notice {
+  margin-bottom: var(--space-5);
+}
+
+/* ── Where the queue falls on the risk bands ── */
+.queue-spread {
+  max-width: 720px;
+  margin-bottom: var(--space-6);
+}
+
+/* ── Flagged claims register ── */
+.flagged-rows {
+  border-top: 1px solid var(--rule);
+}
+
+.flagged-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.2fr) minmax(0, 2fr) auto 132px;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--rule);
 }
 
-.validation-toolbar-left {
+.flagged-row:nth-child(even) {
+  background: color-mix(in oklab, var(--desk-raised) 55%, var(--desk));
+}
+
+.flagged-row-claim {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.validation-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
-.validation-refresh-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.validation-refresh-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-.validation-refresh-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.validation-refresh-btn--accent {
-  color: var(--text-accent);
-  border-color: var(--border-accent);
-}
-
-.validation-refresh-btn--accent:hover {
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--text-accent);
-}
-
-.validation-toolbar-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.is-spinning {
-  animation: spin 1s linear infinite;
-}
-
-.flagged-claims-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.validation-state-card:hover {
-  transform: none;
-}
-
-.flagged-claim-card {
-  padding: 20px;
-}
-
-.flagged-claim-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.flagged-claim-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
   min-width: 0;
 }
 
-.flagged-claim-number {
-  font-family: monospace;
-  font-weight: 600;
-  color: var(--text-accent);
-  white-space: nowrap;
-}
-
-.flagged-claim-number:hover {
-  text-decoration: underline;
-}
-
-.flagged-claim-patient {
-  color: var(--text-primary);
+.flagged-row-patient {
   font-weight: 500;
 }
 
-.flagged-claim-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.flagged-claim-cost {
-  font-family: monospace;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-
-.flagged-risk-pill {
-  padding: 4px 12px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-family: monospace;
-  white-space: nowrap;
-}
-
-.flagged-flags {
+.flagged-row-flags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
 }
 
-.flagged-flag-tag {
-  font-size: 0.82rem;
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #fca5a5;
+.flag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 8px;
+  border-radius: var(--radius-tag);
+  background: var(--desk-raised);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
-@media (max-width: 600px) {
-  .flagged-claim-header {
-    flex-direction: column;
-    align-items: flex-start;
+.flag-chip svg {
+  flex-shrink: 0;
+  color: var(--risk-medium);
+}
+
+.flag-chip--none {
+  color: var(--ink-secondary);
+}
+
+.flagged-row-amount {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.flagged-row-risk {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.flagged-risk {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.flagged-risk-band {
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 960px) {
+  .flagged-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'claim risk'
+      'flags amount';
+    padding: var(--space-3) 0;
   }
-  .flagged-claim-right {
-    width: 100%;
-    justify-content: flex-start;
+
+  .flagged-row:nth-child(even) {
+    background: none;
+  }
+
+  .flagged-row-claim { grid-area: claim; }
+  .flagged-row-flags { grid-area: flags; }
+  .flagged-row-amount { grid-area: amount; align-self: start; }
+  .flagged-row-risk { grid-area: risk; }
+}
+
+@media (max-width: 520px) {
+  .flagged-row {
+    grid-template-areas:
+      'claim claim'
+      'flags flags'
+      'amount risk';
+  }
+
+  .flagged-row-amount {
+    align-self: center;
+    text-align: left;
   }
 }
