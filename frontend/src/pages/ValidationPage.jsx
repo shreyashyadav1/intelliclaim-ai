@@ -6,7 +6,7 @@ import Notice from '../components/Shared/Notice';
 import { EmptyState, ErrorState, LoadingState } from '../components/Shared/StateMessage';
 import { useApiQuery } from '../hooks/useApiQuery';
 import { claimsApi, getErrorMessage, validationApi } from '../services/api';
-import { formatCurrency, formatScore, riskColor } from '../utils/format';
+import { formatCurrency, formatScore, getFlagThreshold, riskColor } from '../utils/format';
 import './ValidationPage.css';
 
 // GET /validate/flagged and GET /claims both cap `limit` at 100.
@@ -87,6 +87,7 @@ export default function ValidationPage() {
   };
 
   const claims = flagged.data?.claims;
+  const threshold = flagged.data?.flag_threshold ?? getFlagThreshold();
 
   let content;
   if (flagged.error) {
@@ -105,7 +106,8 @@ export default function ValidationPage() {
     content = (
       <div className="glass-card validation-state-card">
         <EmptyState icon={ShieldCheck} title="No flagged claims">
-          Claims appear here when they are flagged or score 30 or more. Validate pending claims to check them.
+          Claims appear here when they are flagged or score {formatScore(threshold)} or more. Validate pending claims
+          to check them.
         </EmptyState>
       </div>
     );

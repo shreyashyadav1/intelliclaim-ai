@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { mockApi } from '../test/mockApi';
 import { renderWithRouter } from '../test/render';
+import { DEFAULT_FLAG_THRESHOLD, setFlagThreshold } from '../utils/format';
 import ValidationPage from './ValidationPage';
 
 const flaggedClaim = {
@@ -15,6 +16,25 @@ const flaggedClaim = {
 };
 
 describe('ValidationPage', () => {
+  afterEach(() => setFlagThreshold(DEFAULT_FLAG_THRESHOLD));
+
+  it('colours and describes risk with the threshold the API reports', async () => {
+    mockApi({
+      'GET /validate/flagged': { data: { claims: [{ ...flaggedClaim, status: 'pending', risk_score: 25 }], total: 1, flag_threshold: 30 } },
+    });
+    renderWithRouter(<ValidationPage />);
+
+    // 25 is below the reported threshold of 30, so it is shown as low risk (green), not medium.
+    expect(await screen.findByText('Risk: 25')).toHaveStyle({ color: '#10b981' });
+  });
+
+  it('states the reported threshold when nothing is flagged', async () => {
+    mockApi({ 'GET /validate/flagged': { data: { claims: [], total: 0, flag_threshold: 20 } } });
+    renderWithRouter(<ValidationPage />);
+
+    expect(await screen.findByText(/flagged or score 20 or more/)).toBeInTheDocument();
+  });
+
   it('validates pending claims through POST /batch-validate and refreshes the list', async () => {
     let flaggedResponse = { claims: [], total: 0 };
     const requests = mockApi({

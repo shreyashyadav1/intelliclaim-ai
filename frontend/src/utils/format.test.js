@@ -1,5 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import { formatCurrency, formatDate, formatFileSize, formatScore, riskColor, riskLevel } from './format';
+import { afterEach, describe, expect, it } from 'vitest';
+import {
+  DEFAULT_FLAG_THRESHOLD,
+  formatCurrency,
+  formatDate,
+  formatFileSize,
+  formatScore,
+  getFlagThreshold,
+  riskColor,
+  riskLevel,
+  setFlagThreshold,
+} from './format';
 
 describe('formatDate', () => {
   it('shows date-only values as the same calendar day in every time zone', () => {
@@ -25,11 +35,25 @@ describe('formatCurrency', () => {
 });
 
 describe('risk helpers', () => {
+  afterEach(() => setFlagThreshold(DEFAULT_FLAG_THRESHOLD));
+
   it('uses the backend thresholds', () => {
+    expect(riskLevel(14.9)).toBe('low');
+    expect(riskLevel(15)).toBe('medium');
     expect(riskLevel(59.9)).toBe('medium');
     expect(riskLevel(60)).toBe('high');
     expect(riskLevel(0)).toBe('low');
     expect(riskColor(85)).toBe('#ef4444');
+    expect(riskColor(20)).toBe('#f59e0b');
+  });
+
+  it('follows the flag threshold reported by the API and ignores invalid values', () => {
+    setFlagThreshold(30);
+    expect(riskLevel(20)).toBe('low');
+    expect(riskLevel(30)).toBe('medium');
+
+    for (const value of [undefined, null, '', 'abc', 0, -5, 60, 75]) setFlagThreshold(value);
+    expect(getFlagThreshold()).toBe(30);
   });
 
   it('rounds scores to one decimal place', () => {

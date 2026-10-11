@@ -1,5 +1,5 @@
 import { AlertTriangle } from 'lucide-react';
-import { formatScore, riskColor, riskLevel } from '../../utils/format';
+import { formatScore, levelColor, riskLevel } from '../../utils/format';
 import Badge from '../Shared/Badge';
 import MockBadge from '../Shared/MockBadge';
 
@@ -7,8 +7,9 @@ const LEVEL_LABELS = { high: 'High risk', medium: 'Medium risk', low: 'Low risk'
 
 /** Result of POST /validate/{claim_id}: composite score, flags and the AI reviewer's summary. */
 export default function ValidationSummary({ result }) {
+  // The API's risk_level decides both the label and the colour.
   const level = result.risk_level ?? riskLevel(result.risk_score);
-  const color = riskColor(result.risk_score);
+  const color = levelColor(level);
   const flags = result.flags ?? [];
   const summary = result.ai_review?.ai_summary;
 
