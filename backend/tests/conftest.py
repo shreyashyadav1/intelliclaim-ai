@@ -69,6 +69,7 @@ def completion_payload(content: str | None, model: str = "test-model") -> dict:
     }
 
 
+
 class FakeGroq:
     """Stands in for groq.AsyncGroq. Queue replies with respond(); inspect calls.
 
@@ -87,6 +88,14 @@ class FakeGroq:
             self._replies.append(json.dumps(reply) if isinstance(reply, dict) else reply)
         return self
 
+    def respond_with_reasoning(self, content: str, reasoning: str) -> "FakeGroq":
+        """Queue a reply from a reasoning model such as gpt-oss, which returns its reasoning in its own field."""
+        payload = completion_payload(content, "openai/gpt-oss-120b")
+        payload["choices"][0]["message"]["reasoning"] = reasoning
+        payload["usage"] = {"prompt_tokens": 100, "completion_tokens": 420, "total_tokens": 520}
+        self._replies.append(GroqChatCompletion.model_validate(payload))
+        return self
+
     async def _create(self, **kwargs):
         self.calls.append(kwargs)
         if not self._replies:
@@ -94,6 +103,8 @@ class FakeGroq:
         reply = self._replies.pop(0)
         if isinstance(reply, BaseException):
             raise reply
+        if isinstance(reply, GroqChatCompletion):
+            return reply
         return GroqChatCompletion.model_validate(completion_payload(reply, kwargs.get("model", "test-model")))
 
     async def close(self) -> None:

@@ -17,11 +17,11 @@ class EvalSettings(BaseSettings):
         env_prefix="EVAL_", env_file=BACKEND_DIR / ".env", env_file_encoding="utf-8", extra="ignore"
     )
 
-    # Groq on-demand list price for llama-3.3-70b-versatile in USD per million tokens.
-    # Source: https://groq.com/pricing (0.59 input / 0.79 output as last published there).
-    # Check the current price and override these when it or GROQ_MODEL changes.
-    GROQ_INPUT_USD_PER_MTOK: float = Field(default=0.59, ge=0)
-    GROQ_OUTPUT_USD_PER_MTOK: float = Field(default=0.79, ge=0)
+    # Groq on-demand list price for openai/gpt-oss-120b (the default GROQ_MODEL) in USD per
+    # million tokens: 0.15 input / 0.60 output on https://console.groq.com/docs/models, checked
+    # 2026-10-05. Override these when the price or GROQ_MODEL changes.
+    GROQ_INPUT_USD_PER_MTOK: float = Field(default=0.15, ge=0)
+    GROQ_OUTPUT_USD_PER_MTOK: float = Field(default=0.60, ge=0)
 
     # MongoDB for the risk suite's duplicate check; a throwaway database is created and dropped.
     # Falls back to TEST_MONGODB_URI, then mongodb://localhost:27017.

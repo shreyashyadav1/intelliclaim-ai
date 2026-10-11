@@ -419,6 +419,14 @@ async def test_chat_groq_uses_the_configured_model_and_the_shared_client(fake_gr
         model.invoke("Hi")
 
 
+async def test_chat_groq_answers_with_the_content_of_a_reasoning_model(fake_groq):
+    fake_groq.respond_with_reasoning("The total is $4,512.30 [1].", reasoning="Excerpt 1 states the total.")
+    reply = await llm.chat_model("groq", RAG_ANSWER_PARAMS).ainvoke("What is the total?")
+
+    assert reply.content == "The total is $4,512.30 [1]."
+    assert RAG_ANSWER_PARAMS.max_tokens >= 1024  # gpt-oss reasoning counts toward the limit
+
+
 def test_chat_model_requires_a_configured_provider():
     with pytest.raises(llm.LLMNotConfiguredError):
         llm.chat_model("groq", RAG_ANSWER_PARAMS)

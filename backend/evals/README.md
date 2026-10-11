@@ -40,7 +40,7 @@ Environment variables (all optional):
 | `EVAL_MONGODB_URI` | risk | `TEST_MONGODB_URI`, then `mongodb://localhost:27017`. A throwaway `intelliclaim_eval_<pid>` database is created and dropped |
 | `FASTEMBED_CACHE_PATH` | retrieval, rag-answer | the application setting: where the embedding model is cached |
 | `GROQ_API_KEY`, `GROQ_MODEL` | extraction, rag-answer, risk `--llm` | the application settings. The LLM suites send requests to Groq only, even when `OPENAI_API_KEY` is also set |
-| `EVAL_GROQ_INPUT_USD_PER_MTOK`, `EVAL_GROQ_OUTPUT_USD_PER_MTOK` | cost estimates | 0.59 and 0.79, Groq's published list price for llama-3.3-70b-versatile (https://groq.com/pricing). Check it before relying on the cost figures |
+| `EVAL_GROQ_INPUT_USD_PER_MTOK`, `EVAL_GROQ_OUTPUT_USD_PER_MTOK` | cost estimates | 0.15 and 0.60, Groq's list price for openai/gpt-oss-120b, the default `GROQ_MODEL` (https://console.groq.com/docs/models, checked 2026-10-05). Check it before relying on the cost figures |
 | `EVAL_RATE_LIMIT_RETRIES`, `EVAL_RATE_LIMIT_BACKOFF_SECONDS` | LLM suites | 6 retries, 10 s times the attempt number, when Groq rate-limits |
 | `EVAL_GIT_COMMIT` | run metadata | records the commit when git is unavailable (for example in a container) |
 
