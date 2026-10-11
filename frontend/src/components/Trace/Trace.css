@@ -114,7 +114,7 @@
 .source-sheet {
   min-height: 280px;
   padding: var(--space-5) 28px var(--space-6);
-  border: 1px solid color-mix(in oklch, var(--rule) 70%, transparent);
+  border: 1px solid color-mix(in oklab, var(--rule) 70%, transparent);
   border-radius: var(--radius-sheet);
   background: var(--sheet);
   box-shadow: var(--shadow-paper);
@@ -185,7 +185,7 @@
   inset: 0 -6px;
   z-index: -1;
   border-radius: var(--radius-tag);
-  background: color-mix(in oklch, var(--mark-strong) 55%, transparent);
+  background: color-mix(in oklab, var(--mark-strong) 55%, transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -329,7 +329,7 @@
 }
 
 .field-cell[data-active] {
-  background: color-mix(in oklch, var(--mark) 45%, var(--desk));
+  background: color-mix(in oklab, var(--mark) 45%, var(--desk));
 }
 
 .field-label {

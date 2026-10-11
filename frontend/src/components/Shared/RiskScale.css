@@ -18,27 +18,28 @@
 }
 
 .risk-scale-band[data-band='low'] {
-  background: color-mix(in oklch, var(--risk-low) 40%, var(--desk));
+  background: color-mix(in oklab, var(--risk-low) 32%, var(--desk));
 }
 
 .risk-scale-band[data-band='medium'] {
-  background: color-mix(in oklch, var(--risk-medium) 40%, var(--desk));
+  background: color-mix(in oklab, var(--risk-medium) 32%, var(--desk));
 }
 
 .risk-scale-band[data-band='high'] {
-  background: color-mix(in oklch, var(--risk-high) 40%, var(--desk));
+  background: color-mix(in oklab, var(--risk-high) 32%, var(--desk));
 }
 
+/* The band the score falls in is drawn stronger than the others. */
 .risk-scale-band[data-current][data-band='low'] {
-  background: var(--risk-low);
+  background: color-mix(in oklab, var(--risk-low) 78%, var(--desk));
 }
 
 .risk-scale-band[data-current][data-band='medium'] {
-  background: var(--risk-medium);
+  background: color-mix(in oklab, var(--risk-medium) 78%, var(--desk));
 }
 
 .risk-scale-band[data-current][data-band='high'] {
-  background: var(--risk-high);
+  background: color-mix(in oklab, var(--risk-high) 78%, var(--desk));
 }
 
 /* Ink marker with a desk-coloured ring so it reads on any band. */
