@@ -59,7 +59,8 @@ export function formatScore(score) {
 
 /** Score from which a claim is medium risk and on the flagged list, until the API reports its own. */
 export const DEFAULT_FLAG_THRESHOLD = 15;
-const HIGH_RISK_THRESHOLD = 60;
+/** Score from which the backend validator rates a claim high risk. */
+export const HIGH_RISK_THRESHOLD = 60;
 let flagThreshold = DEFAULT_FLAG_THRESHOLD;
 
 /**
@@ -85,14 +86,16 @@ export function riskLevel(score) {
   return 'low';
 }
 
-const RISK_COLORS = { high: '#ef4444', medium: '#f59e0b', low: '#10b981' };
+// sRGB equivalents of the --risk-high, --risk-medium and --risk-low tokens in
+// index.css; each clears 4.5:1 as text on the app's surfaces.
+const RISK_COLORS = { high: '#be2323', medium: '#935a0f', low: '#1e7546' };
 
 /** Hex color for a risk level (high, medium or low). */
 export function levelColor(level) {
   return RISK_COLORS[level] ?? RISK_COLORS.low;
 }
 
-/** Hex color for a risk score; callers append an alpha suffix for tinted backgrounds. */
+/** Hex color for a risk score. */
 export function riskColor(score) {
   return levelColor(riskLevel(score));
 }

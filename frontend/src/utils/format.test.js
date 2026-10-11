@@ -43,8 +43,8 @@ describe('risk helpers', () => {
     expect(riskLevel(59.9)).toBe('medium');
     expect(riskLevel(60)).toBe('high');
     expect(riskLevel(0)).toBe('low');
-    expect(riskColor(85)).toBe('#ef4444');
-    expect(riskColor(20)).toBe('#f59e0b');
+    expect(riskColor(85)).toBe('#be2323');
+    expect(riskColor(20)).toBe('#935a0f');
   });
 
   it('follows the flag threshold reported by the API and ignores invalid values', () => {

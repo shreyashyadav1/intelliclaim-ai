@@ -25,7 +25,7 @@ describe('ValidationPage', () => {
     renderWithRouter(<ValidationPage />);
 
     // 25 is below the reported threshold of 30, so it is shown as low risk (green), not medium.
-    expect(await screen.findByText('Risk: 25')).toHaveStyle({ color: '#10b981' });
+    expect(await screen.findByText('Risk: 25')).toHaveStyle({ color: '#1e7546' });
   });
 
   it('states the reported threshold when nothing is flagged', async () => {
