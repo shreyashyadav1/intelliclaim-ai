@@ -1,17 +1,22 @@
 """
 IntelliClaim AI - OCR Service
 
-Handles text extraction from PDFs and images, plus AI-powered document
-classification with a keyword-based fallback when no OpenAI key is set.
+Text extraction from PDFs and images (see utils.pdf_parser) and document
+classification: OpenAI when OPENAI_API_KEY is set, otherwise keyword
+heuristics. Parsing is CPU-bound, so it runs in a worker thread.
 """
 
+import asyncio
 import logging
-import re
-from typing import Optional
 
-from config import settings
+from config import CLASSIFICATION_PARAMS, settings
+from services import llm
+from services.llm import LLMError
+from utils.pdf_parser import DocumentReadError, count_pages, parse_image, parse_pdf
 
 logger = logging.getLogger(__name__)
+
+DOCUMENT_CLASSES = ("medical_report", "invoice", "claim_form", "discharge_summary", "other")
 
 # Keywords used for rule-based document classification fallback
 _CLASSIFICATION_KEYWORDS: dict[str, list[str]] = {
@@ -39,42 +44,27 @@ _CLASSIFICATION_KEYWORDS: dict[str, list[str]] = {
 class OCRService:
     """Service for extracting text from files and classifying documents."""
 
+    async def count_pages(self, file_path: str, kind: str) -> int:
+        """Pages (PDF) or frames (TIFF) in a stored upload; raises DocumentReadError."""
+        return await asyncio.to_thread(count_pages, file_path, kind)
+
     async def extract_text(self, file_path: str, file_type: str) -> str:
         """Extract text from a PDF or image file.
 
-        Args:
-            file_path: Path to the file on disk.
-            file_type: One of 'pdf', 'image', or 'other'.
-
-        Returns:
-            The extracted text string (may be empty for unsupported types).
+        Raises:
+            DocumentProcessingError: with a message that is safe to show users.
         """
-        try:
-            if file_type == "pdf":
-                from utils.pdf_parser import parse_pdf
-                return parse_pdf(file_path)
-
-            elif file_type == "image":
-                from utils.pdf_parser import parse_image
-                return parse_image(file_path)
-
-            else:
-                logger.warning("Unsupported file type for OCR: %s", file_type)
-                return ""
-
-        except Exception as e:
-            logger.error("OCR extraction failed for %s: %s", file_path, str(e))
-            # Return empty string rather than crashing — callers handle empty text
-            return ""
+        if file_type == "pdf":
+            return await asyncio.to_thread(parse_pdf, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
+        if file_type == "image":
+            return await asyncio.to_thread(parse_image, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
+        raise DocumentReadError("Unsupported file type.")
 
     async def classify_document(self, text: str) -> str:
         """Classify a document based on its extracted text.
 
-        Uses OpenAI GPT-4o when an API key is available; otherwise falls
-        back to keyword-based heuristics.
-
-        Args:
-            text: The extracted text content of the document.
+        Uses OpenAI when an API key is set (and MOCK_LLM is off); otherwise,
+        or if that call fails, falls back to keyword heuristics.
 
         Returns:
             One of: medical_report, invoice, claim_form, discharge_summary, other.
@@ -82,59 +72,33 @@ class OCRService:
         if not text.strip():
             return "other"
 
-        # Try OpenAI classification first
-        if settings.has_openai_key:
+        if settings.has_openai_key and not settings.MOCK_LLM:
             try:
                 return await self._classify_with_openai(text)
-            except Exception as e:
-                logger.warning("OpenAI classification failed, falling back to keywords: %s", str(e))
+            except LLMError as e:
+                logger.warning("OpenAI classification failed, falling back to keywords: %s", e.detail)
 
-        # Keyword-based fallback
         return self._classify_with_keywords(text)
 
     async def _classify_with_openai(self, text: str) -> str:
-        """Classify a document using OpenAI GPT-4o.
-
-        Args:
-            text: Document text (truncated to ~3000 chars for the prompt).
-
-        Returns:
-            The classified document type string.
-        """
-        from openai import AsyncOpenAI
-
-        client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-        truncated = text[:3000]
-
-        response = await client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
+        """Classify a document with the configured OpenAI model (first ~3000 characters)."""
+        raw = await llm.openai_chat(
+            [
                 {
                     "role": "system",
                     "content": (
                         "You are a document classifier for an insurance claim processing system. "
                         "Classify the following document into exactly one category. "
                         "Reply with ONLY the category name, nothing else.\n\n"
-                        "Categories:\n"
-                        "- medical_report\n"
-                        "- invoice\n"
-                        "- claim_form\n"
-                        "- discharge_summary\n"
-                        "- other"
+                        "Categories:\n" + "\n".join(f"- {name}" for name in DOCUMENT_CLASSES)
                     ),
                 },
-                {
-                    "role": "user",
-                    "content": f"Classify this document:\n\n{truncated}",
-                },
+                {"role": "user", "content": f"Classify this document:\n\n{text[:3000]}"},
             ],
-            temperature=0,
-            max_tokens=20,
+            CLASSIFICATION_PARAMS,
         )
-
-        raw = response.choices[0].message.content.strip().lower()
-        valid = {"medical_report", "invoice", "claim_form", "discharge_summary", "other"}
-        classification = raw if raw in valid else "other"
+        answer = raw.strip().lower()
+        classification = answer if answer in DOCUMENT_CLASSES else "other"
         logger.info("OpenAI classified document as: %s", classification)
         return classification
 

@@ -5,20 +5,30 @@ Main application module with CORS, router registration, and lifecycle events.
 """
 
 import logging
+import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import JSONResponse
+from pymongo.errors import ConnectionFailure
+from slowapi.errors import RateLimitExceeded
 
-from config import settings
-from db.connection import connect_db, close_db
+from config import HEALTH_CHECK_PARAMS, settings
+from db.connection import close_db, connect_db, ping_database
+from middleware import BodySizeLimitMiddleware, SecurityHeadersMiddleware, UnhandledErrorMiddleware
+from routers import analytics, claims, documents, extraction, rag, validation
+from security import PROVIDER_CHECK_LIMIT, limiter, rate_limit_exceeded_handler, require_admin_key
+from services import llm
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
 )
 logger = logging.getLogger("intelliclaim")
+
+APP_VERSION = "1.0.0"
+HEALTH_DB_TIMEOUT_SECONDS = 2.0
 
 
 @asynccontextmanager
@@ -29,30 +39,29 @@ async def lifespan(app: FastAPI):
     logger.info("Database connected successfully.")
     yield
     logger.info("Shutting down IntelliClaim AI API...")
+    await llm.close_clients()
     await close_db()
     logger.info("Database connection closed.")
 
 
 app = FastAPI(
     title="IntelliClaim AI API",
-    description="Insurance Document Intelligence Platform - AI-powered claim processing, extraction, RAG search, and risk detection.",
-    version="1.0.0",
+    description=(
+        "Insurance Document Intelligence Platform - AI-powered claim processing, "
+        "extraction, RAG search, and risk detection."
+    ),
+    version=APP_VERSION,
     lifespan=lifespan,
 )
 
-class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        return response
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
-
+# Middleware added last runs first: CORS wraps everything, so error responses
+# produced further in (including unexpected 500s) still carry CORS headers.
+app.add_middleware(UnhandledErrorMiddleware)
+app.add_middleware(BodySizeLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
-
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -61,8 +70,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Import and register routers
-from routers import documents, claims, extraction, rag, analytics, validation
+
+@app.exception_handler(llm.LLMError)
+async def llm_error_handler(request: Request, exc: llm.LLMError) -> JSONResponse:
+    """503 when no AI provider is configured, 502 when the provider fails."""
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
+@app.exception_handler(ConnectionFailure)
+async def database_unavailable_handler(request: Request, exc: ConnectionFailure) -> JSONResponse:
+    logger.error("Database unavailable during %s %s: %s", request.method, request.url.path, exc)
+    return JSONResponse(status_code=503, content={"detail": "The database is unavailable. Please try again later."})
+
 
 app.include_router(documents.router, prefix="/api", tags=["Documents"])
 app.include_router(claims.router, prefix="/api", tags=["Claims"])
@@ -74,32 +93,49 @@ app.include_router(validation.router, prefix="/api", tags=["Validation"])
 
 @app.get("/api/health", tags=["System"])
 async def health_check():
-    """Health check endpoint."""
-    return {
-        "status": "healthy",
+    """Health check used by Railway and the Docker HEALTHCHECK.
+
+    Reports whether MongoDB answers a ping (within 2 seconds), whether an AI
+    provider is configured, and whether mock mode is on. Returns 503 when the
+    database is unreachable. Never includes keys or connection strings.
+    """
+    database_ok = await ping_database(timeout=HEALTH_DB_TIMEOUT_SECONDS)
+    body = {
+        "status": "healthy" if database_ok else "unhealthy",
         "service": "IntelliClaim AI API",
-        "version": "1.0.0",
+        "version": APP_VERSION,
+        "database": "ok" if database_ok else "unreachable",
+        "llm_configured": settings.llm_configured,
+        "mock_llm": settings.MOCK_LLM,
+        "ai_provider": settings.ai_provider,
         "openai_configured": settings.has_openai_key,
         "groq_configured": settings.has_groq_key,
-        "ai_provider": "openai" if settings.has_openai_key else ("groq" if settings.has_groq_key else "none"),
     }
+    if not database_ok:
+        return JSONResponse(status_code=503, content={"detail": "The database is unreachable.", **body})
+    return body
 
 
-@app.get("/api/health/groq", tags=["System"])
-async def groq_test():
-    """Test Groq API connectivity."""
-    if not settings.has_groq_key:
-        return {"status": "no_key"}
-    try:
-        from groq import Groq
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        r = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": 'Reply with this json exactly: {"ok": true}'}],
-            temperature=0,
-            response_format={"type": "json_object"},
-            max_tokens=10,
-        )
-        return {"status": "ok", "response": r.choices[0].message.content}
-    except Exception as e:
-        return {"status": "error", "error": str(e), "type": type(e).__name__}
+@app.get("/api/health/groq", tags=["System"], dependencies=[Depends(require_admin_key)])
+@limiter.limit(PROVIDER_CHECK_LIMIT)
+async def groq_health(request: Request):
+    """Check Groq connectivity with a minimal JSON-mode completion."""
+    if settings.MOCK_LLM:
+        return {
+            "status": "skipped",
+            "source": "mock",
+            "model": settings.GROQ_MODEL,
+            "message": "MOCK_LLM is enabled, so Groq was not called.",
+        }
+    started = time.perf_counter()
+    content = await llm.groq_chat(
+        [{"role": "user", "content": 'Reply with this JSON exactly: {"ok": true}'}],
+        HEALTH_CHECK_PARAMS,
+        json_mode=True,
+    )
+    return {
+        "status": "ok",
+        "model": settings.GROQ_MODEL,
+        "latency_ms": round((time.perf_counter() - started) * 1000),
+        "response": content,
+    }

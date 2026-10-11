@@ -1,42 +1,219 @@
 """
-IntelliClaim AI — Test Configuration & Fixtures
+IntelliClaim AI - shared test fixtures.
 
-Provides:
-- async_client: httpx.AsyncClient for async API testing with a test DB
-- seed_test_db: fixture that seeds known test data before each test
+- test_db: a fresh MongoDB database seeded with known documents and claims.
+- async_client: an httpx.AsyncClient wired to the FastAPI app and test_db.
+
+MongoDB is taken from TEST_MONGODB_URI (default mongodb://localhost:27017).
 """
 
-import asyncio
-from typing import AsyncGenerator
+import os
 
-import pytest
-import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
+# Environment variables take precedence over backend/.env, so blanking the
+# provider keys here guarantees the suite never reaches a real AI provider,
+# whatever a developer keeps in their local .env file.
+os.environ.update(
+    {
+        "GROQ_API_KEY": "",
+        "OPENAI_API_KEY": "",
+        "MOCK_LLM": "false",
+        "ADMIN_API_KEY": "",
+        "RATE_LIMIT_ENABLED": "false",
+    }
+)
 
-import sys, os
-sys.path.insert(0, os.path.dirname(__file__) + "/..")
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import re  # noqa: E402
+from collections.abc import AsyncGenerator  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
+from types import SimpleNamespace  # noqa: E402
 
-from main import app
-from motor.motor_asyncio import AsyncIOMotorClient
+import groq  # noqa: E402
+import httpx  # noqa: E402
+import numpy as np  # noqa: E402
+import pytest  # noqa: E402
+import pytest_asyncio  # noqa: E402
+from chromadb.api.shared_system_client import SharedSystemClient  # noqa: E402
+from httpx import ASGITransport, AsyncClient  # noqa: E402
+from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 
-TEST_DB_NAME = "intelliclaim_test"
-TEST_MONGO_URI = "mongodb://localhost:27017"
+from config import settings  # noqa: E402
+from main import app  # noqa: E402
+from security import limiter  # noqa: E402
+from services import llm  # noqa: E402
+
+TEST_MONGO_URI = os.environ.get("TEST_MONGODB_URI", "mongodb://localhost:27017")
+TEST_DB_NAME = f"intelliclaim_test_{os.getpid()}"
 
 
-@pytest_asyncio.fixture(scope="function")
+def _dt(value: str) -> datetime:
+    return datetime.fromisoformat(value).replace(tzinfo=UTC)
+
+
+# --- AI provider fakes ----------------------------------------------------------
+
+
+class FakeGroq:
+    """Stands in for groq.AsyncGroq. Queue replies with respond(); inspect calls."""
+
+    def __init__(self) -> None:
+        self._replies: list = []
+        self.calls: list[dict] = []
+        self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
+
+    def respond(self, *replies) -> "FakeGroq":
+        """Queue replies: dicts are sent as JSON text, exceptions are raised."""
+        for reply in replies:
+            self._replies.append(json.dumps(reply) if isinstance(reply, dict) else reply)
+        return self
+
+    async def _create(self, **kwargs):
+        self.calls.append(kwargs)
+        if not self._replies:
+            raise AssertionError("FakeGroq received a request with no reply queued")
+        reply = self._replies.pop(0)
+        if isinstance(reply, BaseException):
+            raise reply
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=reply))])
+
+    async def close(self) -> None:
+        pass
+
+
+def groq_connection_error() -> groq.APIConnectionError:
+    return groq.APIConnectionError(request=httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions"))
+
+
+def groq_rate_limit_error() -> groq.RateLimitError:
+    request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+    return groq.RateLimitError("rate limited", response=httpx.Response(429, request=request), body=None)
+
+
+@pytest.fixture(autouse=True)
+def ai_client_guard(monkeypatch) -> SimpleNamespace:
+    """Fail loudly if any code path tries to build a real provider client.
+
+    Returns the original factories for the tests that check how they are built.
+    """
+    originals = SimpleNamespace(groq=llm._create_groq_client, openai=llm._create_openai_client)
+
+    def _forbidden():
+        raise AssertionError("Tests must not create real AI provider clients; use the fake_groq fixture")
+
+    monkeypatch.setattr(llm, "_create_groq_client", _forbidden)
+    monkeypatch.setattr(llm, "_create_openai_client", _forbidden)
+    monkeypatch.setattr(llm, "_groq_client", None)
+    monkeypatch.setattr(llm, "_openai_client", None)
+    return originals
+
+
+@pytest.fixture
+def fake_groq(monkeypatch) -> FakeGroq:
+    """Configure a Groq key and route all Groq calls to a FakeGroq instance."""
+    fake = FakeGroq()
+    monkeypatch.setattr(settings, "GROQ_API_KEY", "test-groq-key")
+    monkeypatch.setattr(llm, "_groq_client", fake)
+    return fake
+
+
+@pytest.fixture
+def groq_errors() -> SimpleNamespace:
+    """Factories for the exceptions the Groq SDK raises."""
+    return SimpleNamespace(connection=groq_connection_error, rate_limit=groq_rate_limit_error)
+
+
+@pytest.fixture
+def mock_llm(monkeypatch) -> None:
+    monkeypatch.setattr(settings, "MOCK_LLM", True)
+
+
+# --- Rate limiting --------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _rate_limits_off():
+    """Rate limiting is off by default so tests do not share buckets."""
+    limiter.enabled = False
+    yield
+    limiter.enabled = False
+    limiter.reset()
+
+
+@pytest.fixture
+def rate_limits():
+    """Turn rate limiting on (with empty buckets) for one test."""
+    limiter.reset()
+    limiter.enabled = True
+    return limiter
+
+
+# --- File storage -------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def storage_dir(tmp_path, monkeypatch):
+    """Store uploads in a per-test directory (an absolute path, like a mounted volume)."""
+    from services.storage_service import storage_service
+
+    base = tmp_path / "uploads"
+    monkeypatch.setattr(storage_service, "base_path", base)
+    return base
+
+
+# --- Vector store -------------------------------------------------------------------
+
+
+class FakeEmbedder:
+    """Deterministic bag-of-words vectors, so tests never load or download fastembed."""
+
+    DIM = 64
+
+    def embed(self, texts):
+        for text in texts:
+            vector = np.zeros(self.DIM)
+            for word in re.findall(r"[a-z0-9]+", text.lower()):
+                vector[int(hashlib.md5(word.encode()).hexdigest(), 16) % self.DIM] += 1.0
+            norm = np.linalg.norm(vector)
+            if norm:
+                vector /= norm
+            else:
+                vector[0] = 1.0
+            yield vector
+
+
+@pytest.fixture(autouse=True)
+def isolated_vector_store(tmp_path, monkeypatch) -> SimpleNamespace:
+    """Give each test its own ChromaDB directory and the fake embedder.
+
+    Returns the original _get_embedder for the tests that check how it loads fastembed.
+    """
+    import services.rag_service as rag_module
+
+    originals = SimpleNamespace(get_embedder=rag_module._get_embedder)
+    monkeypatch.setattr(settings, "CHROMA_PERSIST_DIR", str(tmp_path / "chroma"))
+    monkeypatch.setattr(rag_module, "_chroma_client", None)
+    monkeypatch.setattr(rag_module, "_chroma_collection", None)
+    monkeypatch.setattr(rag_module, "_embedder", None)
+    monkeypatch.setattr(rag_module, "_get_embedder", FakeEmbedder)
+    yield originals
+    SharedSystemClient.clear_system_cache()
+
+
+# --- Database -----------------------------------------------------------------------
+
+
+@pytest_asyncio.fixture
 async def test_db():
     """Create a fresh Motor client per test to avoid event-loop binding issues."""
     client = AsyncIOMotorClient(TEST_MONGO_URI, serverSelectionTimeoutMS=5000)
     db = client[TEST_DB_NAME]
-
-    # Verify connectivity
     await client.admin.command("ping")
 
-    # Clear collections
     await db.claims.delete_many({})
     await db.documents.delete_many({})
+    await db.claims.create_index("claim_number", unique=True)
 
-    # Seed test documents
     await db.documents.insert_many([
         {
             "_id": "doc-test-001",
@@ -45,11 +222,14 @@ async def test_db():
             "file_size": 1024,
             "storage_path": "./uploads/documents/doc-test-001.pdf",
             "document_class": "invoice",
-            "extracted_text": "Patient: John Doe. Policy: POL-001. Diagnosis: Appendicitis. Treatment Cost: $28,500. Date: 2024-01-15.",
+            "extracted_text": (
+                "Patient: John Doe. Policy: POL-001. Diagnosis: Appendicitis. "
+                "Treatment Cost: $28,500. Date: 2024-01-15."
+            ),
             "claim_id": None,
             "processing_status": "processed",
-            "created_at": "2024-01-15T10:00:00Z",
-            "updated_at": "2024-01-15T10:00:00Z",
+            "created_at": _dt("2024-01-15T10:00:00"),
+            "updated_at": _dt("2024-01-15T10:00:00"),
         },
         {
             "_id": "doc-test-002",
@@ -58,15 +238,17 @@ async def test_db():
             "file_size": 2048,
             "storage_path": "./uploads/documents/doc-test-002.pdf",
             "document_class": "claim_form",
-            "extracted_text": "Claim Number: CLM-001. Patient: Jane Smith. Policy: POL-002. Diagnosis: Type 2 Diabetes. Hospital: Metro General.",
+            "extracted_text": (
+                "Claim Number: CLM-001. Patient: Jane Smith. Policy: POL-002. "
+                "Diagnosis: Type 2 Diabetes. Hospital: Metro General."
+            ),
             "claim_id": "claim-test-001",
             "processing_status": "processed",
-            "created_at": "2024-01-16T11:00:00Z",
-            "updated_at": "2024-01-16T11:00:00Z",
+            "created_at": _dt("2024-01-16T11:00:00"),
+            "updated_at": _dt("2024-01-16T11:00:00"),
         },
     ])
 
-    # Seed test claims
     await db.claims.insert_many([
         {
             "_id": "claim-test-001",
@@ -86,8 +268,8 @@ async def test_db():
             "risk_flags": [],
             "document_ids": ["doc-test-002"],
             "extraction_confidence": 0.91,
-            "created_at": "2024-01-16T11:00:00Z",
-            "updated_at": "2024-01-16T11:00:00Z",
+            "created_at": _dt("2024-01-16T11:00:00"),
+            "updated_at": _dt("2024-01-16T11:00:00"),
         },
         {
             "_id": "claim-test-002",
@@ -105,32 +287,28 @@ async def test_db():
             "status": "flagged",
             "risk_score": 65.0,
             "risk_flags": ["Treatment cost exceeds $50,000 threshold"],
-            "document_ids": ["doc-test-001"],
+            "document_ids": [],
             "extraction_confidence": 0.85,
-            "created_at": "2024-01-15T10:00:00Z",
-            "updated_at": "2024-01-15T10:00:00Z",
+            "created_at": _dt("2024-01-15T10:00:00"),
+            "updated_at": _dt("2024-01-15T10:00:00"),
         },
     ])
 
     yield db
 
-    # Cleanup
     await client.drop_database(TEST_DB_NAME)
     client.close()
 
 
 @pytest_asyncio.fixture
-async def async_client(test_db) -> AsyncGenerator[AsyncClient, None]:
-    """Provide an httpx AsyncClient with DB overridden to the test database."""
-    # Monkeypatch the module-level _database variable
+async def async_client(test_db) -> AsyncGenerator[AsyncClient]:
+    """Provide an httpx AsyncClient with the app's database pointed at test_db."""
     import db.connection as db_conn
+
     original_db = db_conn._database
     db_conn._database = test_db
 
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test",
-    ) as client:
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         yield client
 
     db_conn._database = original_db

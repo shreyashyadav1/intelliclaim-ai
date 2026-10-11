@@ -5,34 +5,30 @@ Endpoints for claim validation, risk detection, and flagged claims.
 """
 
 import logging
-from typing import Optional
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Query, Request
+from pydantic import BaseModel, Field, StringConstraints
 
 from db.connection import get_database
+from security import AI_LIMIT, BULK_LIMIT, limiter
+from services.llm import LLMError
 from services.validation_service import validation_service as validator
 from utils.helpers import utc_now
 
 logger = logging.getLogger("intelliclaim.validation")
 router = APIRouter()
 
+MAX_BATCH_SIZE = 100
+
+ClaimId = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
+
 
 class BatchValidateRequest(BaseModel):
-    claim_ids: list[str]
+    claim_ids: list[ClaimId] = Field(min_length=1, max_length=MAX_BATCH_SIZE)
 
 
-@router.post("/validate/{claim_id}")
-async def validate_claim(claim_id: str):
-    """Run validation on a single claim and update its risk score/flags."""
-    db = get_database()
-    claim = await db.claims.find_one({"_id": claim_id})
-    if not claim:
-        raise HTTPException(status_code=404, detail="Claim not found")
-
-    result = await validator.validate_claim(claim)
-
-    # Update claim with risk assessment
+async def _store_result(db, claim_id: str, result: dict) -> None:
     update_data = {
         "risk_score": result["risk_score"],
         "risk_flags": [f["description"] for f in result["flags"]],
@@ -40,8 +36,23 @@ async def validate_claim(claim_id: str):
     }
     if result["risk_level"] == "high":
         update_data["status"] = "flagged"
-
     await db.claims.update_one({"_id": claim_id}, {"$set": update_data})
+
+
+@router.post("/validate/{claim_id}")
+@limiter.limit(AI_LIMIT)
+async def validate_claim(request: Request, claim_id: str):
+    """Run validation on a single claim and update its risk score/flags.
+
+    If the AI provider fails the request returns 502 and the claim is left unchanged.
+    """
+    db = get_database()
+    claim = await db.claims.find_one({"_id": claim_id})
+    if not claim:
+        raise HTTPException(status_code=404, detail="Claim not found")
+
+    result = await validator.validate_claim(claim)
+    await _store_result(db, claim_id, result)
 
     return {
         "claim_id": claim_id,
@@ -69,28 +80,47 @@ async def get_flagged_claims(
 
 
 @router.post("/batch-validate")
-async def batch_validate(request: BatchValidateRequest):
-    """Validate multiple claims in batch."""
-    db = get_database()
-    results = []
+@limiter.limit(BULK_LIMIT)
+async def batch_validate(request: Request, payload: BatchValidateRequest):
+    """Validate up to 100 claims.
 
-    for claim_id in request.claim_ids:
+    Each claim gets its own result entry. If the AI provider fails, the
+    remaining claims are skipped (so an outage is not retried 100 times) and
+    the request fails with 502 only when no claim could be validated.
+    """
+    db = get_database()
+    claim_ids = list(dict.fromkeys(payload.claim_ids))  # de-duplicate, keep order
+    results = []
+    validated = 0
+    provider_error: LLMError | None = None
+
+    for claim_id in claim_ids:
+        if provider_error is not None:
+            results.append({"claim_id": claim_id, "error": "Skipped because the AI provider is unavailable"})
+            continue
+
         claim = await db.claims.find_one({"_id": claim_id})
         if not claim:
             results.append({"claim_id": claim_id, "error": "Not found"})
             continue
 
-        result = await validator.validate_claim(claim)
+        try:
+            result = await validator.validate_claim(claim)
+        except LLMError as exc:
+            provider_error = exc
+            results.append({"claim_id": claim_id, "error": exc.detail})
+            continue
 
-        update_data = {
-            "risk_score": result["risk_score"],
-            "risk_flags": [f["description"] for f in result["flags"]],
-            "updated_at": utc_now(),
-        }
-        if result["risk_level"] == "high":
-            update_data["status"] = "flagged"
-
-        await db.claims.update_one({"_id": claim_id}, {"$set": update_data})
+        await _store_result(db, claim_id, result)
         results.append({"claim_id": claim_id, **result})
+        validated += 1
 
-    return {"results": results, "total_validated": len(results)}
+    if provider_error is not None and validated == 0:
+        raise provider_error
+
+    return {
+        "results": results,
+        "total_validated": validated,
+        "total_requested": len(claim_ids),
+        "errors": len(results) - validated,
+    }

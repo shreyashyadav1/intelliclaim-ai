@@ -1,42 +1,110 @@
 """
 IntelliClaim AI - Configuration Module
 
-Loads application settings from environment variables and .env file.
+Settings come from environment variables and, for local development, from
+backend/.env. Environment variables win over the file. Every setting is
+listed in the repository's .env.example.
 """
 
-from pydantic_settings import BaseSettings
-from pydantic import Field
-from typing import Optional
+import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Annotated, Any, Literal
+
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
+
+BACKEND_DIR = Path(__file__).resolve().parent
+
+
+@dataclass(frozen=True)
+class GenerationParams:
+    """Sampling parameters for one kind of LLM call."""
+
+    temperature: float
+    max_tokens: int
+
+
+# Per-task generation parameters, shared by every provider. Token budgets for
+# the tasks that run on Groq include the reasoning tokens gpt-oss spends
+# before it answers.
+EXTRACTION_PARAMS = GenerationParams(temperature=0.0, max_tokens=2048)
+VALIDATION_PARAMS = GenerationParams(temperature=0.2, max_tokens=2048)
+RAG_ANSWER_PARAMS = GenerationParams(temperature=0.1, max_tokens=1024)
+CLASSIFICATION_PARAMS = GenerationParams(temperature=0.0, max_tokens=20)  # OpenAI only
+HEALTH_CHECK_PARAMS = GenerationParams(temperature=0.0, max_tokens=512)
+
+# Embedding models. Vectors from different models are not comparable, so
+# changing either one requires re-indexing (POST /api/rag/index-all).
+EMBEDDING_MODEL_NAME = "BAAI/bge-small-en-v1.5"  # fastembed, local ONNX
+OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"  # OpenAI path only
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
-    # OpenAI
-    OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API key for GPT-4o")
+    model_config = SettingsConfigDict(
+        env_file=BACKEND_DIR / ".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",
+    )
 
-    # Groq
-    GROQ_API_KEY: Optional[str] = Field(default=None, description="Groq API key (free tier)")
+    # AI providers
+    GROQ_API_KEY: str | None = Field(default=None, description="Groq API key")
+    GROQ_MODEL: str = Field(
+        default="openai/gpt-oss-120b",
+        description="Groq chat model; Groq retires models over time (https://console.groq.com/docs/deprecations)",
+    )
+    GROQ_REASONING_EFFORT: Literal["low", "medium", "high", ""] = Field(
+        default="low",
+        description="reasoning_effort for Groq reasoning models such as gpt-oss; empty for models without it",
+    )
+    OPENAI_API_KEY: str | None = Field(
+        default=None, description="OpenAI API key; when set, OpenAI is tried before Groq"
+    )
+    OPENAI_MODEL: str = Field(default="gpt-4o", description="OpenAI chat model")
+    LLM_TIMEOUT_SECONDS: float = Field(default=20.0, gt=0, description="Per-request timeout for AI providers")
+    LLM_MAX_RETRIES: int = Field(default=1, ge=0, le=5, description="Retries for failed AI provider requests")
+    MOCK_LLM: bool = Field(
+        default=False,
+        description="Return clearly labelled mock AI output instead of calling a provider (demos and tests)",
+    )
+    EXTRACTION_MAX_INPUT_CHARS: int = Field(
+        default=4000, ge=500, description="Characters of document text sent to the model for extraction"
+    )
 
     # MongoDB
     MONGODB_URI: str = Field(default="mongodb://localhost:27017", description="MongoDB connection URI")
     MONGODB_DB_NAME: str = Field(default="intelliclaim", description="MongoDB database name")
 
-    # Storage
-    STORAGE_TYPE: str = Field(default="local", description="Storage backend: local or s3")
-    LOCAL_STORAGE_PATH: str = Field(default="./uploads", description="Local file storage path")
+    # File storage and uploads
+    LOCAL_STORAGE_PATH: str = Field(
+        default="./uploads", description="Directory for uploaded files (relative to the working directory, or absolute)"
+    )
+    MAX_UPLOAD_MB: int = Field(default=50, ge=1, description="Largest accepted upload, in MB")
+    MAX_DOCUMENT_PAGES: int = Field(default=50, ge=1, description="Most pages (PDF) or frames (TIFF) per upload")
 
-    # AWS S3 (optional)
-    AWS_ACCESS_KEY_ID: Optional[str] = Field(default=None, description="AWS access key ID")
-    AWS_SECRET_ACCESS_KEY: Optional[str] = Field(default=None, description="AWS secret access key")
-    AWS_REGION: Optional[str] = Field(default="us-east-1", description="AWS region")
-    S3_BUCKET: Optional[str] = Field(default=None, description="S3 bucket name")
-
-    # ChromaDB
+    # Vector search
     CHROMA_PERSIST_DIR: str = Field(default="./chroma_data", description="ChromaDB persistence directory")
+    FASTEMBED_CACHE_PATH: str | None = Field(
+        default=None, description="Directory holding the fastembed model files (the Docker image pre-downloads them)"
+    )
 
-    # CORS
-    ALLOWED_ORIGINS: list[str] = Field(
+    # API protection
+    ADMIN_API_KEY: str | None = Field(
+        default=None,
+        description="When set, destructive and costly endpoints require this value in the X-Admin-Key header",
+    )
+    RATE_LIMIT_ENABLED: bool = Field(default=True, description="Per-client rate limits on write and AI endpoints")
+    TRUSTED_PROXY_COUNT: int = Field(
+        default=1,
+        ge=0,
+        description="Reverse proxies in front of the API whose X-Forwarded-For entries are trusted (0 = none)",
+    )
+
+    # CORS: accepts a comma-separated string or a JSON array.
+    ALLOWED_ORIGINS: Annotated[list[str], NoDecode] = Field(
         default=[
             "http://localhost:5173",
             "http://localhost:5177",
@@ -46,26 +114,61 @@ class Settings(BaseSettings):
         description="Allowed CORS origins",
     )
 
-    # Server
-    BACKEND_HOST: str = Field(default="0.0.0.0", description="Backend host")
-    BACKEND_PORT: int = Field(default=8000, description="Backend port")
+    @field_validator("GROQ_API_KEY", "OPENAI_API_KEY", "FASTEMBED_CACHE_PATH", "ADMIN_API_KEY", mode="before")
+    @classmethod
+    def _blank_to_none(cls, value: Any) -> Any:
+        """Treat empty or whitespace-only values (e.g. `GROQ_API_KEY=`) as unset."""
+        if isinstance(value, str):
+            value = value.strip()
+            return value or None
+        return value
 
-    model_config = {
-        "env_file": ".env",
-        "env_file_encoding": "utf-8",
-        "case_sensitive": True,
-        "extra": "ignore",
-    }
+    @field_validator("ALLOWED_ORIGINS", mode="before")
+    @classmethod
+    def _parse_origins(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            text = value.strip()
+            if text.startswith("["):
+                try:
+                    value = json.loads(text)
+                except json.JSONDecodeError as exc:
+                    raise ValueError("ALLOWED_ORIGINS is not a valid JSON array") from exc
+            else:
+                value = text.split(",")
+        if isinstance(value, list | tuple):
+            # Browsers send origins without a trailing slash, so normalise it away.
+            return [str(origin).strip().rstrip("/") for origin in value if str(origin).strip()]
+        return value
 
     @property
     def has_openai_key(self) -> bool:
         """Check if OpenAI API key is configured."""
-        return self.OPENAI_API_KEY is not None and len(self.OPENAI_API_KEY) > 0
+        return bool(self.OPENAI_API_KEY and self.OPENAI_API_KEY.strip())
 
     @property
     def has_groq_key(self) -> bool:
         """Check if Groq API key is configured."""
-        return self.GROQ_API_KEY is not None and len(self.GROQ_API_KEY) > 0
+        return bool(self.GROQ_API_KEY and self.GROQ_API_KEY.strip())
+
+    @property
+    def max_upload_bytes(self) -> int:
+        return self.MAX_UPLOAD_MB * 1024 * 1024
+
+    @property
+    def llm_configured(self) -> bool:
+        """True when at least one real AI provider has an API key."""
+        return self.has_openai_key or self.has_groq_key
+
+    @property
+    def ai_provider(self) -> str:
+        """The provider that AI features use first: mock, openai, groq or none."""
+        if self.MOCK_LLM:
+            return "mock"
+        if self.has_openai_key:
+            return "openai"
+        if self.has_groq_key:
+            return "groq"
+        return "none"
 
 
 settings = Settings()
