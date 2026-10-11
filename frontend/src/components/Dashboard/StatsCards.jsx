@@ -10,6 +10,7 @@ const STATUS_ROWS = [
 ];
 
 const count = (value) => Number(value ?? 0).toLocaleString('en-US');
+const share = new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 0 });
 const percent = (value) => `${Number(value ?? 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
 
 function figuresFromOverview(overview) {
@@ -66,15 +67,15 @@ export function StatusBreakdown({ data }) {
       <ul className="status-bars" role="list">
         {STATUS_ROWS.map(({ key, label }) => {
           const value = Number(byStatus[key] ?? 0);
-          const share = total > 0 ? value / total : 0;
+          const fraction = total > 0 ? value / total : 0;
           return (
             <li key={key} className="status-bar-row" data-status={key}>
               <span className="status-bar-label">{label}</span>
               <span className="status-bar-track" aria-hidden="true">
-                <span className="status-bar-fill" style={{ transform: `scaleX(${share})` }} />
+                <span className="status-bar-fill" style={{ transform: `scaleX(${fraction})` }} />
               </span>
               <span className="status-bar-count tabular">{data ? count(value) : '—'}</span>
-              <span className="status-bar-share tabular">{data ? `${Math.round(share * 100)}%` : ''}</span>
+              <span className="status-bar-share tabular">{data ? share.format(fraction) : ''}</span>
             </li>
           );
         })}

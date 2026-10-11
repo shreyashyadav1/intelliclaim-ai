@@ -214,3 +214,10 @@ img {
     scroll-behavior: auto;
   }
 }
+
+/* No page rubber-band with a mouse or trackpad; touch keeps pull-to-refresh. */
+@media (pointer: fine) {
+  html {
+    overscroll-behavior: none;
+  }
+}
