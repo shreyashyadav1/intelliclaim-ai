@@ -94,6 +94,26 @@ describe('ClaimDetailPage', () => {
     expect(screen.getByText('Dana Whitfield', { selector: 'mark' })).toHaveAttribute('data-active', 'true');
   });
 
+  it('opens the source document named in the link and switches between documents', async () => {
+    const invoice = { id: 'doc-1', filename: 'invoice_dana.pdf', document_class: 'invoice', processing_status: 'processed' };
+    const report = { id: 'doc-2', filename: 'report_dana.pdf', document_class: 'medical_report', processing_status: 'processed' };
+    mockApi({
+      'GET /claims/clm-1': { data: { ...claim, document_ids: ['doc-1', 'doc-2'] } },
+      'GET /claims/clm-1/documents': { data: { documents: [invoice, report] } },
+      'GET /documents/doc-1': { data: { ...invoice, extracted_text: 'Total due: $72,000.00' } },
+      'GET /documents/doc-2': { data: { ...report, extracted_text: 'Diagnosis: Knee arthroscopy' } },
+    });
+    const { user } = renderWithRouter(<ClaimDetailPage />, { route: '/claims/clm-1?doc=doc-2', path: '/claims/:id' });
+
+    expect(await screen.findByRole('region', { name: 'Text of report_dana.pdf' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Medical report' })).toHaveAttribute('aria-pressed', 'true');
+
+    await user.click(screen.getByRole('button', { name: 'Invoice' }));
+
+    expect(await screen.findByRole('region', { name: 'Text of invoice_dana.pdf' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show treatment cost in the document: Line 1' })).toBeInTheDocument();
+  });
+
   it('shows a not-found message instead of a sample claim', async () => {
     mockApi({ 'GET /claims/clm-1': { status: 404, data: { detail: 'Claim not found' } } });
     renderClaim();

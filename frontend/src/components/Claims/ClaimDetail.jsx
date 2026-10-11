@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, Flag, Loader2, ShieldCheck, XCircle } from 'lucide-react';
 import { useApiQuery } from '../../hooks/useApiQuery';
 import { claimsApi, documentsApi, getErrorMessage } from '../../services/api';
@@ -47,8 +47,17 @@ function useClaimSource(claimId, documentIds) {
     [list.data, documentIds],
   );
 
-  const [chosenId, setChosenId] = useState(null);
+  // The document being read is kept in the URL (?doc=<id>), so it can be linked to.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const chosenId = searchParams.get('doc');
   const selectedId = documents?.some((doc) => doc.id === chosenId) ? chosenId : documents?.[0]?.id ?? null;
+  const setChosenId = useCallback((id) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.set('doc', id);
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
 
   const loadDocument = useCallback(
     () => (selectedId ? documentsApi.get(selectedId) : Promise.resolve(null)),
