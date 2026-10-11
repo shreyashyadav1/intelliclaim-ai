@@ -93,25 +93,25 @@ extraction and rag-answer suites were not run):
 
 | Run | Command (from `backend/`) | Date (UTC) | Commit | Platform |
 |---|---|---|---|---|
-| A | `python -m evals.run --suite retrieval --suite classification --suite risk` with `EVAL_MONGODB_URI=mongodb://localhost:27020` | 2026-10-05 19:29 | `1d0030e` | macOS 26.5 arm64, Python 3.13.14 |
-| B | `python -m evals.run --suite offline --check-thresholds --output-dir /out/offline` in `python:3.13-slim` with tesseract-ocr | 2026-10-05 19:32 | `1d0030e` | Debian 13 arm64 (Docker), Python 3.13.15, tesseract 5.5.0 |
-| C | `python3 -m evals.run --suite ocr --output-dir /out` in `ubuntu:24.04` with tesseract-ocr | 2026-09-29 03:25 | `64d8b45` | Ubuntu 24.04 arm64 (Docker), Python 3.12.3, tesseract 5.3.4 |
+| A | `python -m evals.run --suite retrieval --suite classification --suite risk --check-thresholds` with `EVAL_MONGODB_URI=mongodb://localhost:27022` | 2026-10-11 00:35 | `c527d08` | macOS 26.5 arm64, Python 3.13.14 |
+| B | `python -m evals.run --suite offline --check-thresholds --output-dir /out/offline` in `python:3.13-slim` with tesseract-ocr | 2026-10-11 00:37 | `c527d08` | Debian 13 arm64 (Docker), Python 3.13.15, tesseract 5.5.0 |
+| C | `python -m evals.run --suite ocr --output-dir /out` in `ubuntu:24.04` with tesseract-ocr | 2026-10-11 00:44 | `c527d08` | Ubuntu 24.04 arm64 (Docker), Python 3.12.3, tesseract 5.3.4 |
 
 Run B repeated every offline suite on Linux: classification and risk were
 identical to run A, and retrieval differed only in near-ties (10 of 216
 questions moved by a rank or so: recall@1, recall@5 and answer-in-top-5
 identical, recall@3 within 0.005, MRR within 0.001). Run C, with the tesseract
-version of CI's Ubuntu image, gave OCR metrics identical to run B; the OCR code
-and the page texts have not changed since its commit. On one machine runs are
-deterministic: repeating a run gives identical metrics.
+version of CI's Ubuntu image, gave OCR metrics identical to run B. On one
+machine runs are deterministic: repeating a run gives identical metrics.
 
-The first runs, on 2026-09-29 (commits `4981e55` and `64d8b45`), measured the
-same retrieval, OCR and risk-score results. Since then the keyword classifier
-gained a `policy_document` class (commit `6d52492`: accuracy 0.800 to 1.000),
-the flagged-claims list starts at a risk score of 15 instead of 30 (`eb66c86`:
-recall 0.093 to 0.767), and langchain-community was replaced by adapters on
-langchain-core (`1d0030e`), after which retrieval gave the same metrics and
-per-question ranks on both platforms as before.
+The first runs, on 2026-09-29, measured the same retrieval, OCR and risk-score
+results. Since then the keyword classifier gained a `policy_document` class
+(commit `fcb47d1`: accuracy 0.800 to 1.000), the flagged-claims list starts at
+a risk score of 15 instead of 30 (`cb19f1f`: recall 0.093 to 0.767), and
+langchain-community was replaced by adapters on langchain-core (`296f496`).
+Neither that replacement nor the switch of the default Groq model to
+`openai/gpt-oss-120b` changed any offline metric or per-question rank: runs on
+2026-10-05, before the model switch, gave the same results as runs A to C.
 
 ### Retrieval (run A)
 
@@ -138,8 +138,8 @@ By source document (recall@1 / recall@5 / MRR): invoices 0.202 / 0.476 / 0.349
 vector vs 0.321 / 0.833 / 0.534 hybrid; policy summaries 0.500 / 0.667 / 0.595
 vs 0.875 / 0.979 / 0.918; medical reports 0.528 / 0.750 / 0.621 vs 0.667 /
 0.889 / 0.759; discharge summaries 0.771 / 0.875 / 0.817 vs 0.979 / 0.979 /
-0.979. Retrieval latency per question: vector p50 5.1 ms / p95 6.3 ms, hybrid
-6.2 / 12.1 ms (run A hardware).
+0.979. Retrieval latency per question: vector p50 7.1 ms / p95 18.8 ms, hybrid
+9.8 / 26.5 ms (run A hardware, shared with other work, so treat these as rough).
 
 Embeddings do not tell invoices apart by number: identifier questions reach a
 source chunk in the top five 24% of the time with vector search and 79% with
@@ -198,7 +198,7 @@ work. Hence `RAG_RETRIEVAL_MODE=hybrid`, `RAG_CHUNK_SIZE = 384`,
 Character errors on these mild scans are rare, but every miss lands on the
 diagnosis line: 15 of the 60 scans do not reproduce the printed diagnosis
 (description and ICD-10 code) character for character, which matters because
-extraction copies that field. OCR took 1.7 s per page in run B.
+extraction copies that field. OCR took 1.8 s per page in run B and 1.7 s in run C.
 
 ### Classification (runs A and B, identical)
 
@@ -207,7 +207,7 @@ including the Groq deployment): **accuracy 1.000, macro F1 1.000** on the 60
 text-layer documents. Every invoice, medical report, discharge summary and
 policy summary gets its own class.
 
-Until commit `6d52492` the application had no class for insurance policies:
+Until commit `fcb47d1` the application had no class for insurance policies:
 accuracy was 0.800 and macro F1 0.750, because all 12 policy summaries were
 predicted `claim_form` (they share "policyholder" and "coverage" with the
 claim-form keywords). The fix adds `policy_document` with policy vocabulary
@@ -233,7 +233,7 @@ was configured.
 | 5 | 0.767 | 0.767 | 0.767 | 86 (66 + 20) |
 | **15 (`RISK_FLAG_THRESHOLD`: flagged-claims list, medium risk)** | **0.795** | **0.767** | **0.781** | 83 (66 + 17) |
 | 25 | 1.000 | 0.477 | 0.646 | 41 (41 + 0) |
-| 30 (the flagged-claims list before commit `eb66c86`) | 1.000 | 0.093 | 0.170 | 8 (8 + 0) |
+| 30 (the flagged-claims list before commit `cb19f1f`) | 1.000 | 0.093 | 0.170 | 8 (8 + 0) |
 | 40 | 1.000 | 0.081 | 0.150 | 7 (7 + 0) |
 | 50 | 1.000 | 0.023 | 0.045 | 2 (2 + 0) |
 | 60 (high risk) | 0.000 | 0.000 | 0.000 | 0 |
@@ -301,8 +301,8 @@ tesseract version (runs B and C agree for 5.5.0 and 5.3.4, the version on CI's
 Ubuntu image). Classification needs accuracy 0.98 and macro F1 0.97 (at most
 one of the 60 documents misclassified); risk checks PR-AUC, ROC-AUC, and
 precision and recall at the configured `RISK_FLAG_THRESHOLD`
-(`rules.flagged`). Runs A and B meet every threshold of the suites they ran
-(run B with `--check-thresholds`), and run C meets the OCR thresholds. A suite
+(`rules.flagged`). Runs A and B met every threshold of the suites they ran
+(both with `--check-thresholds`), and run C meets the OCR thresholds. A suite
 that has thresholds but does not run (for example without tesseract) fails the
 check. After an intentional change to the pipeline or the dataset, re-run the
 suites and update the thresholds and this file from the new `summary.md`.
