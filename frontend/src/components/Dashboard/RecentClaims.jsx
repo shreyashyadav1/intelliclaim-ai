@@ -1,47 +1,41 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { ClipboardList, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ClipboardList } from 'lucide-react';
 import { getErrorMessage } from '../../services/api';
-import { formatCurrency, formatScore, riskColor } from '../../utils/format';
-import Badge from '../Shared/Badge';
+import { formatCurrency } from '../../utils/format';
+import { StatusBadge } from '../Shared/Badge';
+import RiskValue from '../Shared/RiskValue';
 import { EmptyState, ErrorState, LoadingState } from '../Shared/StateMessage';
 import './RecentClaims.css';
 
 function ClaimsTable({ claims }) {
-  const navigate = useNavigate();
-
   return (
     <div className="recent-claims-table-wrapper">
       <table className="recent-claims-table">
         <thead>
           <tr>
-            <th>Claim #</th>
-            <th>Patient</th>
-            <th>Diagnosis</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Risk</th>
+            <th scope="col">Claim</th>
+            <th scope="col">Patient</th>
+            <th scope="col" className="recent-claims-col-diagnosis">Diagnosis</th>
+            <th scope="col" className="recent-claims-number">Amount</th>
+            <th scope="col">Risk</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
           {claims.map((claim) => (
-            <tr key={claim.id} onClick={() => navigate(`/claims/${claim.id}`)} className="recent-claims-row">
-              <td className="claim-number-cell">
-                <Link to={`/claims/${claim.id}`} onClick={(event) => event.stopPropagation()}>
+            <tr key={claim.id}>
+              <td translate="no">
+                <Link to={`/claims/${claim.id}`} className="record-link">
                   {claim.claim_number || 'Unnumbered claim'}
                 </Link>
               </td>
-              <td>{claim.patient_name || '—'}</td>
-              <td className="diagnosis-cell">{claim.diagnosis || '—'}</td>
-              <td className="amount-cell">{formatCurrency(claim.treatment_cost)}</td>
-              <td><Badge variant={claim.status}>{claim.status}</Badge></td>
-              <td>
-                <span
-                  className="risk-score-badge"
-                  style={{ color: riskColor(claim.risk_score), background: `${riskColor(claim.risk_score)}15` }}
-                >
-                  {formatScore(claim.risk_score)}
-                </span>
+              <td className="recent-claims-patient">{claim.patient_name || '—'}</td>
+              <td className="recent-claims-col-diagnosis recent-claims-diagnosis" title={claim.diagnosis || undefined}>
+                {claim.diagnosis || '—'}
               </td>
+              <td className="recent-claims-number recent-claims-amount tabular">{formatCurrency(claim.treatment_cost)}</td>
+              <td><RiskValue score={claim.risk_score} /></td>
+              <td><StatusBadge status={claim.status} /></td>
             </tr>
           ))}
         </tbody>
@@ -51,8 +45,6 @@ function ClaimsTable({ claims }) {
 }
 
 export default function RecentClaims({ data, error, onRetry }) {
-  const navigate = useNavigate();
-
   let body;
   if (error) {
     body = <ErrorState title="Couldn't load recent claims" message={getErrorMessage(error)} onRetry={onRetry} />;
@@ -69,14 +61,12 @@ export default function RecentClaims({ data, error, onRetry }) {
   }
 
   return (
-    <div className="recent-claims glass-card" id="recent-claims-table">
-      <div className="recent-claims-header">
-        <h3 className="recent-claims-title">Recent Claims</h3>
-        <button className="recent-claims-view-all" onClick={() => navigate('/claims')} id="view-all-claims-btn">
-          View All <ExternalLink size={14} />
-        </button>
+    <section className="recent-claims" id="recent-claims-table" aria-labelledby="recent-claims-title">
+      <div className="section-head">
+        <h2 id="recent-claims-title">Latest claims</h2>
+        <Link to="/claims" className="text-link" id="view-all-claims-btn">View all claims</Link>
       </div>
       {body}
-    </div>
+    </section>
   );
 }

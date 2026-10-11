@@ -1,7 +1,8 @@
-import StatsCards from '../components/Dashboard/StatsCards';
 import ClaimsChart from '../components/Dashboard/ClaimsChart';
-import RiskGauge from '../components/Dashboard/RiskGauge';
 import RecentClaims from '../components/Dashboard/RecentClaims';
+import RiskOverview from '../components/Dashboard/RiskOverview';
+import { OverviewFigures, StatusBreakdown } from '../components/Dashboard/StatsCards';
+import PageHeader from '../components/Shared/PageHeader';
 import { useApiQuery } from '../hooks/useApiQuery';
 import { analyticsApi } from '../services/api';
 import './DashboardPage.css';
@@ -19,12 +20,14 @@ export default function DashboardPage() {
   const recentClaims = useApiQuery(loadRecentClaims);
 
   return (
-    <div className="page-enter" id="dashboard-page">
-      <StatsCards data={overview.data} error={overview.error} onRetry={overview.refetch} />
-      <div className="dashboard-chart-grid">
-        <ClaimsChart data={trend.data} error={trend.error} onRetry={trend.refetch} days={TREND_DAYS} />
-        <RiskGauge data={overview.data} error={overview.error} onRetry={overview.refetch} />
+    <div id="dashboard-page">
+      <PageHeader title="Dashboard" description="Claim volume, decisions and risk across the workspace." />
+      <OverviewFigures data={overview.data} error={overview.error} onRetry={overview.refetch} />
+      <div className="dashboard-grid">
+        {!overview.error && <StatusBreakdown data={overview.data} />}
+        <RiskOverview data={overview.data} error={overview.error} onRetry={overview.refetch} />
       </div>
+      <ClaimsChart data={trend.data} error={trend.error} onRetry={trend.refetch} days={TREND_DAYS} />
       <RecentClaims data={recentClaims.data} error={recentClaims.error} onRetry={recentClaims.refetch} />
     </div>
   );

@@ -29,11 +29,11 @@ describe('DashboardPage', () => {
     renderWithRouter(<DashboardPage />);
 
     const stat = (name) => within(screen.getByRole('group', { name }));
-    expect(await stat('Total Claims').findByText('0')).toBeInTheDocument();
-    expect(stat('Total Claims').getByText('0 pending')).toBeInTheDocument();
-    expect(stat('Approval Rate').getByText('0.0%')).toBeInTheDocument();
-    expect(stat('Documents Processed').getByText('0')).toBeInTheDocument();
-    expect(stat('Risk Alerts').getByText('0')).toBeInTheDocument();
+    expect(await stat('Total claims').findByText('0')).toBeInTheDocument();
+    expect(stat('Total claims').getByText('0 pending')).toBeInTheDocument();
+    expect(stat('Approval rate').getByText('0.0%')).toBeInTheDocument();
+    expect(stat('Documents processed').getByText('0')).toBeInTheDocument();
+    expect(stat('High-risk claims').getByText('0')).toBeInTheDocument();
 
     expect(await screen.findByRole('img', { name: 'No claims to score yet' })).toBeInTheDocument();
     expect(await screen.findByText('No claims in the last 30 days')).toBeInTheDocument();
