@@ -20,6 +20,7 @@ from middleware import BodySizeLimitMiddleware, SecurityHeadersMiddleware, Unhan
 from routers import analytics, claims, documents, extraction, rag, validation
 from security import PROVIDER_CHECK_LIMIT, limiter, rate_limit_exceeded_handler, require_admin_key
 from services import llm
+from services.rag_errors import IncompatibleIndexError
 
 logging.basicConfig(
     level=logging.INFO,
@@ -74,6 +75,12 @@ app.add_middleware(
 @app.exception_handler(llm.LLMError)
 async def llm_error_handler(request: Request, exc: llm.LLMError) -> JSONResponse:
     """503 when no AI provider is configured, 502 when the provider fails."""
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+
+@app.exception_handler(IncompatibleIndexError)
+async def incompatible_index_handler(request: Request, exc: IncompatibleIndexError) -> JSONResponse:
+    """409 until the search index is rebuilt for the current embedding model."""
     return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 
