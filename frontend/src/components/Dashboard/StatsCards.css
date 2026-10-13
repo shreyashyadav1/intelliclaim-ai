@@ -55,24 +55,23 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-.stat-card-trend {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.85rem;
+.stat-card-note {
+  font-size: 0.8rem;
   font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
 }
 
-.trend-up {
-  color: var(--status-success);
-  background: rgba(16, 185, 129, 0.1);
+.stats-cards-error {
+  grid-column: 1 / -1;
 }
 
-.trend-down {
-  color: var(--status-danger);
-  background: rgba(239, 68, 68, 0.1);
+.stats-cards-error:hover {
+  transform: none;
 }
 
 .stat-card-value {

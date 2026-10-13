@@ -1,74 +1,70 @@
-import { useEffect, useState } from 'react';
-import { TrendingUp, TrendingDown, FileText, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, ClipboardList, FileText } from 'lucide-react';
+import { useCountUp } from '../../hooks/useCountUp';
+import { getErrorMessage } from '../../services/api';
+import { ErrorState } from '../Shared/StateMessage';
 import './StatsCards.css';
 
-const iconMap = {
-  total: FileText,
-  approved: CheckCircle,
-  time: Clock,
-  risk: AlertTriangle,
-};
-
-const defaultStats = [
-  { key: 'total', label: 'Total Claims', value: 1247, trend: 12.5, prefix: '', suffix: '' },
-  { key: 'approved', label: 'Approval Rate', value: 74.9, trend: 3.2, prefix: '', suffix: '%' },
-  { key: 'time', label: 'Avg. Processing', value: 4.2, trend: -8.1, prefix: '', suffix: 'hrs' },
-  { key: 'risk', label: 'Risk Alerts', value: 68, trend: 15.3, prefix: '', suffix: '', danger: true },
+const CARDS = [
+  { key: 'total', label: 'Total Claims', icon: ClipboardList },
+  { key: 'approved', label: 'Approval Rate', icon: CheckCircle, suffix: '%', decimals: 1 },
+  { key: 'documents', label: 'Documents Processed', icon: FileText },
+  { key: 'risk', label: 'Risk Alerts', icon: AlertTriangle, danger: true },
 ];
 
-function AnimatedCounter({ target, suffix = '', prefix = '', duration = 1500 }) {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let start = 0;
-    const end = target;
-    const isFloat = !Number.isInteger(target);
-    const stepTime = Math.max(duration / (end || 1), 10);
-    const increment = end / (duration / 16);
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= end) {
-        setCount(end);
-        clearInterval(timer);
-      } else {
-        setCount(isFloat ? Math.round(current * 10) / 10 : Math.floor(current));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration]);
-
-  return <span>{prefix}{typeof count === 'number' && !Number.isInteger(target) ? count.toFixed(1) : count.toLocaleString()}{suffix}</span>;
+function statsFromOverview(overview) {
+  const byStatus = overview.claims_by_status ?? {};
+  return {
+    total: { value: overview.total_claims ?? 0, note: `${byStatus.pending ?? 0} pending` },
+    approved: { value: overview.approval_rate ?? 0, note: `${byStatus.approved ?? 0} approved` },
+    documents: { value: overview.documents_processed ?? 0 },
+    risk: { value: overview.high_risk_count ?? 0, note: 'risk ≥ 60' },
+  };
 }
 
-export default function StatsCards({ data }) {
-  const stats = data ? [
-    { key: 'total', label: 'Total Claims', value: data.total_claims || 0, trend: 12.5, prefix: '', suffix: '' },
-    { key: 'approved', label: 'Approval Rate', value: data.approval_rate || 0, trend: 3.2, prefix: '', suffix: '%' },
-    { key: 'time', label: 'Avg. Processing', value: 4.2, trend: -8.1, prefix: '', suffix: 'hrs' },
-    { key: 'risk', label: 'Risk Alerts', value: data.high_risk_count || 0, trend: 15.3, prefix: '', suffix: '', danger: true },
-  ] : defaultStats;
+function AnimatedNumber({ value, decimals = 0, suffix = '' }) {
+  const current = useCountUp(value);
+  const text = current.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+  return <span>{text}{suffix}</span>;
+}
+
+export default function StatsCards({ data, error, onRetry }) {
+  if (error) {
+    return (
+      <div className="stats-cards">
+        <div className="stats-cards-error glass-card">
+          <ErrorState title="Couldn't load claim statistics" message={getErrorMessage(error)} onRetry={onRetry} />
+        </div>
+      </div>
+    );
+  }
+
+  const stats = data ? statsFromOverview(data) : null;
 
   return (
-    <div className="stats-cards stagger-children">
-      {stats.map((stat) => {
-        const Icon = iconMap[stat.key];
-        const isPositive = stat.trend > 0;
+    <div className="stats-cards stagger-children" aria-busy={!stats}>
+      {CARDS.map(({ key, label, icon: Icon, suffix, decimals, danger }) => {
+        const stat = stats?.[key];
         return (
-          <div key={stat.key} className={`stat-card glass-card ${stat.danger ? 'stat-card--danger' : ''}`} id={`stat-${stat.key}`}>
+          <div
+            key={key}
+            className={`stat-card glass-card ${danger ? 'stat-card--danger' : ''}`}
+            id={`stat-${key}`}
+            role="group"
+            aria-label={label}
+          >
             <div className="stat-card-header">
-              <div className={`stat-card-icon ${stat.danger ? 'stat-card-icon--danger' : ''}`}>
+              <div className={`stat-card-icon ${danger ? 'stat-card-icon--danger' : ''}`}>
                 <Icon size={20} />
               </div>
-              <div className={`stat-card-trend ${isPositive ? 'trend-up' : 'trend-down'}`}>
-                {isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                <span>{Math.abs(stat.trend)}%</span>
-              </div>
+              {stat?.note && <span className="stat-card-note">{stat.note}</span>}
             </div>
             <div className="stat-card-value">
-              <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+              {stat ? <AnimatedNumber value={stat.value} decimals={decimals} suffix={suffix} /> : '—'}
             </div>
-            <div className="stat-card-label">{stat.label}</div>
+            <div className="stat-card-label">{label}</div>
           </div>
         );
       })}

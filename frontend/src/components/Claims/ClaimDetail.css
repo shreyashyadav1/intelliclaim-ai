@@ -40,6 +40,7 @@
 
 .claim-detail-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -53,6 +54,15 @@
   font-weight: 500;
   transition: all 0.2s;
   border: 1px solid transparent;
+}
+
+.action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.action-btn:disabled:hover {
+  background: none;
 }
 
 .action-btn--success {
@@ -80,6 +90,15 @@
 
 .action-btn--warning:hover {
   background: rgba(245, 158, 11, 0.1);
+}
+
+.action-btn--accent {
+  color: var(--text-accent);
+  border-color: var(--border-accent);
+}
+
+.action-btn--accent:hover {
+  background: rgba(99, 102, 241, 0.1);
 }
 
 .claim-detail-grid {
@@ -198,6 +217,71 @@
   border: 1px solid rgba(239, 68, 68, 0.1);
   font-size: 0.9rem;
   color: var(--text-secondary);
+}
+
+.risk-flag-text {
+  flex: 1;
+}
+
+.validation-summary-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.validation-summary-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.validation-level-pill {
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.validation-summary-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.severity-chip {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.severity-chip--high {
+  color: var(--status-danger);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.severity-chip--medium {
+  color: var(--status-warning);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.severity-chip--low {
+  color: var(--status-info);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.risk-assessment-empty {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
 }
 
 @media (max-width: 768px) {

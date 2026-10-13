@@ -129,6 +129,11 @@
   text-transform: capitalize;
 }
 
+.upload-result-class--failed {
+  color: var(--status-warning);
+  text-transform: none;
+}
+
 .upload-result-reset {
   font-size: 0.85rem;
   color: var(--text-accent);

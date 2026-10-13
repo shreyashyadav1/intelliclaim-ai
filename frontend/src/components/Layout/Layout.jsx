@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import OfflineBanner from '../Shared/OfflineBanner';
 import './Layout.css';
 
 export default function Layout() {
@@ -11,6 +12,7 @@ export default function Layout() {
     <div className="layout-root">
       <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       <div className="layout-content">
+        <OfflineBanner />
         <Header />
         <main className="layout-main" role="main">
           <Outlet />

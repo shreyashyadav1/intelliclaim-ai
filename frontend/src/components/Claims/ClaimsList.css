@@ -166,8 +166,13 @@
   font-family: monospace;
 }
 
-.claims-empty {
-  text-align: center;
-  padding: 40px !important;
-  color: var(--text-tertiary) !important;
+.claims-table-wrapper--refreshing {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.claims-list-footnote {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
 }

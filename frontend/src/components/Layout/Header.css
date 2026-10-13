@@ -71,56 +71,6 @@
   pointer-events: none;
 }
 
-.header-icon-btn {
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  position: relative;
-  transition: all 0.2s;
-}
-
-.header-icon-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-.header-notification-badge {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 8px;
-  height: 8px;
-  background: var(--status-danger);
-  border-radius: 50%;
-  border: 2px solid var(--bg-secondary);
-  animation: badgePulse 2s ease-in-out infinite;
-}
-
-.header-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--accent-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 2px solid transparent;
-}
-
-.header-avatar:hover {
-  border-color: var(--accent-primary);
-  box-shadow: var(--accent-glow);
-}
-
 @media (max-width: 768px) {
   .header {
     padding: 16px 16px 16px 64px;

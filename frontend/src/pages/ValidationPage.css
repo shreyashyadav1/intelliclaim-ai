@@ -37,6 +37,41 @@
   color: var(--text-primary);
 }
 
+.validation-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.validation-refresh-btn--accent {
+  color: var(--text-accent);
+  border-color: var(--border-accent);
+}
+
+.validation-refresh-btn--accent:hover {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--text-accent);
+}
+
+.validation-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.is-spinning {
+  animation: spin 1s linear infinite;
+}
+
+.flagged-claims-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.validation-state-card:hover {
+  transform: none;
+}
+
 .flagged-claim-card {
   padding: 20px;
 }
@@ -63,6 +98,10 @@
   font-weight: 600;
   color: var(--text-accent);
   white-space: nowrap;
+}
+
+.flagged-claim-number:hover {
+  text-decoration: underline;
 }
 
 .flagged-claim-patient {

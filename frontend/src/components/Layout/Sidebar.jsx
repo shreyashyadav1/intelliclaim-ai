@@ -5,7 +5,6 @@ import {
   ClipboardList,
   Search,
   ShieldCheck,
-  Settings,
   BrainCircuit,
   Menu,
   X,
@@ -17,7 +16,7 @@ const navItems = [
   { label: 'Documents', path: '/documents', icon: FileText },
   { label: 'Claims', path: '/claims', icon: ClipboardList },
   { label: 'RAG Search', path: '/rag-search', icon: Search },
-  { label: 'Validation', path: '/validation', icon: ShieldCheck, badge: 3 },
+  { label: 'Validation', path: '/validation', icon: ShieldCheck },
 ];
 
 export default function Sidebar({ isOpen, onToggle }) {
@@ -73,9 +72,6 @@ export default function Sidebar({ isOpen, onToggle }) {
                   <Icon size={18} />
                 </span>
                 <span>{item.label}</span>
-                {item.badge && (
-                  <span className="sidebar-link-badge">{item.badge}</span>
-                )}
               </NavLink>
             );
           })}
@@ -84,13 +80,6 @@ export default function Sidebar({ isOpen, onToggle }) {
         <div className="sidebar-bottom">
           <div className="sidebar-bottom-row">
             <span className="sidebar-version">v1.0.0</span>
-            <button
-              id="sidebar-settings-btn"
-              className="sidebar-settings-btn"
-              aria-label="Settings"
-            >
-              <Settings size={16} />
-            </button>
           </div>
         </div>
       </nav>
