@@ -40,6 +40,10 @@ from groq.types.chat import ChatCompletion as GroqChatCompletion  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
 from openai.types.chat import ChatCompletion as OpenAIChatCompletion  # noqa: E402
+from opentelemetry import trace  # noqa: E402
+from opentelemetry.sdk.trace import TracerProvider  # noqa: E402
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor  # noqa: E402
+from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter  # noqa: E402
 
 from config import settings  # noqa: E402
 from main import app  # noqa: E402
@@ -213,6 +217,29 @@ def groq_errors() -> SimpleNamespace:
 @pytest.fixture
 def mock_llm(monkeypatch) -> None:
     monkeypatch.setattr(settings, "MOCK_LLM", True)
+
+
+# --- Tracing ------------------------------------------------------------------------
+
+_span_exporter = InMemorySpanExporter()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _tracer_provider():
+    """One SDK TracerProvider for the session (the global provider can be set only once)."""
+    provider = trace.get_tracer_provider()
+    if not isinstance(provider, TracerProvider):
+        provider = TracerProvider()
+        trace.set_tracer_provider(provider)
+    provider.add_span_processor(SimpleSpanProcessor(_span_exporter))
+    return provider
+
+
+@pytest.fixture
+def spans() -> InMemorySpanExporter:
+    """Finished spans of this test: call spans.get_finished_spans()."""
+    _span_exporter.clear()
+    return _span_exporter
 
 
 # --- Rate limiting --------------------------------------------------------------------

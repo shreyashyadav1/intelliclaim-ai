@@ -15,6 +15,7 @@ from db.connection import get_database
 from security import AI_LIMIT, BULK_LIMIT, limiter
 from services.llm import LLMError
 from services.risk_levels import flagged_claims_query
+from services.tracing import store_usage, track_usage
 from services.validation_service import validation_service as validator
 from utils.helpers import utc_now
 
@@ -28,6 +29,15 @@ ClaimId = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, 
 
 class BatchValidateRequest(BaseModel):
     claim_ids: list[ClaimId] = Field(min_length=1, max_length=MAX_BATCH_SIZE)
+
+
+async def _validate(db, claim: dict) -> dict:
+    """Validate one claim, adding any provider spend to its ai_usage.validation counters."""
+    with track_usage() as usage:
+        try:
+            return await validator.validate_claim(claim)
+        finally:
+            await store_usage(db.claims, claim["_id"], "validation", usage)
 
 
 async def _store_result(db, claim_id: str, result: dict) -> None:
@@ -53,7 +63,7 @@ async def validate_claim(request: Request, claim_id: str):
     if not claim:
         raise HTTPException(status_code=404, detail="Claim not found")
 
-    result = await validator.validate_claim(claim)
+    result = await _validate(db, claim)
     await _store_result(db, claim_id, result)
 
     return {
@@ -116,7 +126,7 @@ async def batch_validate(request: Request, payload: BatchValidateRequest):
             continue
 
         try:
-            result = await validator.validate_claim(claim)
+            result = await _validate(db, claim)
         except LLMError as exc:
             provider_error = exc
             results.append({"claim_id": claim_id, "error": exc.detail})

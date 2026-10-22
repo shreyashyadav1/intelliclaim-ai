@@ -143,6 +143,25 @@ class Settings(BaseSettings):
         description="Reverse proxies in front of the API whose X-Forwarded-For entries are trusted (0 = none)",
     )
 
+    # Tracing and AI cost accounting (services/tracing.py)
+    TRACING_ENABLED: bool = Field(
+        default=False,
+        description="Export OpenTelemetry spans over OTLP; spans and trace ids exist either way",
+    )
+    OTEL_EXPORTER_OTLP_ENDPOINT: str = Field(
+        default="http://localhost:4317", description="OTLP gRPC endpoint that receives spans (Jaeger, a collector)"
+    )
+    OTEL_SERVICE_NAME: str = Field(default="intelliclaim-api", description="service.name on exported spans")
+    # Groq on-demand list price for openai/gpt-oss-120b (the default GROQ_MODEL), USD per
+    # million tokens, from https://console.groq.com/docs/models (checked 2026-10-05). Update
+    # them with GROQ_MODEL. OpenAI has no default price, so its calls are counted as unpriced.
+    GROQ_INPUT_USD_PER_MTOK: float | None = Field(default=0.15, ge=0, description="Groq input price, USD/M tokens")
+    GROQ_OUTPUT_USD_PER_MTOK: float | None = Field(default=0.60, ge=0, description="Groq output price, USD/M tokens")
+    OPENAI_INPUT_USD_PER_MTOK: float | None = Field(default=None, ge=0, description="OpenAI input price, USD/M tokens")
+    OPENAI_OUTPUT_USD_PER_MTOK: float | None = Field(
+        default=None, ge=0, description="OpenAI output price, USD/M tokens"
+    )
+
     # CORS: accepts a comma-separated string or a JSON array.
     ALLOWED_ORIGINS: Annotated[list[str], NoDecode] = Field(
         default=[
@@ -161,6 +180,20 @@ class Settings(BaseSettings):
         if isinstance(value, str):
             value = value.strip()
             return value or None
+        return value
+
+    @field_validator(
+        "GROQ_INPUT_USD_PER_MTOK",
+        "GROQ_OUTPUT_USD_PER_MTOK",
+        "OPENAI_INPUT_USD_PER_MTOK",
+        "OPENAI_OUTPUT_USD_PER_MTOK",
+        mode="before",
+    )
+    @classmethod
+    def _blank_price_to_none(cls, value: Any) -> Any:
+        """An empty price (e.g. `OPENAI_INPUT_USD_PER_MTOK=`) means the price is unknown."""
+        if isinstance(value, str) and not value.strip():
+            return None
         return value
 
     @field_validator("RAG_RETRIEVAL_MODE", mode="before")

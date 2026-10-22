@@ -17,6 +17,7 @@ from services.ocr_service import ocr_service as ocr
 from services.rag_service import rag_service
 from services.storage_service import FileTooLargeError
 from services.storage_service import storage_service as storage
+from services.tracing import store_usage, track_usage
 from utils.file_types import EXTENSION_KINDS, PDF, SNIFF_BYTES, sniff_file_type
 from utils.helpers import generate_id, sanitize_filename, utc_now
 from utils.pdf_parser import DocumentProcessingError, TooManyPagesError
@@ -108,17 +109,20 @@ async def upload_document(request: Request, file: UploadFile = File(...)):
     # page_starts (offset of each page in extracted_text) lets search results cite pages.
     status, error_message, document_class = "processed", None, "other"
     extracted_text, page_starts = "", None
-    try:
-        paged = await ocr.extract_paged_text(stored.path, file_type)
-    except DocumentProcessingError as exc:
-        status, error_message = "failed", str(exc)
-    else:
-        extracted_text = paged.text
-        if extracted_text.strip():
-            document_class = await ocr.classify_document(extracted_text)
-            page_starts = list(paged.page_starts)
+    # Classification calls OpenAI when it is configured; that cost is the
+    # document's ai_usage.upload.
+    with track_usage() as usage:
+        try:
+            paged = await ocr.extract_paged_text(stored.path, file_type)
+        except DocumentProcessingError as exc:
+            status, error_message = "failed", str(exc)
         else:
-            status, error_message = "failed", "No text could be extracted from this document."
+            extracted_text = paged.text
+            if extracted_text.strip():
+                document_class = await ocr.classify_document(extracted_text)
+                page_starts = list(paged.page_starts)
+            else:
+                status, error_message = "failed", "No text could be extracted from this document."
 
     await db.documents.update_one(
         {"_id": doc_id},
@@ -133,6 +137,8 @@ async def upload_document(request: Request, file: UploadFile = File(...)):
             }
         },
     )
+
+    await store_usage(db.documents, doc_id, "upload", usage)
 
     if status == "failed":
         logger.warning("Document %s (%s) failed processing: %s", doc_id, safe_filename, error_message)

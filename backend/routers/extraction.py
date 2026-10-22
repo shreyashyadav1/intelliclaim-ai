@@ -12,6 +12,7 @@ from db.connection import get_database
 from security import AI_LIMIT, limiter
 from services.claim_service import save_extraction
 from services.extraction_service import extraction_service as extractor
+from services.tracing import store_usage, track_usage
 
 logger = logging.getLogger("intelliclaim.extraction")
 router = APIRouter()
@@ -23,7 +24,9 @@ async def extract_document(request: Request, document_id: str):
     """Run AI extraction on a document and create or update its claim.
 
     Returns 503 when no AI provider is configured and 502 when the provider
-    fails; nothing is written in either case.
+    fails; no claim is written in either case. Provider tokens and estimated
+    cost are added to the document's ai_usage.extraction counters (also on
+    failure) and returned as ai_usage for this call.
     """
     db = get_database()
     doc = await db.documents.find_one({"_id": document_id})
@@ -37,10 +40,14 @@ async def extract_document(request: Request, document_id: str):
             detail = "Document has no extracted text. Run OCR first."
         raise HTTPException(status_code=400, detail=detail)
 
-    result = await extractor.extract_claim_data(
-        text=doc["extracted_text"],
-        document_class=doc.get("document_class", "other"),
-    )
+    with track_usage() as usage:
+        try:
+            result = await extractor.extract_claim_data(
+                text=doc["extracted_text"],
+                document_class=doc.get("document_class", "other"),
+            )
+        finally:
+            await store_usage(db.documents, document_id, "extraction", usage)
     saved = await save_extraction(db, doc, result)
 
     return {
@@ -55,6 +62,7 @@ async def extract_document(request: Request, document_id: str):
         "is_new_claim": saved.is_new_claim,
         "source": result.source,
         "input_truncated": result.input_truncated,
+        "ai_usage": usage.as_dict(),
     }
 
 
