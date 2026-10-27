@@ -1,3 +1,5 @@
+<p align="center"><img src="frontend/public/apple-touch-icon.png" width="96" alt="IntelliClaim AI app icon"></p>
+
 # IntelliClaim AI
 
 **Insurance Document Intelligence Platform** — AI-powered claim processing, OCR extraction, RAG search, and fraud risk detection.
