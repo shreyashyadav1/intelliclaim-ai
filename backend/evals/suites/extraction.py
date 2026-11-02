@@ -9,7 +9,10 @@ deployment.
 
 Per field: precision/recall/F1 with the lenient comparison and exact match
 with the strict one (see evals/matching.py); a value where the ground truth
-has none is a false positive. Also: documents with all eleven fields
+has none is a false positive. A request that fails (for example a reply
+with no recognisable fields) leaves the user with no fields for that
+document, so it is scored as an empty prediction: every expected field
+counts as missed. Also: documents with all eleven fields
 exactly right, request latency p50/p95, tokens and estimated cost per
 document (EVAL_GROQ_*_USD_PER_MTOK).
 """
@@ -46,27 +49,29 @@ async def _extract_all(docs: list[dict[str, Any]], texts: dict[str, str]) -> dic
 
     by_id = {doc["id"]: doc for doc in docs}
     succeeded = [row for row in rows if "predicted" in row]
+    empty = dict.fromkeys(CLAIM_FIELDS)
+    scored = [row if "predicted" in row else {**row, "predicted": empty} for row in rows]
     per_field: dict[str, Any] = {}
     all_triples = []
     for name in CLAIM_FIELDS:
         triples = []
         exact = 0
-        for row in succeeded:
+        for row in scored:
             expected, predicted = by_id[row["id"]]["fields"][name], row["predicted"][name]
             triples.append((expected, predicted, field_matches(name, expected, predicted)))
             exact += field_matches(name, expected, predicted, strict=True)
-        per_field[name] = {**field_counts(triples), "exact_match": round(exact / len(succeeded), 4) if succeeded else 0}
+        per_field[name] = {**field_counts(triples), "exact_match": round(exact / len(scored), 4) if scored else 0}
         all_triples += triples
     document_exact = sum(
         all(field_matches(name, by_id[row["id"]]["fields"][name], row["predicted"][name], strict=True)
             for name in CLAIM_FIELDS)
-        for row in succeeded
+        for row in scored
     )
     return {
         "documents": len(docs),
         "failures": len(rows) - len(succeeded),
         "micro": field_counts(all_triples),
-        "document_exact_match": round(document_exact / len(succeeded), 4) if succeeded else 0,
+        "document_exact_match": round(document_exact / len(scored), 4) if scored else 0,
         "per_field": per_field,
         "latency": latency_summary([call.seconds for call in recorder.calls]),
         "usage": usage_summary(recorder.calls, len(docs)),
@@ -116,7 +121,7 @@ def summary(result: dict[str, Any]) -> list[str]:
         lines += [
             f"**{variant}**: micro precision {micro['precision']:.3f}, recall {micro['recall']:.3f}, "
             f"F1 {micro['f1']:.3f}; all 11 fields exact in {m['document_exact_match']:.3f} of documents; "
-            f"{m['failures']} failed requests.",
+            f"{m['failures']} failed requests (scored as documents with no fields).",
             f"Latency p50 {latency.get('p50_ms')} ms, p95 {latency.get('p95_ms')} ms; "
             f"{usage['prompt_tokens_per_item']} prompt + {usage['completion_tokens_per_item']} completion tokens "
             f"and ${usage['cost_usd_per_item']:.5f} per document (at ${usage['price_usd_per_mtok']['input']}/"

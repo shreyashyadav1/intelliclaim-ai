@@ -150,6 +150,24 @@ async def test_extraction_suite_scores_fields_tokens_and_cost(rendered_to_tmp, g
     assert result["notes"] == ["Scanned PDFs not evaluated: tesseract is not installed."]
 
 
+async def test_extraction_suite_scores_a_failed_request_as_missing_fields(rendered_to_tmp, groq_client,
+                                                                         monkeypatch):
+    import utils.pdf_parser as pdf_parser
+
+    monkeypatch.setattr(pdf_parser, "tesseract_available", lambda: False)
+    ctx = Context(limit=2)
+    groq_client.respond(ctx.documents[0]["fields"], {})  # no recognisable fields: the request fails
+
+    result = await extraction.run(ctx)
+
+    m = result["metrics"]["text_pdf"]
+    assert m["failures"] == 1
+    assert m["micro"]["precision"] == 1.0 and m["micro"]["recall"] < 0.6
+    assert m["per_field"]["policy_number"]["recall"] == 0.5
+    assert m["document_exact_match"] == 0.5
+    assert "error" in result["details"]["text_pdf"][1]
+
+
 async def test_rag_answer_suite_scores_answers_citations_and_abstentions(rendered_to_tmp, groq_client):
     ctx = Context(limit=3)
     replies = []
