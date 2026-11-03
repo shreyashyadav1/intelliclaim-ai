@@ -114,6 +114,17 @@ async def test_prompt_separates_instructions_from_document_text(async_client, fa
     assert "Patient: John Doe" in user["content"]
 
 
+async def test_prompt_asks_for_fields_on_policy_documents_too(async_client, fake_groq):
+    # Told only about "claim documents", the model replied {} for policy summaries
+    # and dropped the policy number and policyholder they contain.
+    fake_groq.respond({"policy_number": "POL-001", "patient_name": "John Doe"})
+    response = await async_client.post("/api/extract/doc-test-001")
+
+    assert response.status_code == 200
+    system = fake_groq.calls[0]["messages"][0]["content"]
+    assert "policy document" in system and "policyholder" in system
+
+
 # --- Output validation -----------------------------------------------------------------
 
 
