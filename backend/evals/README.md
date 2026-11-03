@@ -277,9 +277,37 @@ in-sample choice), and the AI review, which adds up to 40 points
 key, `python -m evals.run --suite risk --llm` scores the claims again with the
 review included and reports the same sweep.
 
-### Extraction and RAG answers
+### Extraction
 
-Not measured: they need `GROQ_API_KEY`, which was not available. With a key:
+Text-layer PDFs only (Tesseract was not installed on this machine, so the
+scanned variant was skipped), all 60 documents, Groq `openai/gpt-oss-120b`
+with the production settings (JSON mode, temperature 0, `GROQ_REASONING_EFFORT`
+default), free tier, `python -m evals.run --suite extraction` from `backend/`.
+A failed request is scored as a document with no fields.
+
+| Run | Commit | Date (UTC) | Micro P / R / F1 | All 11 fields exact | Failed requests | Latency p50 / p95 | Cost per document |
+|---|---|---|---|---|---|---|---|
+| Before | `67727d9` | 2026-11-02 18:52 | 1.000 / 0.912 / 0.954 | 0.700 | 10 | 800 ms / 4.6 s | $0.00017 |
+| After | `98533fc` | 2026-11-03 20:33 | 1.000 / 0.973 / 0.986 | 0.900 | 1 | 821 ms / 21.4 s | $0.00019 |
+
+The first run found a product bug: 7 of the 12 policy summaries came back as
+`{}` (the model's reasoning: "This is policy document, not claim"), so the
+upload failed and the policy number and policyholder were lost. The prompt
+described every upload as a claim document; `98533fc` names the document types
+and says that a policy document's policyholder is the `patient_name`. All 12
+policy summaries then succeeded. The other failures were 3 provider errors in
+the first run and 1 request timeout in the second, which also accounts for the
+second run's p95. Cost uses $0.15 / $0.60 per million input/output tokens
+(Groq list price, checked 2026-11-01).
+
+Caveats: the prompt change was written after looking at the failures on this
+dataset, so the second run is not an independent test of it; each figure is a
+single run on 60 synthetic documents; the machine was under heavy load, so the
+latencies are only indicative.
+
+### RAG answers
+
+Not measured yet. With a key:
 
 ```bash
 python -m evals.run --suite extraction            # 60 documents x (text PDF, scanned PDF): 120 requests
