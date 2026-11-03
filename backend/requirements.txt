@@ -27,6 +27,10 @@ langchain-chroma==1.1.0
 langchain-groq==1.1.3
 langchain-openai==1.3.2
 rank-bm25==0.2.2
+# LlamaIndex's sentence splitter downloads NLTK data into its own cache inside
+# site-packages; nltk 3.10.4 refuses to write there when the directory is group-
+# writable (as on GitHub's hosted Python), so the splitter fails with LookupError.
+nltk==3.10.3
 
 # OCR
 PyMuPDF==1.27.2.3
