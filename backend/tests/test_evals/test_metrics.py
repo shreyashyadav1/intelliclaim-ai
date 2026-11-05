@@ -97,6 +97,8 @@ def test_amounts_dates_and_numbers_are_found_in_free_text():
         ("4512.30", "money", "The total amount due is $4,512.30 [1].", True),
         ("4512.30", "money", "The total amount due is $4,512.00.", False),
         ("2026-04-27", "date", "The patient was discharged on April 27, 2026 [2].", True),
+        ("2026-06-15", "date", "Discharged on 2026\u201106\u201115[2].", True),
+        ("4512.30", "money", "The total is $4,512.30\u202f[1].", True),
         ("3", "number", "They stayed for three days.", True),
         ("Dr. Michael Meza", "text", "The examining physician was Michael Meza [1].", True),
         ("134/88 mmHg", "text", "Blood pressure was 134/88 mm Hg.", True),

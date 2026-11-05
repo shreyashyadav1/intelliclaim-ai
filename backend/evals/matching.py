@@ -13,6 +13,9 @@ after normalisation. Lenient (used for precision/recall): identifiers ignore
 case and spaces, amounts compare to the cent, names and addresses allow
 small formatting differences (rapidfuzz token ratios), and a diagnosis
 matches when its ICD-10 code or its description matches.
+
+Answers are read with Unicode dashes and spaces turned into ASCII first:
+gpt-oss writes dates such as 2026\u201106\u201115 with non-breaking hyphens.
 """
 
 import re
@@ -44,6 +47,10 @@ _NUMBER_WORDS = {
     )
 }
 _AMOUNT = re.compile(r"(?<![\d.])(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?(?![\d])")
+_TO_ASCII = str.maketrans({
+    **dict.fromkeys("\u2010\u2011\u2012\u2013\u2014\u2015\u2212", "-"),
+    **dict.fromkeys("\u00a0\u2007\u2009\u202f", " "),
+})
 _ICD10 = re.compile(r"\b([A-TV-Z]\d{2}(?:\.[0-9A-Z]{1,4})?)\b")
 
 
@@ -98,6 +105,7 @@ def find_numbers(text: str) -> list[int]:
 
 def answer_matches(expected: str, answer_type: str, answer: str) -> bool:
     """Whether a free-text answer contains the expected answer (see the module docstring)."""
+    answer = answer.translate(_TO_ASCII)
     if answer_type == "money":
         return any(abs(amount - float(expected)) < 0.005 for amount in find_amounts(answer))
     if answer_type == "date":
