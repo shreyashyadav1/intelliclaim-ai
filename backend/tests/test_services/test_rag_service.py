@@ -414,6 +414,29 @@ def test_citations_map_excerpt_numbers_to_documents(answer, expected):
     assert [c["doc_id"] for c in rag_chain.citations(answer, _docs())] == expected
 
 
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Total is $4,512.30【1】.", "Total is $4,512.30[1]."),
+        ("Both【2】【1】 and【1, 2】.", "Both[2][1] and[1, 2]."),
+        ("From the invoice【1†inv.pdf】.", "From the invoice[1]."),
+        ("Already square [1].", "Already square [1]."),
+        ("Not a citation【note】.", "Not a citation【note】."),
+    ],
+)
+def test_normalize_citations_rewrites_lenticular_markers(text, expected):
+    assert rag_chain.normalize_citations(text) == expected
+
+
+async def test_answer_chain_returns_lenticular_citations_as_square_brackets():
+    chain = rag_chain.build_answer_chain(FakeListChatModel(responses=["Total is $4,512.30【1】."]), "groq")
+
+    answer = await chain.ainvoke({"question": "q", "docs": _docs()})
+
+    assert answer == {"text": "Total is $4,512.30[1].", "provider": "groq"}
+    assert [c["doc_id"] for c in rag_chain.citations(answer["text"], _docs())] == ["doc-inv"]
+
+
 def test_citations_list_each_document_once_with_its_pages():
     docs = [*_docs(), Document(page_content="More.", metadata={"document_id": "doc-inv", "filename": "inv.pdf",
                                                                 "page": 3})]

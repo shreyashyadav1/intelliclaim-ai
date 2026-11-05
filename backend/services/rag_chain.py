@@ -5,8 +5,10 @@ IntelliClaim AI - RAG answer chain (LangChain LCEL)
               └─ passthrough ────────────── question ─┴─ numbered context | prompt | chat model | parser
 
 The model sees the retrieved chunks as numbered excerpts and must cite the
-ones it uses as [n]; citations() maps those numbers back to documents. When
-nothing is retrieved the model is not called.
+ones it uses as [n]; citations() maps those numbers back to documents. Some
+models (gpt-oss) cite as 【n】 or 【n†source】 whatever the prompt asks, so the
+chain rewrites those to [n] before anything reads the answer. When nothing is
+retrieved the model is not called.
 """
 
 import re
@@ -39,6 +41,7 @@ ANSWER_PROMPT = ChatPromptTemplate.from_messages(
 )
 
 _CITATION = re.compile(r"\[\s*(\d+(?:\s*[,;]\s*\d+)*)\s*\]")
+_LENTICULAR_CITATION = re.compile(r"【\s*(\d+(?:\s*[,;]\s*\d+)*)\s*(?:†[^】]*)?】")
 
 
 def document_id(doc: Document) -> str:
@@ -55,6 +58,11 @@ def format_context(docs: Sequence[Document]) -> str:
             label += f", page {doc.metadata['page']}"
         blocks.append(f"{label}\n{doc.page_content}")
     return "\n\n".join(blocks)
+
+
+def normalize_citations(answer: str) -> str:
+    """Rewrite 【n】, 【n, m】 and 【n†source】 citation markers as [n] / [n, m]."""
+    return _LENTICULAR_CITATION.sub(lambda match: f"[{match.group(1)}]", answer)
 
 
 def cited_numbers(answer: str) -> list[int]:
@@ -94,7 +102,7 @@ def _answer_from(provider: str):
     def _to_answer(text: str) -> dict[str, Any]:
         if not text or not text.strip():
             raise LLMOutputError()
-        return {"text": text.strip(), "provider": provider}
+        return {"text": normalize_citations(text.strip()), "provider": provider}
 
     return _to_answer
 
