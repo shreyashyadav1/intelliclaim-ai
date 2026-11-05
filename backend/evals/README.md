@@ -88,8 +88,8 @@ application reads them back through OCR at 300 dpi.
 
 ## Results
 
-Numbers below come from these runs (no API key was available, so the
-extraction and rag-answer suites were not run):
+The offline numbers below come from these runs; the extraction and
+rag-answer runs against Groq are described in their own sections:
 
 | Run | Command (from `backend/`) | Date (UTC) | Commit | Platform |
 |---|---|---|---|---|
@@ -307,7 +307,44 @@ latencies are only indicative.
 
 ### RAG answers
 
-Not measured yet. With a key:
+The first 120 of the 228 questions (116 answerable, 4 unanswerable; the free
+tier's daily token limit does not cover all 228 in one day), Groq
+`openai/gpt-oss-120b` with the production settings, hybrid retrieval, top 5
+chunks of 384 tokens, free tier, run on 2026-11-05 14:12 UTC at `9724486`:
+`python -m evals.run --suite rag-answer --limit 120` from `backend/`. 0
+failed requests.
+
+| Metric | Value |
+|---|---|
+| Answer accuracy | 0.914 (106 / 116) |
+| Answer accuracy when a source chunk was retrieved | 0.991 (106 / 107) |
+| Source document retrieved (top 5) | 0.922 |
+| Answers that cite a source document | 0.914 |
+| Citation precision | 1.000 |
+| Unanswerable questions answered with the refusal, citing nothing | 4 / 4 |
+| Tokens and cost per question | 1,228 prompt + 57 completion, $0.00022 |
+
+By question style: descriptive 1.000, paraphrase 1.000, identifier 0.783.
+
+Answer accuracy is the run's own figure (0.897) after re-scoring the
+recorded answers with the matcher from `99b6022`: the model wrote two
+correct discharge dates with non-breaking hyphens (`2026‑06‑15`), which the
+date matcher did not read. No other answer changed. Of the 10 remaining
+misses, 9 are questions whose source document was not in the top 5 (the
+identifier-style retrieval misses the retrieval suite already reports) and
+1 is a refusal although the source was retrieved.
+
+A 10-question probe at `2ce91df`, before `9724486`, found that only 1 of 9
+answers carried a citation: gpt-oss cites excerpts as `【1】` instead of the
+requested `[1]`, and the parser read only square brackets, so the API and UI
+showed answers without sources. `9724486` rewrites those markers to `[n]`.
+
+Caveats: a single run on the first 120 synthetic questions, only 4 of them
+unanswerable; latency is not reported because the client's own retries on
+free-tier rate limits are inside the timed call (p50 9.5 s here, against
+about 0.9 s for unthrottled calls in the probe).
+
+The rest, with a key:
 
 ```bash
 python -m evals.run --suite extraction            # 60 documents x (text PDF, scanned PDF): 120 requests
@@ -315,8 +352,8 @@ python -m evals.run --suite rag-answer            # 228 questions: 228 requests
 python -m evals.run --suite risk --llm --limit 50 # rules + AI review on 50 claims
 ```
 
-Groq's free tier limits requests and tokens per minute; the suites wait and
-retry when rate-limited, and `--limit` keeps a first run small.
+Groq's free tier limits requests and tokens per minute and per day; the
+suites wait and retry when rate-limited, and `--limit` keeps a run small.
 
 ## Thresholds and CI
 
