@@ -17,6 +17,7 @@ python -m evals.run --suite retrieval        # one suite
 python -m evals.run --suite offline          # retrieval, ocr, classification, risk
 python -m evals.run --suite offline --check-thresholds   # what CI runs
 python -m evals.run --suite extraction --limit 20        # LLM suites, first 20 items
+python -m evals.run --suite rag-answer --offset 120      # LLM suites, items 121 onward (combines with --limit)
 python -m evals.run --suite all              # everything (LLM suites skip without a key)
 ```
 
@@ -307,48 +308,69 @@ latencies are only indicative.
 
 ### RAG answers
 
-The first 120 of the 228 questions (116 answerable, 4 unanswerable; the free
-tier's daily token limit does not cover all 228 in one day), Groq
+All 228 questions (215 answerable, 13 unanswerable), Groq
 `openai/gpt-oss-120b` with the production settings, hybrid retrieval, top 5
-chunks of 384 tokens, free tier, run on 2026-11-05 14:12 UTC at `9724486`:
-`python -m evals.run --suite rag-answer --limit 120` from `backend/`. 0
-failed requests.
+chunks of 384 tokens, free tier. The free tier's daily token limit does not
+cover 228 questions in one day, so the set ran in two slices with the same
+application code (the commits between them change only the eval matcher,
+docs and the `--offset` flag):
 
-| Metric | Value |
-|---|---|
-| Answer accuracy | 0.914 (106 / 116) |
-| Answer accuracy when a source chunk was retrieved | 0.991 (106 / 107) |
-| Source document retrieved (top 5) | 0.922 |
-| Answers that cite a source document | 0.914 |
-| Citation precision | 1.000 |
-| Unanswerable questions answered with the refusal, citing nothing | 4 / 4 |
-| Tokens and cost per question | 1,228 prompt + 57 completion, $0.00022 |
+| Slice | Command (from `backend/`) | Date (UTC) | Commit | Failed requests |
+|---|---|---|---|---|
+| Questions 1-120 | `python -m evals.run --suite rag-answer --limit 120` | 2026-11-05 14:12 | `9724486` | 0 |
+| Questions 121-228 | `python -m evals.run --suite rag-answer --offset 120` | 2026-11-07 14:55 | `3082ef1` | 1 (a dropped connection, not scored) |
 
-By question style: descriptive 1.000, paraphrase 1.000, identifier 0.783.
+| Metric | 1-120 | 121-228 | All 227 scored |
+|---|---|---|---|
+| Answer accuracy | 0.914 (106 / 116) | 0.838 (83 / 99) | **0.879 (189 / 215)** |
+| Answer accuracy when the source document was retrieved | 0.991 (106 / 107) | 0.933 (83 / 89) | 0.964 (189 / 196) |
+| Source document retrieved (top 5) | 0.922 | 0.899 | 0.912 (196 / 215) |
+| Answers that cite a source document | 0.914 | 0.838 | 0.879 (189 / 215) |
+| Citation precision | 1.000 | 1.000 | 1.000 |
+| Unanswerable questions answered with the refusal, citing nothing | 4 / 4 | 8 / 8 | 12 / 12 |
+| Tokens and cost per question | 1,228 + 57, $0.00022 | 1,194 + 57, $0.00021 | |
 
-Answer accuracy is the run's own figure (0.897) after re-scoring the
+The "all" column adds up the per-question rows of the two runs'
+`results.json` files (written with `--output-dir evals/results/20261105-rag-answer`
+and `evals/results/20261107-rag-answer`; gitignored like every run), so each
+count is the sum of the two slices' counts. By question style: descriptive
+1.000 (72 / 72), paraphrase 1.000 (48 / 48), identifier 0.726 (69 / 95).
+
+The first slice's accuracy is its own figure (0.897) after re-scoring the
 recorded answers with the matcher from `99b6022`: the model wrote two
 correct discharge dates with non-breaking hyphens (`2026‑06‑15`), which the
-date matcher did not read. No other answer changed. Of the 10 remaining
-misses, 9 are questions whose source document was not in the top 5 (the
-identifier-style retrieval misses the retrieval suite already reports) and
-1 is a refusal although the source was retrieved.
+date matcher did not read. No other answer changed.
+
+**Where the misses come from.** All 26 misses are refusals ("The indexed
+documents do not contain that information"); no answer gave a wrong value.
+19 are questions whose source document was not in the top 5 (the
+identifier-style retrieval misses the retrieval suite already reports). The
+other 7 are all "On what date was the patient in discharge summary DS-…
+discharged?". A retrieval-only check on the 12 discharge-date questions
+(same index and retriever, no model calls, 2026-11-07 at `3082ef1`) showed
+that each of the 7 retrieved only the summary's page 2, whose header repeats
+the summary number and whose text repeats the word "Discharge", while the
+date is on page 1. In all 5 cases where page 1 was retrieved, the model
+answered correctly. So "source document retrieved" overstates what the model
+saw: retrieval is scored per document, and these failures are chunk-level
+retrieval misses, not refusals with the answer in context. Page headers
+competing with body chunks is the next retrieval fix to try.
 
 A 10-question probe at `2ce91df`, before `9724486`, found that only 1 of 9
 answers carried a citation: gpt-oss cites excerpts as `【1】` instead of the
 requested `[1]`, and the parser read only square brackets, so the API and UI
 showed answers without sources. `9724486` rewrites those markers to `[n]`.
 
-Caveats: a single run on the first 120 synthetic questions, only 4 of them
-unanswerable; latency is not reported because the client's own retries on
-free-tier rate limits are inside the timed call (p50 9.5 s here, against
-about 0.9 s for unthrottled calls in the probe).
+Caveats: one run per question on synthetic documents, only 13 unanswerable
+questions; latency is not reported because the client's own retries on
+free-tier rate limits are inside the timed call, and the second slice also
+ran over an unreliable Wi-Fi connection.
 
 The rest, with a key:
 
 ```bash
 python -m evals.run --suite extraction            # 60 documents x (text PDF, scanned PDF): 120 requests
-python -m evals.run --suite rag-answer            # 228 questions: 228 requests
+python -m evals.run --suite rag-answer            # 228 questions: 228 requests (or --limit/--offset slices)
 python -m evals.run --suite risk --llm --limit 50 # rules + AI review on 50 claims
 ```
 
