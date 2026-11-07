@@ -12,13 +12,18 @@ import logging
 from config import CLASSIFICATION_PARAMS, settings
 from services import llm
 from services.llm import LLMError
-from utils.pdf_parser import DocumentReadError, count_pages, parse_image, parse_pdf
+from utils.paged_text import PagedText
+from utils.pdf_parser import DocumentReadError, count_pages, read_image, read_pdf
 
 logger = logging.getLogger(__name__)
 
-DOCUMENT_CLASSES = ("medical_report", "invoice", "claim_form", "discharge_summary", "other")
+DOCUMENT_CLASSES = ("medical_report", "invoice", "claim_form", "discharge_summary", "policy_document", "other")
 
-# Keywords used for rule-based document classification fallback
+# Keywords used for rule-based document classification fallback. Each class
+# scores one point per distinct keyword found. Terms that describe the policy
+# itself (policyholder, coverage, cost sharing) belong to policy_document, not
+# claim_form: policy summaries used to be classified as claim forms because
+# they share "policyholder" and "coverage" with them.
 _CLASSIFICATION_KEYWORDS: dict[str, list[str]] = {
     "medical_report": [
         "medical report", "clinical report", "diagnostic report", "lab report",
@@ -31,12 +36,18 @@ _CLASSIFICATION_KEYWORDS: dict[str, list[str]] = {
     ],
     "claim_form": [
         "claim form", "insurance claim", "claim number", "policy number",
-        "claimant", "policyholder", "coverage", "reimbursement", "authorization",
+        "claimant", "reimbursement", "authorization",
     ],
     "discharge_summary": [
         "discharge summary", "discharged", "discharge date", "admission date",
         "hospital stay", "discharge instructions", "follow-up", "admitted",
         "inpatient", "length of stay",
+    ],
+    "policy_document": [
+        "policy summary", "policy schedule", "declarations page", "certificate of coverage",
+        "summary of coverage", "coverage period", "policy period", "policyholder", "premium",
+        "deductible", "out-of-pocket", "coinsurance", "copay", "covered services", "exclusions",
+        "member services",
     ],
 }
 
@@ -49,15 +60,23 @@ class OCRService:
         return await asyncio.to_thread(count_pages, file_path, kind)
 
     async def extract_text(self, file_path: str, file_type: str) -> str:
-        """Extract text from a PDF or image file.
+        """Extract text from a PDF or image file (pages joined by blank lines).
+
+        Raises:
+            DocumentProcessingError: with a message that is safe to show users.
+        """
+        return (await self.extract_paged_text(file_path, file_type)).text
+
+    async def extract_paged_text(self, file_path: str, file_type: str) -> PagedText:
+        """Extract text from a PDF or image file, keeping page boundaries.
 
         Raises:
             DocumentProcessingError: with a message that is safe to show users.
         """
         if file_type == "pdf":
-            return await asyncio.to_thread(parse_pdf, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
+            return await asyncio.to_thread(read_pdf, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
         if file_type == "image":
-            return await asyncio.to_thread(parse_image, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
+            return await asyncio.to_thread(read_image, file_path, max_pages=settings.MAX_DOCUMENT_PAGES)
         raise DocumentReadError("Unsupported file type.")
 
     async def classify_document(self, text: str) -> str:
@@ -67,7 +86,8 @@ class OCRService:
         or if that call fails, falls back to keyword heuristics.
 
         Returns:
-            One of: medical_report, invoice, claim_form, discharge_summary, other.
+            One of DOCUMENT_CLASSES: medical_report, invoice, claim_form,
+            discharge_summary, policy_document or other.
         """
         if not text.strip():
             return "other"

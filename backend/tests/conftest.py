@@ -32,11 +32,14 @@ from types import SimpleNamespace  # noqa: E402
 import groq  # noqa: E402
 import httpx  # noqa: E402
 import numpy as np  # noqa: E402
+import openai  # noqa: E402
 import pytest  # noqa: E402
 import pytest_asyncio  # noqa: E402
 from chromadb.api.shared_system_client import SharedSystemClient  # noqa: E402
+from groq.types.chat import ChatCompletion as GroqChatCompletion  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 from motor.motor_asyncio import AsyncIOMotorClient  # noqa: E402
+from openai.types.chat import ChatCompletion as OpenAIChatCompletion  # noqa: E402
 
 from config import settings  # noqa: E402
 from main import app  # noqa: E402
@@ -54,8 +57,25 @@ def _dt(value: str) -> datetime:
 # --- AI provider fakes ----------------------------------------------------------
 
 
+def completion_payload(content: str | None, model: str = "test-model") -> dict:
+    """A chat completion as the providers' APIs return it."""
+    return {
+        "id": "chatcmpl-test",
+        "object": "chat.completion",
+        "created": 0,
+        "model": model,
+        "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": content}}],
+        "usage": {"prompt_tokens": 100, "completion_tokens": 20, "total_tokens": 120},
+    }
+
+
+
 class FakeGroq:
-    """Stands in for groq.AsyncGroq. Queue replies with respond(); inspect calls."""
+    """Stands in for groq.AsyncGroq. Queue replies with respond(); inspect calls.
+
+    Replies are real ChatCompletion objects, so both services.llm and
+    LangChain's ChatGroq (which reads them with model_dump) can parse them.
+    """
 
     def __init__(self) -> None:
         self._replies: list = []
@@ -68,6 +88,14 @@ class FakeGroq:
             self._replies.append(json.dumps(reply) if isinstance(reply, dict) else reply)
         return self
 
+    def respond_with_reasoning(self, content: str, reasoning: str) -> "FakeGroq":
+        """Queue a reply from a reasoning model such as gpt-oss, which returns its reasoning in its own field."""
+        payload = completion_payload(content, "openai/gpt-oss-120b")
+        payload["choices"][0]["message"]["reasoning"] = reasoning
+        payload["usage"] = {"prompt_tokens": 100, "completion_tokens": 420, "total_tokens": 520}
+        self._replies.append(GroqChatCompletion.model_validate(payload))
+        return self
+
     async def _create(self, **kwargs):
         self.calls.append(kwargs)
         if not self._replies:
@@ -75,7 +103,36 @@ class FakeGroq:
         reply = self._replies.pop(0)
         if isinstance(reply, BaseException):
             raise reply
-        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=reply))])
+        if isinstance(reply, GroqChatCompletion):
+            return reply
+        return GroqChatCompletion.model_validate(completion_payload(reply, kwargs.get("model", "test-model")))
+
+    async def close(self) -> None:
+        pass
+
+
+class FakeOpenAI:
+    """Stands in for openai.AsyncOpenAI in the RAG chain (ChatOpenAI reads raw responses)."""
+
+    def __init__(self) -> None:
+        self._replies: list = []
+        self.calls: list[dict] = []
+        raw = SimpleNamespace(create=self._create_raw)
+        self.chat = SimpleNamespace(completions=SimpleNamespace(with_raw_response=raw))
+
+    def respond(self, *replies) -> "FakeOpenAI":
+        self._replies.extend(replies)
+        return self
+
+    async def _create_raw(self, **kwargs):
+        self.calls.append(kwargs)
+        if not self._replies:
+            raise AssertionError("FakeOpenAI received a request with no reply queued")
+        reply = self._replies.pop(0)
+        if isinstance(reply, BaseException):
+            raise reply
+        completion = OpenAIChatCompletion.model_validate(completion_payload(reply, kwargs.get("model", "test-model")))
+        return SimpleNamespace(parse=lambda: completion, headers={})
 
     async def close(self) -> None:
         pass
@@ -88,6 +145,10 @@ def groq_connection_error() -> groq.APIConnectionError:
 def groq_rate_limit_error() -> groq.RateLimitError:
     request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
     return groq.RateLimitError("rate limited", response=httpx.Response(429, request=request), body=None)
+
+
+def openai_connection_error() -> openai.APIConnectionError:
+    return openai.APIConnectionError(request=httpx.Request("POST", "https://api.openai.com/v1/chat/completions"))
 
 
 @pytest.fixture(autouse=True)
@@ -118,9 +179,20 @@ def fake_groq(monkeypatch) -> FakeGroq:
 
 
 @pytest.fixture
+def fake_openai(monkeypatch) -> FakeOpenAI:
+    """Configure an OpenAI key and route the RAG chain's OpenAI calls to a FakeOpenAI instance."""
+    fake = FakeOpenAI()
+    monkeypatch.setattr(settings, "OPENAI_API_KEY", "sk-test-key")
+    monkeypatch.setattr(llm, "_openai_client", fake)
+    return fake
+
+
+@pytest.fixture
 def groq_errors() -> SimpleNamespace:
-    """Factories for the exceptions the Groq SDK raises."""
-    return SimpleNamespace(connection=groq_connection_error, rate_limit=groq_rate_limit_error)
+    """Factories for the exceptions the Groq and OpenAI SDKs raise."""
+    return SimpleNamespace(
+        connection=groq_connection_error, rate_limit=groq_rate_limit_error, openai_connection=openai_connection_error
+    )
 
 
 @pytest.fixture
@@ -165,11 +237,16 @@ def storage_dir(tmp_path, monkeypatch):
 
 
 class FakeEmbedder:
-    """Deterministic bag-of-words vectors, so tests never load or download fastembed."""
+    """Deterministic bag-of-words vectors, so tests never load or download fastembed.
+
+    Implements the parts of fastembed.TextEmbedding that LlamaIndex and LangChain call.
+    """
 
     DIM = 64
 
-    def embed(self, texts):
+    def embed(self, texts, **kwargs):
+        if isinstance(texts, str):
+            texts = [texts]
         for text in texts:
             vector = np.zeros(self.DIM)
             for word in re.findall(r"[a-z0-9]+", text.lower()):
@@ -180,6 +257,12 @@ class FakeEmbedder:
             else:
                 vector[0] = 1.0
             yield vector
+
+    def query_embed(self, query, **kwargs):
+        yield from self.embed(query, **kwargs)
+
+    def passage_embed(self, texts, **kwargs):
+        yield from self.embed(texts, **kwargs)
 
 
 @pytest.fixture(autouse=True)
@@ -196,6 +279,7 @@ def isolated_vector_store(tmp_path, monkeypatch) -> SimpleNamespace:
     monkeypatch.setattr(rag_module, "_chroma_collection", None)
     monkeypatch.setattr(rag_module, "_embedder", None)
     monkeypatch.setattr(rag_module, "_get_embedder", FakeEmbedder)
+    monkeypatch.setattr(rag_module.rag_service, "_index", None)
     yield originals
     SharedSystemClient.clear_system_cache()
 

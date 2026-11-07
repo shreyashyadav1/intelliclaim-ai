@@ -43,4 +43,4 @@ extend-immutable-calls = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["config", "db", "main", "middleware", "models", "routers", "security", "services", "utils"]
+known-first-party = ["config", "db", "evals", "main", "middleware", "models", "routers", "security", "services", "utils"]

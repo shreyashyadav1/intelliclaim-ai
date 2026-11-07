@@ -42,6 +42,21 @@ async def test_analytics_risk_distribution(async_client):
     assert any("Low" in label for label in labels)
 
 
+async def test_risk_distribution_bands_follow_the_risk_levels(async_client, monkeypatch):
+    from config import settings
+
+    monkeypatch.setattr(settings, "RISK_FLAG_THRESHOLD", 15.0)
+    data = (await async_client.get("/api/analytics/risk-distribution")).json()
+
+    assert [(bucket["range"], bucket["min"], bucket["max"]) for bucket in data] == [
+        ("Low (below 15)", 0, 15.0),
+        ("Medium (15-59)", 15.0, 60.0),
+        ("High (60-79)", 60.0, 80),
+        ("Critical (80-100)", 80, 101),
+    ]
+    assert [bucket["count"] for bucket in data] == [1, 0, 1, 0]  # scores 5 and 65
+
+
 # --- Computed from real data only --------------------------------------------------
 
 

@@ -5,11 +5,12 @@ Covers POST /api/extract/{document_id} and GET /api/extract/{document_id}/result
 Provider calls go to the FakeGroq fixture; nothing reaches a real AI provider.
 """
 
+import json
 import logging
 
 import pytest
 
-from config import settings
+from config import EXTRACTION_PARAMS, settings
 from services import llm
 
 FULL_EXTRACTION = {
@@ -87,6 +88,20 @@ async def test_extract_updates_existing_claim(async_client, test_db, fake_groq):
     assert await _claim_count(test_db) == 2
 
 
+async def test_reasoning_model_reply_parses_from_the_content_only(async_client, fake_groq):
+    """gpt-oss returns its reasoning in a separate field; JSON mode keeps the content a bare object."""
+    fake_groq.respond_with_reasoning(
+        json.dumps(FULL_EXTRACTION), reasoning="The invoice shows the policy number, then the itemised total."
+    )
+    response = await async_client.post("/api/extract/doc-test-001")
+
+    assert response.status_code == 200
+    assert response.json()["extracted_data"]["claim_number"] == "CLM-9001"
+    call = fake_groq.calls[0]
+    assert call["response_format"] == {"type": "json_object"}
+    assert call["max_tokens"] == EXTRACTION_PARAMS.max_tokens >= 2048  # room for the reasoning
+
+
 async def test_prompt_separates_instructions_from_document_text(async_client, fake_groq):
     fake_groq.respond(FULL_EXTRACTION)
     await async_client.post("/api/extract/doc-test-001")
@@ -97,6 +112,17 @@ async def test_prompt_separates_instructions_from_document_text(async_client, fa
     system, user = call["messages"]
     assert system["role"] == "system" and "JSON" in system["content"]
     assert "Patient: John Doe" in user["content"]
+
+
+async def test_prompt_asks_for_fields_on_policy_documents_too(async_client, fake_groq):
+    # Told only about "claim documents", the model replied {} for policy summaries
+    # and dropped the policy number and policyholder they contain.
+    fake_groq.respond({"policy_number": "POL-001", "patient_name": "John Doe"})
+    response = await async_client.post("/api/extract/doc-test-001")
+
+    assert response.status_code == 200
+    system = fake_groq.calls[0]["messages"][0]["content"]
+    assert "policy document" in system and "policyholder" in system
 
 
 # --- Output validation -----------------------------------------------------------------

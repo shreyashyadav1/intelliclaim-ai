@@ -3,6 +3,7 @@
 import pytest
 
 import db.connection as db_conn
+from config import settings
 from services.llm import LLMOutputError, LLMProviderError
 from services.validation_service import AI, RULE, ValidationService
 
@@ -65,6 +66,33 @@ async def test_rule_based_risk_levels(no_duplicates):
     medium = await validator.validate_claim({**CLEAN_CLAIM, "diagnosis": "", "treatment_cost": 55000})
     assert medium["risk_score"] == 30.0  # missing_fields (15) + high_cost (15)
     assert medium["risk_level"] == "medium"
+
+
+async def test_one_medium_finding_reaches_medium_risk_and_a_low_one_does_not(no_duplicates):
+    """Medium risk (and the flagged-claims list) starts at RISK_FLAG_THRESHOLD, 15 by default."""
+    single = await validator.validate_claim({**CLEAN_CLAIM, "treatment_cost": 55000})
+    assert (single["risk_score"], single["risk_level"]) == (15.0, "medium")  # high_cost
+
+    keyword = await validator.validate_claim({**CLEAN_CLAIM, "diagnosis": "Elective rhinoplasty"})
+    assert (keyword["risk_score"], keyword["risk_level"]) == (5.0, "low")  # suspicious_diagnosis
+
+
+async def test_risk_level_follows_the_flag_threshold_setting(no_duplicates, monkeypatch):
+    monkeypatch.setattr(settings, "RISK_FLAG_THRESHOLD", 30.0)
+    result = await validator.validate_claim({**CLEAN_CLAIM, "treatment_cost": 55000})
+    assert (result["risk_score"], result["risk_level"]) == (15.0, "low")
+
+
+async def test_risk_level_is_taken_from_the_rounded_score(no_duplicates, fake_groq):
+    """The stored score decides list membership, so the level must agree with it."""
+    fake_groq.respond({
+        "risk_flags": [{"description": "Unusual billing", "confidence": 1.0}],
+        "ai_risk_score": 37.4,
+        "summary": "One concern.",
+    })
+    result = await validator.validate_claim(CLEAN_CLAIM)
+    # 37.4 x 0.4 x 1.0 = 14.96, stored as 15.0: on the flagged list, so medium rather than low
+    assert (result["risk_score"], result["risk_level"]) == (15.0, "medium")
 
 
 async def test_every_rule_flag_is_marked_as_rule(no_duplicates):

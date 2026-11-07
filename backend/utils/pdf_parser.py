@@ -4,7 +4,8 @@ IntelliClaim AI - PDF & Image Text Extraction
 PDF pages are read from their text layer. A page with (almost) no text,
 which is what scanners produce, is rendered with PyMuPDF and read with
 Tesseract. Images, including every page of a multi-page TIFF, go straight
-to Tesseract.
+to Tesseract. read_pdf and read_image keep page boundaries (PagedText);
+parse_pdf and parse_image return the joined text.
 
 Failures raise DocumentProcessingError subclasses whose messages are safe
 to show to API clients; the technical cause is logged.
@@ -18,6 +19,7 @@ import pytesseract
 from PIL import Image, ImageSequence, UnidentifiedImageError
 
 from utils.file_types import PDF
+from utils.paged_text import PagedText
 
 logger = logging.getLogger(__name__)
 
@@ -108,13 +110,13 @@ def _render_page(page: pymupdf.Page) -> Image.Image:
     return Image.frombytes("L", (pixmap.width, pixmap.height), pixmap.samples)
 
 
-def parse_pdf(file_path: str, *, max_pages: int) -> str:
-    """Extract text from every page, falling back to OCR for pages without a text layer.
+def read_pdf(file_path: str, *, max_pages: int) -> PagedText:
+    """Extract every page's text, falling back to OCR for pages without a text layer.
 
     Raises:
         DocumentReadError, TooManyPagesError, OCRUnavailableError, OCRFailedError
     """
-    parts: list[str] = []
+    pages: list[str] = []
     unread_pages: list[int] = []
     ocr_pages = 0
 
@@ -132,26 +134,30 @@ def parse_pdf(file_path: str, *, max_pages: int) -> str:
                         text = ocr_text
                 else:
                     unread_pages.append(number)
-            if text:
-                parts.append(text)
+            pages.append(text)
         page_count = doc.page_count
 
     if unread_pages:
         logger.warning("PDF %s: pages %s have no text layer and OCR is unavailable", file_path, unread_pages)
-        if not parts:
+        if not any(pages):
             raise OCRUnavailableError(
                 "This PDF has no text layer (it looks scanned) and OCR is not available on the server."
             )
 
-    full_text = "\n\n".join(parts)
+    paged = PagedText.from_pages(pages)
     logger.info(
-        "Extracted %d characters from PDF (%d pages, %d via OCR): %s", len(full_text), page_count, ocr_pages, file_path
+        "Extracted %d characters from PDF (%d pages, %d via OCR): %s", len(paged.text), page_count, ocr_pages, file_path
     )
-    return full_text
+    return paged
 
 
-def parse_image(file_path: str, *, max_pages: int) -> str:
-    """OCR an image; every frame of a multi-page TIFF is read.
+def parse_pdf(file_path: str, *, max_pages: int) -> str:
+    """Text of every page (see read_pdf), joined by blank lines."""
+    return read_pdf(file_path, max_pages=max_pages).text
+
+
+def read_image(file_path: str, *, max_pages: int) -> PagedText:
+    """OCR an image; every frame of a multi-page TIFF is a page.
 
     Raises:
         DocumentReadError, TooManyPagesError, OCRUnavailableError, OCRFailedError
@@ -159,7 +165,7 @@ def parse_image(file_path: str, *, max_pages: int) -> str:
     if not tesseract_available():
         raise OCRUnavailableError("Images are read with OCR, which is not available on the server.")
 
-    parts: list[str] = []
+    pages: list[str] = []
     with _open_image(file_path) as image:
         frames = getattr(image, "n_frames", 1)
         if frames > max_pages:
@@ -168,13 +174,16 @@ def parse_image(file_path: str, *, max_pages: int) -> str:
             for frame in ImageSequence.Iterator(image):
                 prepared = frame.convert("L")
                 prepared.thumbnail((MAX_OCR_SIDE_PX, MAX_OCR_SIDE_PX))
-                text = _ocr(prepared).strip()
-                if text:
-                    parts.append(text)
+                pages.append(_ocr(prepared).strip())
         except OSError as exc:  # truncated or corrupt frame data
             logger.warning("Could not decode image %s: %s", file_path, exc)
             raise DocumentReadError("The image could not be read.") from exc
 
-    full_text = "\n\n".join(parts)
-    logger.info("Extracted %d characters from image (%d pages): %s", len(full_text), frames, file_path)
-    return full_text
+    paged = PagedText.from_pages(pages)
+    logger.info("Extracted %d characters from image (%d pages): %s", len(paged.text), frames, file_path)
+    return paged
+
+
+def parse_image(file_path: str, *, max_pages: int) -> str:
+    """Text of every frame (see read_image), joined by blank lines."""
+    return read_image(file_path, max_pages=max_pages).text

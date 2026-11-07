@@ -86,8 +86,8 @@ async def test_groq_chat_without_json_mode_omits_response_format(fake_groq):
 
 def test_default_groq_model_is_a_supported_reasoning_model():
     # llama-3.3-70b-versatile was shut down for free and developer tiers on 2026-08-16.
-    assert settings.model_fields["GROQ_MODEL"].default == "openai/gpt-oss-120b"
-    assert settings.model_fields["GROQ_REASONING_EFFORT"].default == "low"
+    assert type(settings).model_fields["GROQ_MODEL"].default == "openai/gpt-oss-120b"
+    assert type(settings).model_fields["GROQ_REASONING_EFFORT"].default == "low"
 
 
 async def test_groq_chat_sends_the_configured_reasoning_effort(fake_groq, monkeypatch):

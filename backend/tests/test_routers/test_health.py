@@ -94,6 +94,7 @@ async def test_groq_health_ok_uses_shared_async_client(async_client, fake_groq):
     assert body["status"] == "ok"
     assert body["response"] == '{"ok": true}'
     assert fake_groq.calls[0]["response_format"] == {"type": "json_object"}
+    assert fake_groq.calls[0]["max_tokens"] >= 500  # gpt-oss reasons before answering
 
 
 async def test_groq_health_failure_is_502_without_exception_text(async_client, fake_groq, groq_errors):

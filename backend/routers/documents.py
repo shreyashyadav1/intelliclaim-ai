@@ -91,6 +91,7 @@ async def upload_document(request: Request, file: UploadFile = File(...)):
         "storage_path": stored.path,
         "document_class": "other",
         "extracted_text": None,
+        "page_starts": None,
         "claim_id": None,
         "processing_status": "processing",
         "error_message": None,
@@ -104,14 +105,18 @@ async def upload_document(request: Request, file: UploadFile = File(...)):
         raise
 
     # Text extraction failures are recorded on the document, not swallowed.
-    status, error_message, extracted_text, document_class = "processed", None, "", "other"
+    # page_starts (offset of each page in extracted_text) lets search results cite pages.
+    status, error_message, document_class = "processed", None, "other"
+    extracted_text, page_starts = "", None
     try:
-        extracted_text = await ocr.extract_text(stored.path, file_type)
+        paged = await ocr.extract_paged_text(stored.path, file_type)
     except DocumentProcessingError as exc:
         status, error_message = "failed", str(exc)
     else:
+        extracted_text = paged.text
         if extracted_text.strip():
             document_class = await ocr.classify_document(extracted_text)
+            page_starts = list(paged.page_starts)
         else:
             status, error_message = "failed", "No text could be extracted from this document."
 
@@ -120,6 +125,7 @@ async def upload_document(request: Request, file: UploadFile = File(...)):
         {
             "$set": {
                 "extracted_text": extracted_text,
+                "page_starts": page_starts,
                 "document_class": document_class,
                 "processing_status": status,
                 "error_message": error_message,
