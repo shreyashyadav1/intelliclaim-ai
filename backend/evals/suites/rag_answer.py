@@ -46,7 +46,7 @@ async def run(ctx: Context) -> dict[str, Any]:
     from services.llm import LLMError
     from services.rag_chain import NO_ANSWER
 
-    questions = ctx.questions[: ctx.limit]
+    questions = ctx.window(ctx.questions)
     mode = ctx.retrieval_mode or settings.RAG_RETRIEVAL_MODE
     saved_mode = settings.RAG_RETRIEVAL_MODE
     settings.RAG_RETRIEVAL_MODE = mode
@@ -99,7 +99,9 @@ async def run(ctx: Context) -> dict[str, Any]:
         "suite": NAME,
         "status": "ok",
         "config": {"model": settings.GROQ_MODEL, "retrieval_mode": mode, "top_k": TOP_K,
-                   "chunk_size": RAG_CHUNK_SIZE},
+                   "chunk_size": RAG_CHUNK_SIZE,
+                   "first_question": ctx.offset + 1 if questions else None,
+                   "last_question": ctx.offset + len(questions) if questions else None},
         "metrics": metrics,
         "details": {"questions": rows},
     }

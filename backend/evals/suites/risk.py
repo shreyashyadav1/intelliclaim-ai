@@ -136,7 +136,7 @@ async def run(ctx: Context) -> dict[str, Any]:
         metrics = {"rules": _evaluate(cases, rule_outcomes)}
 
         if ctx.use_llm and groq_configured():
-            subset = cases[: ctx.limit]
+            subset = ctx.window(cases)
             async with groq_only() as recorder:
                 ai_outcomes = await _validate_all(subset, with_ai=True)
             from evals.llm_support import usage_summary

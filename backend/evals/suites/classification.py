@@ -38,7 +38,7 @@ async def run(ctx: Context) -> dict[str, Any]:
 
     if settings.has_openai_key and not settings.MOCK_LLM:
         predictions, failures = [], 0
-        for doc in ctx.documents[: ctx.limit]:
+        for doc in ctx.window(ctx.documents):
             try:
                 predictions.append(await service._classify_with_openai(texts[doc["id"]]))
             except LLMError:

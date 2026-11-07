@@ -183,3 +183,31 @@ async def test_rag_answer_suite_scores_answers_citations_and_abstentions(rendere
     assert m["usage"]["requests"] == 3
     rows = result["details"]["questions"]
     assert all("answer" in row for row in rows)
+
+
+def test_window_skips_offset_items_then_applies_the_limit():
+    items = list(range(10))
+    assert Context().window(items) == items
+    assert Context(limit=3).window(items) == [0, 1, 2]
+    assert Context(offset=7).window(items) == [7, 8, 9]
+    assert Context(offset=4, limit=3).window(items) == [4, 5, 6]
+    assert Context(offset=8, limit=5).window(items) == [8, 9]
+
+
+@pytest.mark.parametrize("args", [["--offset", "-1"], ["--limit", "0"]])
+def test_run_rejects_a_negative_offset_or_an_empty_limit(args, capsys):
+    with pytest.raises(SystemExit) as exc:
+        runner.main(["--suite", "retrieval", *args])
+    assert exc.value.code == 2
+    assert "--offset must be 0 or more" in capsys.readouterr().err
+
+
+async def test_rag_answer_suite_runs_the_slice_after_the_offset(rendered_to_tmp, groq_client):
+    ctx = Context(offset=2, limit=2)
+    expected = ctx.questions[2:4]
+    groq_client.respond(*(f"{q['answer_text']} [1]" if q["answerable"] else "Not stated." for q in expected))
+
+    result = await rag_answer.run(ctx)
+
+    assert [row["id"] for row in result["details"]["questions"]] == [q["id"] for q in expected]
+    assert result["config"]["first_question"] == 3 and result["config"]["last_question"] == 4

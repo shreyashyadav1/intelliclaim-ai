@@ -74,10 +74,16 @@ class Context:
     """Lazily loaded dataset and derived text, shared by the suites of one run."""
 
     limit: int | None = None
+    offset: int = 0
     use_llm: bool = False
     retrieval_mode: str | None = None
     _ocr: dict[str, PagedText] | None = field(default=None, repr=False)
     ocr_seconds: dict[str, float] = field(default_factory=dict)
+
+    def window(self, items: list[Any]) -> list[Any]:
+        """The items a run covers: skip the first `offset`, then keep at most `limit`."""
+        end = None if self.limit is None else self.offset + self.limit
+        return items[self.offset:end]
 
     @cached_property
     def documents(self) -> list[dict[str, Any]]:

@@ -4,6 +4,7 @@ Run evaluation suites (from backend/).
     python -m evals.run --suite retrieval
     python -m evals.run --suite offline --check-thresholds
     python -m evals.run --suite extraction --limit 20
+    python -m evals.run --suite rag-answer --offset 120   # the questions after the first 120
 
 --suite can be repeated; "offline" selects retrieval, ocr, classification
 and risk (no API key needed) and "all" adds extraction and rag-answer. Each
@@ -128,10 +129,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check-thresholds", nargs="?", type=Path, const=THRESHOLDS_FILE, metavar="FILE",
                         help=f"fail when metrics miss the thresholds (default file: {THRESHOLDS_FILE.name})")
     parser.add_argument("--limit", type=int, help="evaluate only the first N items (LLM suites)")
+    parser.add_argument("--offset", type=int, default=0,
+                        help="skip the first N items (LLM suites); with --limit, runs a dataset in slices")
     parser.add_argument("--llm", action="store_true", help="risk suite: also score with the AI review (needs a key)")
     parser.add_argument("--retrieval-mode", choices=("vector", "hybrid"),
                         help="rag-answer suite: override RAG_RETRIEVAL_MODE")
     args = parser.parse_args(argv)
+    if args.offset < 0 or (args.limit is not None and args.limit < 1):
+        parser.error("--offset must be 0 or more and --limit 1 or more")
 
     logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     logging.getLogger("evals").setLevel(logging.INFO)
@@ -140,7 +145,7 @@ def main(argv: list[str] | None = None) -> int:
     env = environment(argv)
     output = args.output_dir or RESULTS_DIR / datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     output.mkdir(parents=True, exist_ok=True)
-    ctx = Context(limit=args.limit, use_llm=args.llm, retrieval_mode=args.retrieval_mode)
+    ctx = Context(limit=args.limit, offset=args.offset, use_llm=args.llm, retrieval_mode=args.retrieval_mode)
 
     async def _run_all() -> dict[str, dict]:
         return {name: await run_suite(name, ctx) for name in suites}

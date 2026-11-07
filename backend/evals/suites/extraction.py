@@ -87,7 +87,7 @@ async def run(ctx: Context) -> dict[str, Any]:
     if not groq_configured():
         return skipped(NAME, "MOCK_LLM is on" if settings.MOCK_LLM else KEY_MISSING)
 
-    docs = ctx.documents[: ctx.limit]
+    docs = ctx.window(ctx.documents)
     metrics: dict[str, Any] = {}
     details: dict[str, Any] = {}
     notes = []
