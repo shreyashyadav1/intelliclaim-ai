@@ -25,6 +25,7 @@ from services.rag_index import (
     VectorIndex,
     chunk_position,
     hybrid_retriever,
+    identifier_tokens,
     keyword_tokens,
     langchain_embeddings,
     page_documents,
@@ -294,10 +295,69 @@ async def test_hybrid_retrieval_promotes_identifier_matches_that_embeddings_miss
         return [doc.metadata["document_id"] for doc in docs].index("target") + 1
 
     assert _rank("vector") == 5  # the embedder prefers every other invoice
-    assert _rank("hybrid") < _rank("vector")  # BM25's exact identifier match moves it up
-    assert _rank("hybrid", weights=(0.2, 0.8)) == 1
+    fusion_only = _rank("hybrid", exact_identifiers=False)
+    assert 1 < fusion_only < _rank("vector")  # BM25's match moves it up, but fusion keeps only its rank
+    assert _rank("hybrid", weights=(0.2, 0.8), exact_identifiers=False) == 1
+    assert _rank("hybrid") == 1  # the chunk naming INV-1004 is pinned first
     hybrid = _index().retriever("hybrid", 5).invoke(question)
     assert all(0.0 <= doc.metadata["score"] <= 1.0 for doc in hybrid)  # BM25-only hits get a similarity too
+
+
+def test_identifier_tokens_need_letters_digits_and_a_separator():
+    assert identifier_tokens("Who issued INV-3023 and POL-2026-45039 on 2026-01-05 for $1,200.50?") == [
+        "inv-3023", "pol-2026-45039",
+    ]
+    assert identifier_tokens("What did the discharge summary say about follow-up care?") == []
+    assert identifier_tokens("INV-3023 or inv-3023") == ["inv-3023"]
+
+
+def _identifier_corpus() -> KeywordRetriever:
+    corpus = [
+        Document(page_content="Invoice INV-3023 total $10. Policy POL-77.", id="inv"),
+        Document(page_content="Discharge summary DS-2001, page 1.", id="ds-1"),
+        Document(page_content="Discharge summary DS-2001, page 2. Discharge medication.", id="ds-2"),
+        Document(page_content="Claim referencing policy POL-77.", id="claim"),
+    ]
+    return KeywordRetriever.from_documents(corpus, preprocess_func=keyword_tokens, k=5)
+
+
+def test_identifier_matches_return_chunks_containing_every_named_identifier():
+    retriever = _identifier_corpus()
+
+    assert [d.metadata["chunk_id"] for d in retriever.identifier_matches("Who issued INV-3023?", 5)] == ["inv"]
+    match = retriever.identifier_matches("total of INV-3023 under POL-77", 5)
+    assert [d.metadata["chunk_id"] for d in match] == ["inv"]  # both identifiers, so not the claim
+    assert match[0].metadata["matched_identifiers"] == "inv-3023, pol-77"
+    discharge = retriever.identifier_matches("discharge medication in DS-2001", 5)
+    assert [d.metadata["chunk_id"] for d in discharge] == ["ds-2", "ds-1"]  # BM25 order among the matches
+
+
+def test_identifier_matches_stay_out_of_the_way_when_they_do_not_single_out_a_document():
+    retriever = _identifier_corpus()
+
+    assert retriever.identifier_matches("Which hospital treated the patient?", 5) == []  # no identifier
+    assert retriever.identifier_matches("Who issued INV-9999?", 5) == []  # not in the corpus
+    assert retriever.identifier_matches("policy POL-77", 1) == []  # two chunks contain it, limit 1
+
+
+def test_hybrid_puts_exact_identifier_matches_ahead_of_the_fused_ranking():
+    vector = _Fixed(ranking=["a", "b", "c"], scores={"a": 0.9, "b": 0.8, "c": 0.7})
+    keyword = _Fixed(ranking=["d", "a"])
+
+    def _exact(query, limit):
+        assert limit == 3
+        return [Document(page_content="text of d", metadata={"chunk_id": "d"}, id="d")]
+
+    def _fill(query, docs):
+        for doc in docs:
+            doc.metadata.setdefault("score", 0.2)
+
+    fused = hybrid_retriever(vector, keyword, k=3, fill_scores=_fill).invoke("q")
+    pinned = hybrid_retriever(vector, keyword, k=3, fill_scores=_fill, exact_matches=_exact).invoke("q")
+
+    assert [doc.metadata["chunk_id"] for doc in fused] == ["a", "d", "b"]
+    assert [doc.metadata["chunk_id"] for doc in pinned] == ["d", "a", "b"]  # d once, the rest in fused order
+    assert pinned[0].metadata["score"] == 0.2
 
 
 # --- Neighbouring chunks from the same document --------------------------------------------

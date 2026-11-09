@@ -53,6 +53,7 @@ from config import (
     HYBRID_WEIGHTS,
     RAG_CHUNK_OVERLAP,
     RAG_CHUNK_SIZE,
+    RAG_EXACT_IDENTIFIERS,
     RAG_NEIGHBOR_CHUNKS,
     RRF_K,
 )
@@ -157,6 +158,24 @@ def keyword_tokens(text: str) -> list[str]:
     return tokens
 
 
+def identifier_tokens(text: str) -> list[str]:
+    """Document identifiers in a text: tokens that join letters and digits with - . or /.
+
+    "Who issued invoice INV-3023 on 2026-01-05?" -> ["inv-3023"]. Dates and
+    amounts have no letters and plain words no digits, so neither counts.
+    """
+    found: list[str] = []
+    for token in _TOKEN.findall(text.lower()):
+        if (
+            _TOKEN_PARTS.search(token)
+            and any(ch.isalpha() for ch in token)
+            and any(ch.isdigit() for ch in token)
+            and token not in found
+        ):
+            found.append(token)
+    return found
+
+
 def _as_result(doc: LCDocument, **extra: Any) -> LCDocument:
     """Copy a stored chunk for a result list, dropping LlamaIndex's internal metadata."""
     metadata = {key: value for key, value in doc.metadata.items() if not key.startswith("_")}
@@ -212,6 +231,26 @@ class KeywordRetriever(BaseRetriever):
         ranked = sorted(matching, key=lambda i: (-scores[i], i))
         return [_as_result(self.docs[i], bm25_score=float(scores[i])) for i in ranked[: self.k]]
 
+    def identifier_matches(self, query: str, limit: int) -> list[LCDocument]:
+        """Chunks that contain every document identifier named in the query, best BM25 score first.
+
+        Empty when the query names no identifier, or when more than `limit`
+        chunks contain them all (then the identifiers do not single out a
+        document, and ordinary ranking decides).
+        """
+        identifiers = identifier_tokens(query)
+        if not identifiers:
+            return []
+        matching = [i for i, freqs in enumerate(self.vectorizer.doc_freqs) if all(t in freqs for t in identifiers)]
+        if not matching or len(matching) > limit:
+            return []
+        scores = self.vectorizer.get_scores(list(set(self.preprocess_func(query))))
+        ranked = sorted(matching, key=lambda i: (-scores[i], i))
+        return [
+            _as_result(self.docs[i], bm25_score=float(scores[i]), matched_identifiers=", ".join(identifiers))
+            for i in ranked
+        ]
+
 
 class HybridRetriever(BaseRetriever):
     """Vector + BM25 results fused by weighted reciprocal rank fusion, cut to k.
@@ -219,6 +258,12 @@ class HybridRetriever(BaseRetriever):
     metadata["score"] stays the cosine similarity for every result (the API
     reports it as the match percentage); chunks found only by BM25 get theirs
     from fill_scores.
+
+    exact_matches, when set, returns the chunks that contain the document
+    identifiers named in the query (KeywordRetriever.identifier_matches).
+    They go first, ahead of the fused ranking: rank fusion keeps only BM25's
+    rank, so a chunk that BM25 puts first by a wide margin but the embeddings
+    never retrieve can fall below chunks both lists rank in the middle.
     """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -226,9 +271,13 @@ class HybridRetriever(BaseRetriever):
     ensemble: EnsembleRetriever
     k: int = 5
     fill_scores: Callable[[str, list[LCDocument]], None] | None = None
+    exact_matches: Callable[[str, int], list[LCDocument]] | None = None
 
     def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun) -> list[LCDocument]:
-        docs = self.ensemble.invoke(query, config={"callbacks": run_manager.get_child()})[: self.k]
+        fused = self.ensemble.invoke(query, config={"callbacks": run_manager.get_child()})
+        pinned = self.exact_matches(query, self.k) if self.exact_matches is not None else []
+        pinned_ids = {doc.metadata["chunk_id"] for doc in pinned}
+        docs = [*pinned, *(doc for doc in fused if doc.metadata.get("chunk_id") not in pinned_ids)][: self.k]
         if self.fill_scores is not None:
             self.fill_scores(query, docs)
         return docs
@@ -282,10 +331,11 @@ def hybrid_retriever(
     *,
     weights: Sequence[float] = HYBRID_WEIGHTS,
     fill_scores: Callable[[str, list[LCDocument]], None] | None = None,
+    exact_matches: Callable[[str, int], list[LCDocument]] | None = None,
 ) -> HybridRetriever:
-    """Fuse two retrievers whose results carry metadata["chunk_id"]."""
+    """Fuse two retrievers whose results carry metadata["chunk_id"]; exact_matches pins identifier hits first."""
     ensemble = EnsembleRetriever(retrievers=[vector, keyword], weights=list(weights), c=RRF_K, id_key="chunk_id")
-    return HybridRetriever(ensemble=ensemble, k=k, fill_scores=fill_scores)
+    return HybridRetriever(ensemble=ensemble, k=k, fill_scores=fill_scores, exact_matches=exact_matches)
 
 
 def _cosine(a: np.ndarray, b: np.ndarray) -> float:
@@ -458,25 +508,35 @@ class VectorIndex:
 
     # ---------------------------------------------------------------- retrieval
     def retriever(
-        self, mode: str, k: int, *, weights: Sequence[float] = HYBRID_WEIGHTS, neighbors: int = RAG_NEIGHBOR_CHUNKS
+        self,
+        mode: str,
+        k: int,
+        *,
+        weights: Sequence[float] = HYBRID_WEIGHTS,
+        neighbors: int = RAG_NEIGHBOR_CHUNKS,
+        exact_identifiers: bool = RAG_EXACT_IDENTIFIERS,
     ) -> BaseRetriever:
         """LangChain retriever: up to k ranked chunks, "vector" or "hybrid" (vector + BM25).
 
         weights are the (vector, BM25) weights of the rank fusion in hybrid mode.
         neighbors > 0 surrounds each ranked chunk with that many chunks before
         and after it from the same document (NeighborRetriever), so up to
-        k * (1 + 2 * neighbors) chunks come back.
+        k * (1 + 2 * neighbors) chunks come back. exact_identifiers puts the
+        chunks containing a document identifier named in the query (such as
+        INV-3023) ahead of the fused ranking in hybrid mode.
         """
         if mode not in RETRIEVAL_MODES:
             raise ValueError(f"Unknown retrieval mode: {mode!r}")
-        ranked = self._ranked_retriever(mode, k, weights)
+        ranked = self._ranked_retriever(mode, k, weights, exact_identifiers)
         if neighbors <= 0:
             return ranked
         return NeighborRetriever(
             base=ranked, window=neighbors, neighbors=self._neighbors, fill_scores=self._fill_scores
         )
 
-    def _ranked_retriever(self, mode: str, k: int, weights: Sequence[float]) -> BaseRetriever:
+    def _ranked_retriever(
+        self, mode: str, k: int, weights: Sequence[float], exact_identifiers: bool = RAG_EXACT_IDENTIFIERS
+    ) -> BaseRetriever:
         if mode == "vector":
             return VectorRetriever(vectorstore=self._langchain_store(), k=k)
 
@@ -485,7 +545,8 @@ class VectorIndex:
         if keyword is None:  # nothing stored yet
             return VectorRetriever(vectorstore=self._langchain_store(), k=k)
         vector = VectorRetriever(vectorstore=self._langchain_store(), k=candidates)
-        return hybrid_retriever(vector, keyword, k, weights=weights, fill_scores=self._fill_scores)
+        exact = keyword.identifier_matches if exact_identifiers else None
+        return hybrid_retriever(vector, keyword, k, weights=weights, fill_scores=self._fill_scores, exact_matches=exact)
 
     def _neighbors(self, hit: LCDocument, window: int) -> tuple[list[LCDocument], list[LCDocument]]:
         """Up to `window` chunks before and after a hit in its document's reading order.

@@ -13,6 +13,9 @@ contains the answer as printed), broken down by question style and source
 document type. answer-in-context@5 with neighbours repeats the check on what
 the model is sent: the top 5 chunks plus their neighbouring chunks from the
 same document (RAG_NEIGHBOR_CHUNKS), with the mean number of chunks sent.
+Hybrid mode puts chunks that contain a document identifier named in the
+question first (RAG_EXACT_IDENTIFIERS); "hybrid, fusion only" repeats the
+default configuration without that step.
 A grid over chunk sizes (128-512 tokens) and hybrid fusion
 weights shows how sensitive the results are; config.py's defaults
 (RAG_CHUNK_SIZE, HYBRID_WEIGHTS) and RAG_RETRIEVAL_MODE were chosen from it
@@ -31,6 +34,7 @@ from config import (
     HYBRID_WEIGHTS,
     RAG_CHUNK_OVERLAP,
     RAG_CHUNK_SIZE,
+    RAG_EXACT_IDENTIFIERS,
     RAG_NEIGHBOR_CHUNKS,
     RRF_K,
 )
@@ -42,6 +46,7 @@ logger = logging.getLogger("evals.retrieval")
 
 CHUNK_SIZES = (128, 256, 384, 512)
 WEIGHT_VARIANTS = ((0.7, 0.3), (0.5, 0.5), (0.3, 0.7), (0.2, 0.8), (0.1, 0.9))  # (vector, BM25)
+FUSION_ONLY = "hybrid, fusion only"  # the default hybrid configuration without exact identifier matches
 RANKED = 10  # chunks retrieved per question; MRR is computed over these
 CONTEXT_K = 5  # the API's default top_k: chunks the model is sent before neighbours are added
 
@@ -62,7 +67,8 @@ def _answer_in(docs, question) -> bool:
 
 
 def _evaluate(
-    index, questions, kinds, mode: str, weights: tuple[float, float], *, with_context: bool = False
+    index, questions, kinds, mode: str, weights: tuple[float, float], *, with_context: bool = False,
+    exact_identifiers: bool = RAG_EXACT_IDENTIFIERS,
 ) -> dict[str, Any]:
     """Rank metrics over the top RANKED chunks (no neighbours); with_context also
     checks the context the API sends: the top CONTEXT_K chunks plus their neighbours."""
@@ -71,8 +77,11 @@ def _evaluate(
     ranks, hits, latencies, rows, context_hits, context_sizes = [], [], [], [], [], []
     by_style: dict[str, list] = defaultdict(list)
     by_kind: dict[str, list] = defaultdict(list)
-    retriever = index.retriever(mode, RANKED, weights=weights, neighbors=0)
-    context_retriever = index.retriever(mode, CONTEXT_K, weights=weights) if with_context else None
+    retriever = index.retriever(mode, RANKED, weights=weights, neighbors=0, exact_identifiers=exact_identifiers)
+    context_retriever = (
+        index.retriever(mode, CONTEXT_K, weights=weights, exact_identifiers=exact_identifiers)
+        if with_context else None
+    )
     for question in questions:
         started = time.perf_counter()
         docs = retriever.invoke(question["question"])
@@ -158,24 +167,32 @@ def run(ctx: Context) -> dict[str, Any]:
                 }
                 if main_config:
                     main[mode] = result
+                if main_config and mode == "hybrid":
+                    fusion = _evaluate(index, questions, kinds, mode, weights, with_context=True,
+                                       exact_identifiers=False)
+                    entry["configs"][FUSION_ONLY] = {**fusion["metrics"], "by_style": fusion["by_style"]}
+                    main[FUSION_ONLY] = fusion
             grid[str(chunk_size)] = entry
             del index
         SharedSystemClient.clear_system_cache()
 
+    modes = ("vector", FUSION_ONLY, "hybrid")
     metrics = {
         "vector": main["vector"]["metrics"],
+        "hybrid_fusion_only": main[FUSION_ONLY]["metrics"],
         "hybrid": main["hybrid"]["metrics"],
-        "by_style": {mode: main[mode]["by_style"] for mode in ("vector", "hybrid")},
-        "by_source_type": {mode: main[mode]["by_kind"] for mode in ("vector", "hybrid")},
-        "latency": {mode: main[mode]["latency"] for mode in ("vector", "hybrid")},
+        "by_style": {mode: main[mode]["by_style"] for mode in modes},
+        "by_source_type": {mode: main[mode]["by_kind"] for mode in modes},
+        "latency": {mode: main[mode]["latency"] for mode in modes},
         "grid": grid,
     }
     rows = [
         {"id": v["id"], "vector_rank": v["rank"], "hybrid_rank": h["rank"],
          "vector_answer_in_top5": v["answer_in_top5"], "hybrid_answer_in_top5": h["answer_in_top5"],
          "vector_answer_in_context": v["answer_in_context"], "hybrid_answer_in_context": h["answer_in_context"],
-         "vector_context_chunks": v["context_chunks"], "hybrid_context_chunks": h["context_chunks"]}
-        for v, h in zip(main["vector"]["rows"], main["hybrid"]["rows"], strict=True)
+         "vector_context_chunks": v["context_chunks"], "hybrid_context_chunks": h["context_chunks"],
+         "fusion_only_rank": f["rank"], "fusion_only_answer_in_context": f["answer_in_context"]}
+        for v, f, h in zip(main["vector"]["rows"], main[FUSION_ONLY]["rows"], main["hybrid"]["rows"], strict=True)
     ]
     return {
         "suite": NAME,
@@ -187,6 +204,7 @@ def run(ctx: Context) -> dict[str, Any]:
             "hybrid_weights_vector_bm25": list(HYBRID_WEIGHTS),
             "rrf_k": RRF_K,
             "neighbor_chunks": RAG_NEIGHBOR_CHUNKS,
+            "exact_identifiers": RAG_EXACT_IDENTIFIERS,
             "hybrid_candidates": HYBRID_CANDIDATES,
             "documents": len(ctx.documents),
             "questions": len(questions),
@@ -215,23 +233,29 @@ def summary(result: dict[str, Any]) -> list[str]:
         f"({c.get('neighbor_chunks', 0)} each side) | Chunks sent (mean) |",
         "|---|---|---|---|---|---|---|---|",
         _row("vector", m["vector"]),
+        _row(FUSION_ONLY, m["hybrid_fusion_only"]),
         _row("hybrid", m["hybrid"]),
         "",
         "By question style (recall@1 / recall@5 / MRR):",
         "",
-        "| Style | Vector | Hybrid |",
-        "|---|---|---|",
+        "| Style | Vector | Hybrid, fusion only | Hybrid |",
+        "|---|---|---|---|",
     ]
+    modes = ("vector", FUSION_ONLY, "hybrid")
+
+    def _cells(table: dict[str, Any], key: str) -> str:
+        return " | ".join(
+            f"{table[mode][key]['recall@1']:.3f} / {table[mode][key]['recall@5']:.3f} / {table[mode][key]['mrr']:.3f}"
+            for mode in modes
+        )
+
     for style in m["by_style"]["vector"]:
-        v, h = m["by_style"]["vector"][style], m["by_style"]["hybrid"][style]
-        lines.append(f"| {style} ({v['queries']}) | {v['recall@1']:.3f} / {v['recall@5']:.3f} / {v['mrr']:.3f} "
-                     f"| {h['recall@1']:.3f} / {h['recall@5']:.3f} / {h['mrr']:.3f} |")
-    lines += ["", "By source document type (recall@1 / recall@5 / MRR):", "", "| Source | Vector | Hybrid |",
-              "|---|---|---|"]
+        lines.append(f"| {style} ({m['by_style']['vector'][style]['queries']}) | {_cells(m['by_style'], style)} |")
+    lines += ["", "By source document type (recall@1 / recall@5 / MRR):", "",
+              "| Source | Vector | Hybrid, fusion only | Hybrid |", "|---|---|---|---|"]
     for kind in m["by_source_type"]["vector"]:
-        v, h = m["by_source_type"]["vector"][kind], m["by_source_type"]["hybrid"][kind]
-        lines.append(f"| {kind} ({v['queries']}) | {v['recall@1']:.3f} / {v['recall@5']:.3f} / {v['mrr']:.3f} "
-                     f"| {h['recall@1']:.3f} / {h['recall@5']:.3f} / {h['mrr']:.3f} |")
+        lines.append(f"| {kind} ({m['by_source_type']['vector'][kind]['queries']}) "
+                     f"| {_cells(m['by_source_type'], kind)} |")
     styles = list(m["by_style"]["vector"])
     lines += [
         "",

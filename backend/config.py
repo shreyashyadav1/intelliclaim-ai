@@ -53,6 +53,11 @@ RRF_K = 60  # reciprocal rank fusion constant
 # a field on one page is in context when a search hit lands on the other. 0
 # turns it off; at 1 the model sees at most 3 x top_k chunks.
 RAG_NEIGHBOR_CHUNKS = 1
+# In hybrid mode, chunks containing a document identifier named in the
+# question (INV-3023, MR-2478, POL-2026-45039) go ahead of the fused ranking,
+# as long as at most top_k chunks contain it. Rank fusion alone can drop a
+# chunk that BM25 ranks first but the embeddings miss (backend/evals/README.md).
+RAG_EXACT_IDENTIFIERS = True
 
 # Risk scores of at least this are rated "high" and validation marks the claim
 # as flagged. Medium risk, and the flagged-claims list, start at the
