@@ -77,6 +77,7 @@ class Context:
     offset: int = 0
     use_llm: bool = False
     retrieval_mode: str | None = None
+    question_ids: tuple[str, ...] = ()
     _ocr: dict[str, PagedText] | None = field(default=None, repr=False)
     ocr_seconds: dict[str, float] = field(default_factory=dict)
 
@@ -84,6 +85,13 @@ class Context:
         """The items a run covers: skip the first `offset`, then keep at most `limit`."""
         end = None if self.limit is None else self.offset + self.limit
         return items[self.offset:end]
+
+    def selected_questions(self) -> list[dict[str, Any]]:
+        """The questions the rag-answer suite asks: question_ids when given (dataset order), else all."""
+        if not self.question_ids:
+            return self.questions
+        wanted = set(self.question_ids)
+        return [question for question in self.questions if question["id"] in wanted]
 
     @cached_property
     def documents(self) -> list[dict[str, Any]]:

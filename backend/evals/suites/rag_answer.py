@@ -46,7 +46,7 @@ async def run(ctx: Context) -> dict[str, Any]:
     from services.llm import LLMError
     from services.rag_chain import NO_ANSWER
 
-    questions = ctx.window(ctx.questions)
+    questions = ctx.window(ctx.selected_questions())
     mode = ctx.retrieval_mode or settings.RAG_RETRIEVAL_MODE
     saved_mode = settings.RAG_RETRIEVAL_MODE
     settings.RAG_RETRIEVAL_MODE = mode

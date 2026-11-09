@@ -18,6 +18,7 @@ python -m evals.run --suite offline          # retrieval, ocr, classification, r
 python -m evals.run --suite offline --check-thresholds   # what CI runs
 python -m evals.run --suite extraction --limit 20        # LLM suites, first 20 items
 python -m evals.run --suite rag-answer --offset 120      # LLM suites, items 121 onward (combines with --limit)
+python -m evals.run --suite rag-answer --question q-069 --question q-131   # rag-answer, chosen questions only
 python -m evals.run --suite all              # everything (LLM suites skip without a key)
 ```
 

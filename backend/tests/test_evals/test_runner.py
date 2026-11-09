@@ -211,3 +211,22 @@ async def test_rag_answer_suite_runs_the_slice_after_the_offset(rendered_to_tmp,
 
     assert [row["id"] for row in result["details"]["questions"]] == [q["id"] for q in expected]
     assert result["config"]["first_question"] == 3 and result["config"]["last_question"] == 4
+
+
+def test_run_rejects_unknown_question_ids(capsys):
+    with pytest.raises(SystemExit) as exc:
+        runner.main(["--suite", "rag-answer", "--question", "q-001", "--question", "q-nope"])
+    assert exc.value.code == 2
+    assert "unknown question id(s): q-nope" in capsys.readouterr().err
+
+
+async def test_rag_answer_suite_asks_only_the_chosen_questions(rendered_to_tmp, groq_client):
+    all_questions = Context().questions
+    chosen = (all_questions[5]["id"], all_questions[1]["id"])
+    ctx = Context(question_ids=chosen)
+    expected = [all_questions[1], all_questions[5]]  # dataset order
+    groq_client.respond(*(f"{q['answer_text']} [1]" if q["answerable"] else "Not stated." for q in expected))
+
+    result = await rag_answer.run(ctx)
+
+    assert [row["id"] for row in result["details"]["questions"]] == [q["id"] for q in expected]
