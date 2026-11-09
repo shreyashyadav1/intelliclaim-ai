@@ -48,6 +48,11 @@ RAG_CHUNK_OVERLAP = 48
 HYBRID_WEIGHTS = (0.5, 0.5)  # (vector, BM25) weights in reciprocal rank fusion
 HYBRID_CANDIDATES = 20  # results each retriever contributes to the fusion
 RRF_K = 60  # reciprocal rank fusion constant
+# Each retrieved chunk brings this many chunks before and after it from the
+# same document (the neighbouring page of a two-page summary, for example), so
+# a field on one page is in context when a search hit lands on the other. 0
+# turns it off; at 1 the model sees at most 3 x top_k chunks.
+RAG_NEIGHBOR_CHUNKS = 1
 
 # Risk scores of at least this are rated "high" and validation marks the claim
 # as flagged. Medium risk, and the flagged-claims list, start at the

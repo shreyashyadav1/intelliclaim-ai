@@ -12,6 +12,8 @@ Every document chunk lives in one ChromaDB collection:
   cosine-similarity searches. Hybrid mode fuses those results with BM25
   keyword search over the stored chunks (rank_bm25's BM25Okapi behind a
   LangChain retriever; EnsembleRetriever, weighted reciprocal rank fusion).
+  Each hit then brings its neighbouring chunks from the same document
+  (NeighborRetriever), marked with metadata["neighbor_of"].
 
 One fastembed model (BAAI/bge-small-en-v1.5) serves both frameworks, so
 documents and questions are embedded identically and the ONNX model is
@@ -51,6 +53,7 @@ from config import (
     HYBRID_WEIGHTS,
     RAG_CHUNK_OVERLAP,
     RAG_CHUNK_SIZE,
+    RAG_NEIGHBOR_CHUNKS,
     RRF_K,
 )
 from services.rag_errors import IncompatibleIndexError
@@ -231,6 +234,47 @@ class HybridRetriever(BaseRetriever):
         return docs
 
 
+class NeighborRetriever(BaseRetriever):
+    """Adds each hit's neighbouring chunks from the same document, in reading order.
+
+    Every hit of the base retriever is kept in rank order; up to `window`
+    chunks before and after it in its document surround it, unless they are
+    already in the result. Neighbours carry metadata["neighbor_of"] (the hit's
+    chunk id), so callers can tell ranked hits from added context.
+
+    A search hit can land on one page of a document while the answer is on
+    another: a discharge summary's page 2 repeats its number and the word
+    "discharge" in its header, while the discharge date is on page 1.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    base: BaseRetriever
+    window: int = 1
+    neighbors: Callable[[LCDocument, int], tuple[list[LCDocument], list[LCDocument]]]
+    fill_scores: Callable[[str, list[LCDocument]], None] | None = None
+
+    def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun) -> list[LCDocument]:
+        hits = self.base.invoke(query, config={"callbacks": run_manager.get_child()})
+        if self.window <= 0:
+            return hits
+        seen = {hit.metadata.get("chunk_id") for hit in hits}
+        results: list[LCDocument] = []
+        added: list[LCDocument] = []
+        for hit in hits:
+            before, after = self.neighbors(hit, self.window)
+            fresh_before = [doc for doc in before if doc.metadata["chunk_id"] not in seen]
+            fresh_after = [doc for doc in after if doc.metadata["chunk_id"] not in seen]
+            for doc in fresh_before + fresh_after:
+                seen.add(doc.metadata["chunk_id"])
+                doc.metadata["neighbor_of"] = hit.metadata.get("chunk_id")
+            added.extend(fresh_before + fresh_after)
+            results.extend([*fresh_before, hit, *fresh_after])
+        if added and self.fill_scores is not None:
+            self.fill_scores(query, added)
+        return results
+
+
 def hybrid_retriever(
     vector: BaseRetriever,
     keyword: BaseRetriever,
@@ -255,6 +299,15 @@ def _cosine(a: np.ndarray, b: np.ndarray) -> float:
 def _chunk_id(index: int, document: Document) -> str:
     """Deterministic chunk ids: <document id>:p<page>:<chunk number within the page>."""
     return f"{document.id_}:p{document.metadata.get('page', 0)}:{index}"
+
+
+_CHUNK_POSITION = re.compile(r":p(\d+):(\d+)$")
+
+
+def chunk_position(chunk_id: str) -> tuple[int, int] | None:
+    """(page, chunk number within the page) from a chunk id, or None for ids in another format."""
+    match = _CHUNK_POSITION.search(chunk_id)
+    return (int(match.group(1)), int(match.group(2))) if match else None
 
 
 def page_documents(doc_id: str, text: str, metadata: dict[str, Any], page_starts: object = None) -> list[Document]:
@@ -404,13 +457,26 @@ class VectorIndex:
             raise IncompatibleIndexError(problem, expected)
 
     # ---------------------------------------------------------------- retrieval
-    def retriever(self, mode: str, k: int, *, weights: Sequence[float] = HYBRID_WEIGHTS) -> BaseRetriever:
-        """LangChain retriever returning up to k chunks: "vector" or "hybrid" (vector + BM25).
+    def retriever(
+        self, mode: str, k: int, *, weights: Sequence[float] = HYBRID_WEIGHTS, neighbors: int = RAG_NEIGHBOR_CHUNKS
+    ) -> BaseRetriever:
+        """LangChain retriever: up to k ranked chunks, "vector" or "hybrid" (vector + BM25).
 
         weights are the (vector, BM25) weights of the rank fusion in hybrid mode.
+        neighbors > 0 surrounds each ranked chunk with that many chunks before
+        and after it from the same document (NeighborRetriever), so up to
+        k * (1 + 2 * neighbors) chunks come back.
         """
         if mode not in RETRIEVAL_MODES:
             raise ValueError(f"Unknown retrieval mode: {mode!r}")
+        ranked = self._ranked_retriever(mode, k, weights)
+        if neighbors <= 0:
+            return ranked
+        return NeighborRetriever(
+            base=ranked, window=neighbors, neighbors=self._neighbors, fill_scores=self._fill_scores
+        )
+
+    def _ranked_retriever(self, mode: str, k: int, weights: Sequence[float]) -> BaseRetriever:
         if mode == "vector":
             return VectorRetriever(vectorstore=self._langchain_store(), k=k)
 
@@ -420,6 +486,31 @@ class VectorIndex:
             return VectorRetriever(vectorstore=self._langchain_store(), k=k)
         vector = VectorRetriever(vectorstore=self._langchain_store(), k=candidates)
         return hybrid_retriever(vector, keyword, k, weights=weights, fill_scores=self._fill_scores)
+
+    def _neighbors(self, hit: LCDocument, window: int) -> tuple[list[LCDocument], list[LCDocument]]:
+        """Up to `window` chunks before and after a hit in its document's reading order.
+
+        Chunks whose ids carry no page/chunk position (indexed by older
+        versions) have no known order and get no neighbours.
+        """
+        chunk_id = hit.metadata.get("chunk_id")
+        doc_id = hit.metadata.get("doc_id") or hit.metadata.get("document_id")
+        if not chunk_id or not doc_id or chunk_position(chunk_id) is None:
+            return [], []
+        stored = self.collection.get(where={"doc_id": doc_id}, include=["documents", "metadatas"])
+        chunks = [
+            (position, LCDocument(page_content=text or "", metadata=metadata or {}, id=stored_id))
+            for stored_id, text, metadata in zip(stored["ids"], stored["documents"], stored["metadatas"], strict=False)
+            if (position := chunk_position(stored_id)) is not None
+        ]
+        chunks.sort(key=lambda item: item[0])
+        ordered = [doc for _, doc in chunks]
+        at = next((i for i, doc in enumerate(ordered) if doc.id == chunk_id), None)
+        if at is None:
+            return [], []
+        before = [_as_result(doc) for doc in ordered[max(0, at - window):at]]
+        after = [_as_result(doc) for doc in ordered[at + 1:at + 1 + window]]
+        return before, after
 
     def _langchain_store(self) -> Chroma:
         if self._vectorstore is None:

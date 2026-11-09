@@ -20,8 +20,10 @@ from config import EMBEDDING_MODEL_NAME, RAG_ANSWER_PARAMS, settings
 from services import llm, rag_chain
 from services.rag_index import (
     KeywordRetriever,
+    NeighborRetriever,
     SharedFastEmbedEmbedding,
     VectorIndex,
+    chunk_position,
     hybrid_retriever,
     keyword_tokens,
     langchain_embeddings,
@@ -296,6 +298,74 @@ async def test_hybrid_retrieval_promotes_identifier_matches_that_embeddings_miss
     assert _rank("hybrid", weights=(0.2, 0.8)) == 1
     hybrid = _index().retriever("hybrid", 5).invoke(question)
     assert all(0.0 <= doc.metadata["score"] <= 1.0 for doc in hybrid)  # BM25-only hits get a similarity too
+
+
+# --- Neighbouring chunks from the same document --------------------------------------------
+
+TWO_PAGES = (
+    "DISCHARGE SUMMARY DS-3065\nDischarge date: 2026-04-27\nHospital course: stent placement.",
+    "Discharge summary DS-3065 (page 2)\nDischarge medication: clopidogrel.\nDischarge instructions: rest.",
+)
+
+
+async def _index_two_pages(index: VectorIndex) -> None:
+    text = TWO_PAGES[0] + "\n" + TWO_PAGES[1]
+    starts = [0, len(TWO_PAGES[0]) + 1]
+    await asyncio.to_thread(index.add_document, "ds", text, {"filename": "ds.pdf"}, starts)
+    await asyncio.to_thread(index.add_document, "inv", "Invoice INV-1001 total due 120.00", {"filename": "inv.pdf"})
+
+
+def test_chunk_position_reads_page_and_chunk_number():
+    assert chunk_position("doc-1:p2:3") == (2, 3)
+    assert chunk_position("doc-1:p0:0") == (0, 0)
+    assert chunk_position("3f2a9c1e-legacy-node-id") is None
+
+
+async def test_a_hit_on_page_two_brings_page_one_into_the_context():
+    index = _index()
+    await _index_two_pages(index)
+    ranked = index.retriever("hybrid", 1, neighbors=0).invoke("discharge medication instructions DS-3065")
+    assert [(d.metadata["document_id"], d.metadata["page"]) for d in ranked] == [("ds", 2)]
+
+    docs = index.retriever("hybrid", 1).invoke("discharge medication instructions DS-3065")
+
+    assert [(d.metadata["document_id"], d.metadata["page"]) for d in docs] == [("ds", 1), ("ds", 2)]
+    neighbour, hit = docs
+    assert neighbour.metadata["neighbor_of"] == hit.metadata["chunk_id"]
+    assert "neighbor_of" not in hit.metadata
+    assert "2026-04-27" in neighbour.page_content
+    assert 0.0 <= neighbour.metadata["score"] <= 1.0  # neighbours get a similarity for the API too
+
+
+async def test_neighbours_are_not_repeated_and_single_page_documents_add_nothing():
+    index = _index()
+    await _index_two_pages(index)
+
+    docs = index.retriever("hybrid", 5).invoke("DS-3065 INV-1001")
+
+    chunk_ids = [d.metadata["chunk_id"] for d in docs]
+    assert len(chunk_ids) == len(set(chunk_ids)) == 3  # both pages ranked, so neither is added twice
+    assert all("neighbor_of" not in d.metadata for d in docs)
+
+
+async def test_neighbor_window_is_limited_to_the_configured_chunks(monkeypatch):
+    index = _index()
+    pages = [f"Page {n} of the report: finding number {n} for KEY-{n}." for n in range(1, 6)]
+    text = "\n".join(pages)
+    starts = [sum(len(p) + 1 for p in pages[:i]) for i in range(len(pages))]
+    await asyncio.to_thread(index.add_document, "long", text, {}, starts)
+
+    one = index.retriever("hybrid", 1, weights=(0.0, 1.0), neighbors=1).invoke("KEY-3")
+    two = index.retriever("hybrid", 1, weights=(0.0, 1.0), neighbors=2).invoke("KEY-3")
+
+    assert [d.metadata["page"] for d in one] == [2, 3, 4]
+    assert [d.metadata["page"] for d in two] == [1, 2, 3, 4, 5]
+
+
+def test_neighbor_retriever_without_positions_returns_the_hits_unchanged():
+    base = _Fixed(ranking=["legacy-a", "legacy-b"])
+    retriever = NeighborRetriever(base=base, window=1, neighbors=lambda hit, window: ([], []))
+    assert [d.metadata["chunk_id"] for d in retriever.invoke("q")] == ["legacy-a", "legacy-b"]
 
 
 async def test_bm25_corpus_follows_index_changes():

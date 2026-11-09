@@ -10,7 +10,10 @@ document is among the first k chunks retrieved.
 Reported per retrieval mode (vector, hybrid): recall@1/3/5, MRR (over the
 top 10) and answer-in-context@5 (a top-5 chunk from the source document
 contains the answer as printed), broken down by question style and source
-document type. A grid over chunk sizes (128-512 tokens) and hybrid fusion
+document type. answer-in-context@5 with neighbours repeats the check on what
+the model is sent: the top 5 chunks plus their neighbouring chunks from the
+same document (RAG_NEIGHBOR_CHUNKS), with the mean number of chunks sent.
+A grid over chunk sizes (128-512 tokens) and hybrid fusion
 weights shows how sensitive the results are; config.py's defaults
 (RAG_CHUNK_SIZE, HYBRID_WEIGHTS) and RAG_RETRIEVAL_MODE were chosen from it
 (see evals/README.md).
@@ -22,7 +25,15 @@ import time
 from collections import defaultdict
 from typing import Any
 
-from config import EMBEDDING_MODEL_NAME, HYBRID_CANDIDATES, HYBRID_WEIGHTS, RAG_CHUNK_OVERLAP, RAG_CHUNK_SIZE, RRF_K
+from config import (
+    EMBEDDING_MODEL_NAME,
+    HYBRID_CANDIDATES,
+    HYBRID_WEIGHTS,
+    RAG_CHUNK_OVERLAP,
+    RAG_CHUNK_SIZE,
+    RAG_NEIGHBOR_CHUNKS,
+    RRF_K,
+)
 from evals.common import Context
 from evals.metrics import first_relevant_rank, latency_summary, normalize_whitespace, retrieval_metrics
 
@@ -32,38 +43,62 @@ logger = logging.getLogger("evals.retrieval")
 CHUNK_SIZES = (128, 256, 384, 512)
 WEIGHT_VARIANTS = ((0.7, 0.3), (0.5, 0.5), (0.3, 0.7), (0.2, 0.8), (0.1, 0.9))  # (vector, BM25)
 RANKED = 10  # chunks retrieved per question; MRR is computed over these
+CONTEXT_K = 5  # the API's default top_k: chunks the model is sent before neighbours are added
 
 
 def _label(weights: tuple[float, float]) -> str:
     return f"{weights[0]:g}/{weights[1]:g}"
 
 
-def _evaluate(index, questions, kinds, mode: str, weights: tuple[float, float]) -> dict[str, Any]:
+def _answer_in(docs, question) -> bool:
+    """A chunk of the question's source document contains the answer as printed."""
     from services.rag_chain import document_id
 
-    ranks, hits, latencies, rows = [], [], [], []
+    surface = normalize_whitespace(question["answer_text"])
+    return any(
+        document_id(doc) in question["source_document_ids"] and surface in normalize_whitespace(doc.page_content)
+        for doc in docs
+    )
+
+
+def _evaluate(
+    index, questions, kinds, mode: str, weights: tuple[float, float], *, with_context: bool = False
+) -> dict[str, Any]:
+    """Rank metrics over the top RANKED chunks (no neighbours); with_context also
+    checks the context the API sends: the top CONTEXT_K chunks plus their neighbours."""
+    from services.rag_chain import document_id
+
+    ranks, hits, latencies, rows, context_hits, context_sizes = [], [], [], [], [], []
     by_style: dict[str, list] = defaultdict(list)
     by_kind: dict[str, list] = defaultdict(list)
-    retriever = index.retriever(mode, RANKED, weights=weights)
+    retriever = index.retriever(mode, RANKED, weights=weights, neighbors=0)
+    context_retriever = index.retriever(mode, CONTEXT_K, weights=weights) if with_context else None
     for question in questions:
         started = time.perf_counter()
         docs = retriever.invoke(question["question"])
         latencies.append(time.perf_counter() - started)
         doc_ids = [document_id(doc) for doc in docs]
         rank = first_relevant_rank(doc_ids, question["source_document_ids"])
-        surface = normalize_whitespace(question["answer_text"])
-        hit = any(
-            doc_id in question["source_document_ids"] and surface in normalize_whitespace(doc.page_content)
-            for doc_id, doc in zip(doc_ids[:5], docs[:5], strict=True)
-        )
+        hit = _answer_in(docs[:CONTEXT_K], question)
         ranks.append(rank)
         hits.append(hit)
         by_style[question["style"]].append(rank)
         by_kind[kinds[question["source_document_ids"][0]]].append(rank)
-        rows.append({"id": question["id"], "rank": rank, "answer_in_top5": hit})
+        row = {"id": question["id"], "rank": rank, "answer_in_top5": hit}
+        if context_retriever is not None:
+            context = context_retriever.invoke(question["question"])
+            row["answer_in_context"] = _answer_in(context, question)
+            row["context_chunks"] = len(context)
+            context_hits.append(row["answer_in_context"])
+            context_sizes.append(len(context))
+        rows.append(row)
 
     metrics = retrieval_metrics(ranks)
     metrics["answer_in_context@5"] = round(sum(hits) / len(hits), 4)
+    if context_hits:
+        metrics["answer_in_context@5_with_neighbors"] = round(sum(context_hits) / len(context_hits), 4)
+        metrics["context_chunks_mean"] = round(sum(context_sizes) / len(context_sizes), 3)
+        metrics["neighbor_chunks"] = RAG_NEIGHBOR_CHUNKS
     return {
         "metrics": metrics,
         "by_style": {style: retrieval_metrics(values) for style, values in sorted(by_style.items())},
@@ -116,11 +151,12 @@ def run(ctx: Context) -> dict[str, Any]:
             logger.info("chunk size %d: %d chunks indexed in %.1fs", chunk_size, chunks, seconds)
             entry: dict[str, Any] = {"chunks": chunks, "index_seconds": round(seconds, 2), "configs": {}}
             for mode, weights in configs:
-                result = _evaluate(index, questions, kinds, mode, weights)
+                main_config = chunk_size == RAG_CHUNK_SIZE and weights == default_weights
+                result = _evaluate(index, questions, kinds, mode, weights, with_context=main_config)
                 entry["configs"][_config_name(mode, weights)] = {
                     **result["metrics"], "by_style": result["by_style"],
                 }
-                if chunk_size == RAG_CHUNK_SIZE and weights == default_weights:
+                if main_config:
                     main[mode] = result
             grid[str(chunk_size)] = entry
             del index
@@ -136,7 +172,9 @@ def run(ctx: Context) -> dict[str, Any]:
     }
     rows = [
         {"id": v["id"], "vector_rank": v["rank"], "hybrid_rank": h["rank"],
-         "vector_answer_in_top5": v["answer_in_top5"], "hybrid_answer_in_top5": h["answer_in_top5"]}
+         "vector_answer_in_top5": v["answer_in_top5"], "hybrid_answer_in_top5": h["answer_in_top5"],
+         "vector_answer_in_context": v["answer_in_context"], "hybrid_answer_in_context": h["answer_in_context"],
+         "vector_context_chunks": v["context_chunks"], "hybrid_context_chunks": h["context_chunks"]}
         for v, h in zip(main["vector"]["rows"], main["hybrid"]["rows"], strict=True)
     ]
     return {
@@ -148,6 +186,7 @@ def run(ctx: Context) -> dict[str, Any]:
             "chunk_overlap": RAG_CHUNK_OVERLAP,
             "hybrid_weights_vector_bm25": list(HYBRID_WEIGHTS),
             "rrf_k": RRF_K,
+            "neighbor_chunks": RAG_NEIGHBOR_CHUNKS,
             "hybrid_candidates": HYBRID_CANDIDATES,
             "documents": len(ctx.documents),
             "questions": len(questions),
@@ -160,7 +199,9 @@ def run(ctx: Context) -> dict[str, Any]:
 
 def _row(name: str, m: dict[str, Any]) -> str:
     return (f"| {name} | {m['recall@1']:.3f} | {m['recall@3']:.3f} | {m['recall@5']:.3f} | {m['mrr']:.3f} "
-            f"| {m.get('answer_in_context@5', float('nan')):.3f} |")
+            f"| {m.get('answer_in_context@5', float('nan')):.3f} "
+            f"| {m.get('answer_in_context@5_with_neighbors', float('nan')):.3f} "
+            f"| {m.get('context_chunks_mean', float('nan')):.2f} |")
 
 
 def summary(result: dict[str, Any]) -> list[str]:
@@ -170,8 +211,9 @@ def summary(result: dict[str, Any]) -> list[str]:
         f"{c['embedding_model']}, chunks of {c['chunk_size']} tokens (overlap {c['chunk_overlap']}), "
         f"hybrid = vector + BM25 fused by weighted RRF (k={c['rrf_k']}, weights {c['hybrid_weights_vector_bm25']}).",
         "",
-        "| Mode | Recall@1 | Recall@3 | Recall@5 | MRR@10 | Answer in top-5 |",
-        "|---|---|---|---|---|---|",
+        "| Mode | Recall@1 | Recall@3 | Recall@5 | MRR@10 | Answer in top-5 | Answer in top-5 + neighbours "
+        f"({c.get('neighbor_chunks', 0)} each side) | Chunks sent (mean) |",
+        "|---|---|---|---|---|---|---|---|",
         _row("vector", m["vector"]),
         _row("hybrid", m["hybrid"]),
         "",
