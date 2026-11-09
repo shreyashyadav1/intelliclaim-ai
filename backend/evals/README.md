@@ -216,8 +216,8 @@ default `top_k=5`:
 
 Hybrid gains the 7 discharge-date questions and loses none, so every question
 whose source document is in the top 5 now has its answer in context. The
-remaining 20 misses are identifier questions whose source document is not
-retrieved at all. The cost is 15% more chunks per question on average (5 for
+remaining 20 misses were identifier questions whose source document is not
+retrieved at all (fixed by exact identifier matches, run E below). The cost is 15% more chunks per question on average (5 for
 142 of the 216 questions, up to 10 when several hits come from multi-page
 documents). In this dataset only the 12 discharge summaries have more than one
 page, so long, many-page documents would add more.
@@ -229,6 +229,64 @@ with all 12 ids, 2026-11-09 04:06 UTC, commit `3fdf96b`, Groq
 that were refusals in the full rag-answer run below are now answered correctly.
 The twelfth (`q-122`) is a document-level miss in both runs: its summary is not
 retrieved at all. That is one run of 12 questions, not a new full-run accuracy.
+
+### Exact identifier matches (run E)
+
+| Run | Command (from `backend/`) | Date (UTC) | Commit | Platform |
+|---|---|---|---|---|
+| E | `python -m evals.run --suite retrieval --check-thresholds --output-dir evals/results/20261109-retrieval-exact-ids` | 2026-11-09 20:09 | `6f4061d` | macOS 26.5 arm64, Python 3.13.14 |
+
+After run D, 20 questions still missed their source document in the top 5.
+All 20 name an invoice, medical report, discharge summary or policy number
+("Which hospital issued invoice INV-3023?"). A diagnostic on the same index
+(2026-11-09, `9096194`) showed that BM25 ranked the source document first for
+all 20, scoring 1.4 to 2.5 times the next document's chunk, while the vector search
+ranked it 11th to 20th or not in its top 20 at all. Reciprocal rank fusion
+keeps only ranks: a chunk ranked first by BM25 alone scores 0.5/61, less than
+a chunk that both lists rank around 5th (0.5/65 + 0.5/65), so BM25's margin
+was lost.
+
+Since `6f4061d`, hybrid retrieval puts the chunks that contain every
+document identifier named in the question ahead of the fused ranking
+(`RAG_EXACT_IDENTIFIERS`, `KeywordRetriever.identifier_matches` in
+`services/rag_index.py`). An identifier is a token that joins letters and
+digits with `-`, `.` or `/` (`INV-3023`, `POL-2026-45039`), so dates, amounts
+and plain words never count. When more than `top_k` chunks contain the
+identifiers, they do not single out a document and nothing is pinned. Vector
+mode is unchanged.
+
+The rule for keeping it, written down before run E: no question style may
+lose recall@5, MRR or answer-in-context against the same configuration
+without the step ("hybrid, fusion only", which the suite now reports next to
+it and which reproduces run D exactly).
+
+| Mode | Recall@1 | Recall@3 | Recall@5 | MRR@10 | Answer in top 5 + neighbours |
+|---|---|---|---|---|---|
+| hybrid, fusion only (run D) | 0.648 | 0.843 | 0.907 | 0.756 | 0.907 |
+| hybrid with exact identifiers | 0.870 | 0.995 | **1.000** | 0.930 | **1.000** |
+
+By style (recall@1 / recall@5 / MRR), fusion only → with exact identifiers:
+identifier (96) 0.500 / 0.792 / 0.608 → 1.000 / 1.000 / 1.000; descriptive
+(72) and paraphrase (48) unchanged (0.736 / 1.000 / 0.866 and 0.812 / 1.000 /
+0.887; they name a patient, not a document number). No question ranks lower
+than before. Mean chunks sent per question 5.76 → 5.73.
+
+The 20 questions, asked again through the API path against Groq
+(`python -m evals.run --suite rag-answer --question q-001 ... --question q-214`
+with all 20 ids, 2026-11-09 20:12 UTC, commit `c17b570`,
+`openai/gpt-oss-120b`): 20 of 20 correct, each citing its source document
+(citation precision 1.000), $0.00024 per question. In the full rag-answer run
+below all 20 were refusals. That is one run of 20 questions, not a new
+full-run accuracy.
+
+How much this says: the step was designed after looking at these 20
+failures, and the dataset is its best case. Every identifier is printed
+exactly once per document and is unique to it, and no question names an
+identifier of a different document. Real uploads can have OCR errors in
+identifiers (no exact match, so ordinary ranking decides) or identifiers
+quoted by several documents (more than `top_k` matches, so nothing is
+pinned; fewer, and they all go first). Read the 1.000 as "the identifier
+path no longer drops what BM25 found", not as production recall.
 
 ### OCR (runs B and C, identical)
 
@@ -387,7 +445,8 @@ date matcher did not read. No other answer changed.
 **Where the misses come from.** All 26 misses are refusals ("The indexed
 documents do not contain that information"); no answer gave a wrong value.
 19 are questions whose source document was not in the top 5 (the
-identifier-style retrieval misses the retrieval suite already reports). The
+identifier-style retrieval misses the retrieval suite already reports;
+exact identifier matches, run E above, fix them). The
 other 7 are all "On what date was the patient in discharge summary DS-…
 discharged?". A retrieval-only check on the 12 discharge-date questions
 (same index and retriever, no model calls, 2026-11-07 at `3082ef1`) showed
@@ -399,7 +458,10 @@ saw: retrieval is scored per document, and these failures are chunk-level
 retrieval misses, not refusals with the answer in context. Page headers
 competing with body chunks is what the neighbouring chunks (run D, above)
 fix: the 7 questions are answered correctly once page 1 is sent along with
-page 2. The full rag-answer run has not been repeated since.
+page 2, and the 19 document-level misses (plus `q-122`, a discharge-date
+question whose summary was not retrieved) once exact identifier matches pin
+the named document (run E). The full rag-answer run has not been repeated
+since.
 
 A 10-question probe at `2ce91df`, before `9724486`, found that only 1 of 9
 answers carried a citation: gpt-oss cites excerpts as `【1】` instead of the
@@ -434,7 +496,11 @@ Ubuntu image). Classification needs accuracy 0.98 and macro F1 0.97 (at most
 one of the 60 documents misclassified); risk checks PR-AUC, ROC-AUC, and
 precision and recall at the configured `RISK_FLAG_THRESHOLD`
 (`rules.flagged`); retrieval also checks hybrid answer-in-context with
-neighbouring chunks (measured 0.907 in run D). Runs A and B met every threshold of the suites they ran
+neighbouring chunks, and gates both the default hybrid retriever (recall@5
+and answer-in-context min 0.97, measured 1.000 in run E) and the same
+configuration without exact identifier matches (`hybrid_fusion_only`, recall@5
+min 0.88 as before), so a regression in fusion cannot hide behind the
+identifier step. Runs A and B met every threshold of the suites they ran
 (both with `--check-thresholds`), and run C meets the OCR thresholds. A suite
 that has thresholds but does not run (for example without tesseract) fails the
 check. After an intentional change to the pipeline or the dataset, re-run the
