@@ -4,6 +4,7 @@
     "hybrid.recall@5": {"min": 0.88},
     "hybrid.mrr": {"min": 0.73},
     "hybrid.answer_in_context@5": {"min": 0.85},
+    "hybrid.answer_in_context@5_with_neighbors": {"min": 0.88},
     "vector.recall@5": {"min": 0.62},
     "vector.mrr": {"min": 0.52},
     "by_style.hybrid.identifier.recall@5": {"min": 0.76},

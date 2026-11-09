@@ -28,7 +28,7 @@ package versions) and `summary.md` to `evals/results/<UTC timestamp>/`, or to
 
 | Suite | Needs | What it measures |
 |---|---|---|
-| `retrieval` | nothing (fastembed downloads BAAI/bge-small-en-v1.5 once, about 67 MB) | recall@1/3/5, MRR@10 and answer-in-top-5 for vector and hybrid retrieval; grid over chunk size and fusion weights |
+| `retrieval` | nothing (fastembed downloads BAAI/bge-small-en-v1.5 once, about 67 MB) | recall@1/3/5, MRR@10 and answer-in-top-5 for vector and hybrid retrieval, and answer-in-context once neighbouring chunks are added; grid over chunk size and fusion weights |
 | `ocr` | the `tesseract` binary; skipped cleanly when missing | character and word error rates of scanned PDFs (Tesseract) and text PDFs (text layer) against the ground truth |
 | `classification` | nothing (the LLM path needs `OPENAI_API_KEY`) | accuracy, per-class precision/recall/F1 and confusion matrix |
 | `risk` | MongoDB for the duplicate check; skipped when unreachable | PR-AUC, ROC-AUC and precision/recall at score thresholds of the rule-based risk score, including the configured `RISK_FLAG_THRESHOLD` and the threshold with the best F1; per-anomaly rule detection. `--llm` adds the AI review (needs `GROQ_API_KEY`) |
@@ -187,6 +187,48 @@ Every question here names a patient or a document number, which favours
 keyword matching, so the rule protects the case where the embeddings do the
 work. Hence `RAG_RETRIEVAL_MODE=hybrid`, `RAG_CHUNK_SIZE = 384`,
 `RAG_CHUNK_OVERLAP = 48` and `HYBRID_WEIGHTS = (0.5, 0.5)` in `config.py`.
+
+### Neighbouring chunks (run D)
+
+| Run | Command (from `backend/`) | Date (UTC) | Commit | Platform |
+|---|---|---|---|---|
+| D | `python -m evals.run --suite retrieval --check-thresholds --output-dir evals/results/20261108-retrieval-neighbors` | 2026-11-09 04:03 | `ee740c1` | macOS 26.5 arm64, Python 3.13.14 |
+
+Recall and MRR count the source document; the model needs the chunk that holds
+the answer. In run A, hybrid retrieval found the source document in the top 5
+for 0.907 of the questions, but only 0.875 had the answer in a top-5 chunk. All
+7 questions in that gap ask for the discharge date of a two-page discharge
+summary. Page 2 matched: its header repeats the summary number, and "Discharge"
+starts three of its lines. Page 1, which holds the date, was BM25's first result
+for all 7 questions but was not in the vector search's top 20, so reciprocal
+rank fusion ranked it below the top 5.
+
+Since `ee740c1`, every ranked chunk brings `RAG_NEIGHBOR_CHUNKS = 1` chunk before
+and after it from the same document, in reading order (`NeighborRetriever` in
+`services/rag_index.py`). The ranking itself does not change, so run D gives
+exactly run A's recall, MRR and grid. What the model is sent at the API's
+default `top_k=5`:
+
+| Mode | Answer in top 5 (ranked chunks only) | Answer in top 5 + neighbours | Chunks sent per question (mean) |
+|---|---|---|---|
+| vector | 0.625 | 0.653 | 5.80 |
+| hybrid | 0.875 | **0.907** | 5.76 |
+
+Hybrid gains the 7 discharge-date questions and loses none, so every question
+whose source document is in the top 5 now has its answer in context. The
+remaining 20 misses are identifier questions whose source document is not
+retrieved at all. The cost is 15% more chunks per question on average (5 for
+142 of the 216 questions, up to 10 when several hits come from multi-page
+documents). In this dataset only the 12 discharge summaries have more than one
+page, so long, many-page documents would add more.
+
+The 12 discharge-date questions, asked again through the API path
+(`python -m evals.run --suite rag-answer --question q-020 ... --question q-226`
+with all 12 ids, 2026-11-09 04:06 UTC, commit `3fdf96b`, Groq
+`openai/gpt-oss-120b`): 11 of 12 correct, each citing the summary, and all 7
+that were refusals in the full rag-answer run below are now answered correctly.
+The twelfth (`q-122`) is a document-level miss in both runs: its summary is not
+retrieved at all. That is one run of 12 questions, not a new full-run accuracy.
 
 ### OCR (runs B and C, identical)
 
@@ -355,7 +397,9 @@ date is on page 1. In all 5 cases where page 1 was retrieved, the model
 answered correctly. So "source document retrieved" overstates what the model
 saw: retrieval is scored per document, and these failures are chunk-level
 retrieval misses, not refusals with the answer in context. Page headers
-competing with body chunks is the next retrieval fix to try.
+competing with body chunks is what the neighbouring chunks (run D, above)
+fix: the 7 questions are answered correctly once page 1 is sent along with
+page 2. The full rag-answer run has not been repeated since.
 
 A 10-question probe at `2ce91df`, before `9724486`, found that only 1 of 9
 answers carried a citation: gpt-oss cites excerpts as `【1】` instead of the
@@ -389,7 +433,8 @@ tesseract version (runs B and C agree for 5.5.0 and 5.3.4, the version on CI's
 Ubuntu image). Classification needs accuracy 0.98 and macro F1 0.97 (at most
 one of the 60 documents misclassified); risk checks PR-AUC, ROC-AUC, and
 precision and recall at the configured `RISK_FLAG_THRESHOLD`
-(`rules.flagged`). Runs A and B met every threshold of the suites they ran
+(`rules.flagged`); retrieval also checks hybrid answer-in-context with
+neighbouring chunks (measured 0.907 in run D). Runs A and B met every threshold of the suites they ran
 (both with `--check-thresholds`), and run C meets the OCR thresholds. A suite
 that has thresholds but does not run (for example without tesseract) fails the
 check. After an intentional change to the pipeline or the dataset, re-run the
