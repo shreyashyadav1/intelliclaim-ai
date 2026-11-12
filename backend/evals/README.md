@@ -374,10 +374,65 @@ configured default, for example after the rule weights change.
 
 Two caveats: the threshold is chosen and measured on the same 206 claims (with
 seven distinct scores there is little room to overfit, but it is still an
-in-sample choice), and the AI review, which adds up to 40 points
-(ai_risk_score x 0.4 x mean flag confidence), was not measured. With a Groq
-key, `python -m evals.run --suite risk --llm` scores the claims again with the
-review included and reports the same sweep.
+in-sample choice), and the threshold was chosen on the rules alone; the AI
+review, which adds up to 40 points (ai_risk_score x 0.4 x mean flag
+confidence), is measured in the next section.
+
+### Risk with the AI review (run F)
+
+All 206 claims scored again with the AI review on: Groq `openai/gpt-oss-120b`,
+production settings, free tier. The first run lost 88 claims, so they were
+re-run on the same day; every claim has exactly one AI-review score:
+
+| Slice | Command (from `backend/`) | Date (UTC) | Commit | Scored |
+|---|---|---|---|---|
+| Claims 1-119 | `python -m evals.run --suite risk --llm --output-dir evals/results/20261112-risk-llm` | 2026-11-12 14:47 | `938ba6c` | 118 (rc-005 failed, see below; the other 87 failed on a dropped network connection from 16:22) |
+| Claims 120-206 | `python -m evals.run --suite risk --llm --offset 119 --output-dir evals/results/20261112-risk-llm-b` | 2026-11-12 16:31 | `56b6e21` | 87 |
+| Claim rc-005 | `python -m evals.run --suite risk --llm --offset 4 --limit 1 --output-dir evals/results/20261112-risk-llm-c` | 2026-11-12 17:33 | `56b6e21` | 1 |
+
+The combined figures come from the per-claim rows of the three `results.json`
+files, scored with the suite's own `evals.suites.risk._evaluate`.
+
+| Metric | Rules only (runs A, B) | Rules + AI review |
+|---|---|---|
+| PR-AUC | 0.805 | **0.883** |
+| ROC-AUC | 0.844 | **0.893** |
+| Mean score, anomalous / clean | 17.79 / 2.25 | 37.79 / 13.72 |
+| At 15 (`RISK_FLAG_THRESHOLD`): precision / recall / F1 | 0.795 / 0.767 / 0.781 | 0.670 / **0.895** / 0.766 |
+| At 15: flagged (true + false positives), missed | 83 (66 + 17), 20 | 115 (77 + 38), 9 |
+| At 25: precision / recall / F1 | 1.000 / 0.477 / 0.646 | 0.786 / 0.767 / 0.776 |
+| At 40: precision / recall / F1 | 1.000 / 0.081 / 0.150 | 0.977 / 0.488 / 0.651 |
+| Highest F1 (ties to the higher threshold) | 0.781 at 15 | 0.787 at 21.3 |
+
+The review ranks claims better (PR-AUC +0.078) and finds 11 of the 20
+anomalies no rule covers: all 7 services dated after discharge, 5 of the 7
+cost outliers under $50,000, 2 of the 4 claims missing only optional fields
+and 1 of the 6 name-typo duplicates (a duplicate needs the claim history,
+which the review does not see). The cost is false positives: it scores clean
+claims 41.4 out of 100 on average, and 19 clean claims with no rule finding
+reach 15 on the review alone, so the flagged list grows from 83 to 115
+claims for 11 more true anomalies.
+
+`RISK_FLAG_THRESHOLD` stays at 15. The best-F1 threshold with the review on
+(21.3) is only 0.021 F1 better, comes from a single run of a sampled model on
+the same claims, and the threshold also applies when no AI provider is
+configured, where 15 is the measured best.
+
+Tokens and cost: 315 prompt + 304 completion tokens and $0.00023 per claim
+(the 87 claims of the second slice; the first slice's `usage` divides its
+totals by all 206 claims, including the 88 that failed), latency p50 1.0 s and p95 5.1 s in the
+first slice (the free tier's 8,000 tokens-per-minute limit adds waiting on
+top). Prices as in Extraction.
+
+The first run found a product bug: rc-005's review came back from Groq as a
+400 `json_validate_failed` (the model wrote `"confidence":0":0.4`). The Groq
+SDK never retries a 400, so validating that claim failed for the user.
+`56b6e21` retries these replies within `LLM_MAX_RETRIES` (default 1) in JSON
+mode, which also covers extraction; in the re-run two replies hit it and both
+succeeded on the retry.
+
+Caveats: one run per claim, so the AI scores carry sampling noise; synthetic
+claims; the review prompt was not changed for this run.
 
 ### Extraction
 
