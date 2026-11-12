@@ -81,6 +81,13 @@ async def _validate_all(cases: list[dict[str, Any]], *, with_ai: bool) -> list[d
             "rule_flags": sorted({f["type"] for f in result["flags"] if f["origin"] == "rule"}),
             "ai_status": result["ai_review"]["status"],
         })
+        if with_ai:
+            review = result["ai_review"]
+            outcomes[-1].update({
+                "ai_risk_score": review["ai_risk_score"],
+                "ai_confidence": review["ai_confidence"],
+                "ai_flag_count": review["ai_flag_count"],
+            })
     return outcomes
 
 
@@ -128,6 +135,7 @@ async def run(ctx: Context) -> dict[str, Any]:
     database = client[database_name]
     previous = db_connection._database
     notes = []
+    details_ai: list[dict[str, Any]] | None = None
     try:
         await database.claims.insert_many([*data["history"], *(case["claim"] for case in cases)])
         db_connection._database = database
@@ -147,6 +155,7 @@ async def run(ctx: Context) -> dict[str, Any]:
                 "latency": latency_summary([call.seconds for call in recorder.calls]),
                 "usage": usage_summary(recorder.calls, len(subset)),
             }
+            details_ai = ai_outcomes
         elif ctx.use_llm:
             notes.append(f"AI review not scored: {KEY_MISSING}.")
         else:
@@ -164,7 +173,7 @@ async def run(ctx: Context) -> dict[str, Any]:
                    "high_risk_threshold": HIGH_RISK_THRESHOLD},
         "metrics": metrics,
         "notes": notes,
-        "details": {"rules": rule_outcomes},
+        "details": {"rules": rule_outcomes, **({"rules_and_ai": details_ai} if details_ai is not None else {})},
     }
 
 

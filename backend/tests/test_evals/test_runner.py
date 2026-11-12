@@ -123,6 +123,28 @@ async def test_risk_suite_scores_rules_against_labels(test_db):
     assert rules["flagged"]["threshold"] == settings.RISK_FLAG_THRESHOLD
 
 
+async def test_risk_suite_with_ai_review_keeps_each_claims_review(test_db, groq_client):
+    ctx = Context(limit=2, use_llm=True)
+    groq_client.respond(
+        {"risk_flags": [{"type": "billing", "description": "Cost is high for the diagnosis",
+                         "severity": "high", "confidence": 0.5}],
+         "ai_risk_score": 80, "summary": "Unusual cost."},
+        {"risk_flags": [], "ai_risk_score": 0, "summary": "Nothing unusual."},
+    )
+
+    result = await risk.run(ctx)
+
+    combined = result["metrics"]["rules_and_ai"]
+    assert combined["claims"]["scored"] == 2 and combined["usage"]["requests"] == 2
+    first, second = result["details"]["rules_and_ai"]
+    assert first["ai_status"] == "completed"
+    assert (first["ai_risk_score"], first["ai_confidence"], first["ai_flag_count"]) == (80, 0.5, 1)
+    assert second["ai_flag_count"] == 0
+    rules_score = {row["id"]: row["score"] for row in result["details"]["rules"]}[first["id"]]
+    assert first["score"] == pytest.approx(min(rules_score + 80 * 0.4 * 0.5, 100), abs=0.1)
+    assert "Rules + AI review" in "\n".join(risk.summary(result))
+
+
 async def test_llm_suites_skip_without_a_key():
     for suite in (extraction, rag_answer):
         result = await suite.run(Context())
