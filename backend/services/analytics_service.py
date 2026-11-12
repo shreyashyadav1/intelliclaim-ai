@@ -11,7 +11,9 @@ MongoDB aggregation pipelines for dashboard analytics:
 import logging
 from datetime import UTC, datetime, time, timedelta
 
+from config import HIGH_RISK_THRESHOLD, settings
 from db.connection import get_database
+from services.risk_levels import risk_score_condition
 
 logger = logging.getLogger("intelliclaim.analytics")
 
@@ -47,7 +49,7 @@ class AnalyticsService:
         avg_risk = (avg_results[0].get("avg_risk") if avg_results else None) or 0
 
         # High risk count
-        high_risk_count = await db.claims.count_documents({"risk_score": {"$gte": 60}})
+        high_risk_count = await db.claims.count_documents({"risk_score": risk_score_condition("high")})
 
         # Approved rate
         approved_count = claims_by_status.get("approved", 0)
@@ -97,13 +99,17 @@ class AnalyticsService:
         return trend
 
     async def get_risk_distribution(self) -> list[dict]:
-        """Get risk score distribution in ranges."""
+        """Claims per risk band: the low, medium and high levels, with high split at 80.
+
+        Each band counts scores with min <= score < max.
+        """
         db = get_database()
+        flag, high = settings.RISK_FLAG_THRESHOLD, HIGH_RISK_THRESHOLD
 
         ranges = [
-            {"label": "Low (0-29)", "min": 0, "max": 30},
-            {"label": "Medium (30-59)", "min": 30, "max": 60},
-            {"label": "High (60-79)", "min": 60, "max": 80},
+            {"label": f"Low (below {flag:g})", "min": 0, "max": flag},
+            {"label": f"Medium ({flag:g}-{high - 1:g})", "min": flag, "max": high},
+            {"label": f"High ({high:g}-79)", "min": high, "max": 80},
             {"label": "Critical (80-100)", "min": 80, "max": 101},
         ]
 

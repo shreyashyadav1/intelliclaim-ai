@@ -10,9 +10,11 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field, StringConstraints
 
+from config import settings
 from db.connection import get_database
 from security import AI_LIMIT, BULK_LIMIT, limiter
 from services.llm import LLMError
+from services.risk_levels import flagged_claims_query
 from services.validation_service import validation_service as validator
 from utils.helpers import utc_now
 
@@ -65,9 +67,12 @@ async def get_flagged_claims(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
 ):
-    """Get all flagged/high-risk claims."""
+    """Claims with status "flagged" or a risk score of at least RISK_FLAG_THRESHOLD, highest score first.
+
+    flag_threshold in the response is the score from which claims are listed (medium risk).
+    """
     db = get_database()
-    query = {"$or": [{"status": "flagged"}, {"risk_score": {"$gte": 30}}]}
+    query = flagged_claims_query()
 
     cursor = db.claims.find(query).sort("risk_score", -1).skip(skip).limit(limit)
     claims = await cursor.to_list(length=limit)
@@ -76,7 +81,13 @@ async def get_flagged_claims(
     for claim in claims:
         claim["id"] = claim.pop("_id")
 
-    return {"claims": claims, "total": total, "skip": skip, "limit": limit}
+    return {
+        "claims": claims,
+        "total": total,
+        "skip": skip,
+        "limit": limit,
+        "flag_threshold": settings.RISK_FLAG_THRESHOLD,
+    }
 
 
 @router.post("/batch-validate")

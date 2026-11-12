@@ -41,6 +41,22 @@ async def test_list_claims_with_risk_level_filter(async_client):
         assert claim["risk_score"] >= 60
 
 
+async def test_risk_level_filter_uses_the_flag_threshold_for_medium(async_client, test_db, monkeypatch):
+    from config import settings
+
+    monkeypatch.setattr(settings, "RISK_FLAG_THRESHOLD", 15.0)
+    await test_db.claims.insert_one({"_id": "claim-20", "claim_number": "CLM-20", "risk_score": 20.0})
+
+    async def ids(level: str) -> set[str]:
+        response = await async_client.get(f"/api/claims?risk_level={level}")
+        return {claim["id"] for claim in response.json()["claims"]}
+
+    assert await ids("low") == {"claim-test-001"}  # 5
+    assert await ids("medium") == {"claim-20"}
+    assert await ids("high") == {"claim-test-002"}  # 65
+    assert len(await ids("unknown")) == 3  # unknown levels are ignored
+
+
 @pytest.mark.asyncio
 async def test_list_claims_search(async_client):
     """Search string matches patient name, diagnosis, or claim number."""

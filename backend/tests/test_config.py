@@ -50,6 +50,20 @@ def test_blank_api_keys_count_as_unset(monkeypatch):
     assert settings.has_openai_key is False
 
 
+@pytest.mark.parametrize("value", ["0", "-5", "60", "75"])
+def test_risk_flag_threshold_must_sit_between_zero_and_high_risk(monkeypatch, value):
+    monkeypatch.setenv("RISK_FLAG_THRESHOLD", value)
+    with pytest.raises(ValidationError):
+        _settings()
+
+
+def test_risk_flag_threshold_defaults_to_15(monkeypatch):
+    monkeypatch.delenv("RISK_FLAG_THRESHOLD", raising=False)
+    assert _settings().RISK_FLAG_THRESHOLD == 15.0
+    monkeypatch.setenv("RISK_FLAG_THRESHOLD", "22.5")
+    assert _settings().RISK_FLAG_THRESHOLD == 22.5
+
+
 def test_env_example_lists_exactly_the_settings_fields():
     """.env.example is the reference for operators, so it must not drift from Settings."""
     keys = set()

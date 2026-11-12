@@ -6,6 +6,9 @@ the lifetime of the process, so calls share a connection pool and never
 block the event loop. Model names, timeouts and retries come from settings;
 per-task sampling parameters come from config.GenerationParams.
 
+chat_model() wraps the same clients in LangChain chat models (ChatGroq,
+ChatOpenAI) for the RAG chain, so both paths share pools and settings.
+
 Provider failures are raised as LLMError subclasses, which main.py turns
 into {"detail": ...} responses: 503 when no provider is configured and 502
 when a provider fails or returns unusable output.
@@ -55,6 +58,21 @@ class LLMOutputError(LLMError):
 
 
 _RATE_LIMITED_DETAIL = "The AI provider is rate limiting requests. Please try again in a minute."
+
+# Exceptions that mean "this provider failed" (a fallback provider may still answer).
+PROVIDER_ERRORS: tuple[type[Exception], ...] = (LLMError, groq.APIError, openai.APIError)
+
+
+def as_llm_error(exc: BaseException) -> LLMError | None:
+    """Map a provider SDK exception to the API's LLMError; None for anything else."""
+    if isinstance(exc, LLMError):
+        return exc
+    if isinstance(exc, groq.RateLimitError | openai.RateLimitError):
+        return LLMProviderError(_RATE_LIMITED_DETAIL)
+    if isinstance(exc, groq.APIError | openai.APIError):
+        return LLMProviderError()
+    return None
+
 
 _groq_client: groq.AsyncGroq | None = None
 _openai_client: openai.AsyncOpenAI | None = None
@@ -106,6 +124,55 @@ async def close_clients() -> None:
     _openai_client = None
 
 
+class _NoSyncClient:
+    """Stands in for the synchronous SDK client in LangChain chat models.
+
+    The application only calls chat models asynchronously (ainvoke), so no
+    synchronous client or connection pool is created.
+    """
+
+    def __getattr__(self, name: str) -> Any:
+        if name.startswith("__"):  # keep copy, pickle and hasattr probes working
+            raise AttributeError(name)
+        raise RuntimeError("Chat models built by services.llm support async calls only (use ainvoke).")
+
+
+def chat_model(provider: str, params: GenerationParams) -> Any:
+    """A LangChain chat model for `provider` that sends requests through the shared async client.
+
+    Groq: ChatGroq with GROQ_MODEL and, when set, GROQ_REASONING_EFFORT (as in
+    groq_chat). OpenAI: ChatOpenAI with OPENAI_MODEL.
+    Raises LLMNotConfiguredError when the provider has no API key.
+    """
+    if provider == "groq":
+        from langchain_groq import ChatGroq
+
+        return ChatGroq(
+            model=settings.GROQ_MODEL,
+            api_key=settings.GROQ_API_KEY,
+            temperature=params.temperature,
+            max_tokens=params.max_tokens,
+            reasoning_effort=settings.GROQ_REASONING_EFFORT or None,
+            async_client=get_groq_client().chat.completions,
+            client=_NoSyncClient(),
+        )
+    if provider == "openai":
+        from langchain_openai import ChatOpenAI
+
+        client = get_openai_client()
+        return ChatOpenAI(
+            model=settings.OPENAI_MODEL,
+            api_key=settings.OPENAI_API_KEY,
+            temperature=params.temperature,
+            max_tokens=params.max_tokens,
+            async_client=client.chat.completions,
+            root_async_client=client,
+            client=_NoSyncClient(),
+            root_client=_NoSyncClient(),
+        )
+    raise ValueError(f"Unknown AI provider: {provider!r}")
+
+
 def configured_providers() -> list[str]:
     """Providers with an API key, in the order they are tried."""
     providers = []
@@ -143,21 +210,43 @@ async def groq_chat(messages: Messages, params: GenerationParams, *, json_mode: 
     extra: dict[str, Any] = {"response_format": {"type": "json_object"}} if json_mode else {}
     if settings.GROQ_REASONING_EFFORT:
         extra["reasoning_effort"] = settings.GROQ_REASONING_EFFORT
-    try:
-        response = await client.chat.completions.create(
-            model=settings.GROQ_MODEL,
-            messages=messages,
-            temperature=params.temperature,
-            max_tokens=params.max_tokens,
-            **extra,
-        )
-    except groq.RateLimitError as exc:
-        logger.warning("Groq rate limit reached: %s", exc)
-        raise LLMProviderError(_RATE_LIMITED_DETAIL) from exc
-    except groq.APIError as exc:
-        logger.warning("Groq request failed (%s): %s", type(exc).__name__, exc)
-        raise LLMProviderError() from exc
-    return _message_content(response)
+    # In JSON mode Groq rejects a reply that is not valid JSON with a 400
+    # (json_validate_failed). The SDK never retries a 400, but a fresh sample
+    # usually succeeds, so these get the same retry budget as other failures.
+    attempts = 1 + (settings.LLM_MAX_RETRIES if json_mode else 0)
+    for attempt in range(1, attempts + 1):
+        try:
+            response = await client.chat.completions.create(
+                model=settings.GROQ_MODEL,
+                messages=messages,
+                temperature=params.temperature,
+                max_tokens=params.max_tokens,
+                **extra,
+            )
+        except groq.RateLimitError as exc:
+            logger.warning("Groq rate limit reached: %s", exc)
+            raise LLMProviderError(_RATE_LIMITED_DETAIL) from exc
+        except groq.BadRequestError as exc:
+            if _json_validate_failed(exc) and attempt < attempts:
+                logger.warning("Groq reply was not valid JSON; retrying (attempt %d of %d)", attempt + 1, attempts)
+                continue
+            if _json_validate_failed(exc):
+                logger.warning("Groq reply was not valid JSON after %d attempts", attempts)
+                raise LLMOutputError() from exc
+            logger.warning("Groq request failed (%s): %s", type(exc).__name__, exc)
+            raise LLMProviderError() from exc
+        except groq.APIError as exc:
+            logger.warning("Groq request failed (%s): %s", type(exc).__name__, exc)
+            raise LLMProviderError() from exc
+        return _message_content(response)
+    raise AssertionError("unreachable")  # pragma: no cover
+
+
+def _json_validate_failed(exc: groq.BadRequestError) -> bool:
+    """Whether Groq rejected the reply because JSON mode could not produce valid JSON."""
+    body = exc.body if isinstance(exc.body, dict) else {}
+    error = body.get("error", body)
+    return isinstance(error, dict) and error.get("code") == "json_validate_failed"
 
 
 async def openai_chat(messages: Messages, params: GenerationParams) -> str:
