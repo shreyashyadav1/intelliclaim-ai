@@ -147,6 +147,20 @@ def groq_rate_limit_error() -> groq.RateLimitError:
     return groq.RateLimitError("rate limited", response=httpx.Response(429, request=request), body=None)
 
 
+def groq_json_validate_error() -> groq.BadRequestError:
+    """The 400 Groq returns when JSON mode could not produce valid JSON (the SDK passes the inner error as body)."""
+    request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+    body = {"message": "Failed to generate JSON. Please adjust your prompt.", "type": "invalid_request_error",
+            "code": "json_validate_failed", "failed_generation": '{"a": 1,}'}
+    return groq.BadRequestError("Error code: 400", response=httpx.Response(400, request=request), body=body)
+
+
+def groq_bad_request_error() -> groq.BadRequestError:
+    request = httpx.Request("POST", "https://api.groq.com/openai/v1/chat/completions")
+    body = {"message": "model not found", "type": "invalid_request_error", "code": "model_not_found"}
+    return groq.BadRequestError("Error code: 400", response=httpx.Response(400, request=request), body=body)
+
+
 def openai_connection_error() -> openai.APIConnectionError:
     return openai.APIConnectionError(request=httpx.Request("POST", "https://api.openai.com/v1/chat/completions"))
 
@@ -191,7 +205,8 @@ def fake_openai(monkeypatch) -> FakeOpenAI:
 def groq_errors() -> SimpleNamespace:
     """Factories for the exceptions the Groq and OpenAI SDKs raise."""
     return SimpleNamespace(
-        connection=groq_connection_error, rate_limit=groq_rate_limit_error, openai_connection=openai_connection_error
+        connection=groq_connection_error, rate_limit=groq_rate_limit_error, openai_connection=openai_connection_error,
+        json_validate=groq_json_validate_error, bad_request=groq_bad_request_error,
     )
 
 

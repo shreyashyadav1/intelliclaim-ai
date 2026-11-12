@@ -120,6 +120,46 @@ async def test_groq_rate_limit_has_a_specific_message(fake_groq, groq_errors):
     assert "rate limiting" in excinfo.value.detail
 
 
+async def test_groq_json_mode_retries_a_reply_that_failed_json_validation(fake_groq, groq_errors, monkeypatch):
+    monkeypatch.setattr(settings, "LLM_MAX_RETRIES", 1)
+    fake_groq.respond(groq_errors.json_validate(), '{"ok": true}')
+
+    content = await llm.groq_chat([{"role": "user", "content": "json please"}], EXTRACTION_PARAMS, json_mode=True)
+
+    assert content == '{"ok": true}'
+    assert len(fake_groq.calls) == 2
+
+
+async def test_groq_json_validation_failure_after_retries_is_an_output_error(fake_groq, groq_errors, monkeypatch):
+    monkeypatch.setattr(settings, "LLM_MAX_RETRIES", 2)
+    fake_groq.respond(groq_errors.json_validate(), groq_errors.json_validate(), groq_errors.json_validate())
+
+    with pytest.raises(llm.LLMOutputError):
+        await llm.groq_chat([{"role": "user", "content": "json please"}], EXTRACTION_PARAMS, json_mode=True)
+
+    assert len(fake_groq.calls) == 3
+
+
+async def test_groq_json_validation_is_not_retried_when_retries_are_off(fake_groq, groq_errors, monkeypatch):
+    monkeypatch.setattr(settings, "LLM_MAX_RETRIES", 0)
+    fake_groq.respond(groq_errors.json_validate())
+
+    with pytest.raises(llm.LLMOutputError):
+        await llm.groq_chat([{"role": "user", "content": "json please"}], EXTRACTION_PARAMS, json_mode=True)
+
+    assert len(fake_groq.calls) == 1
+
+
+async def test_groq_other_bad_requests_are_not_retried(fake_groq, groq_errors, monkeypatch):
+    monkeypatch.setattr(settings, "LLM_MAX_RETRIES", 2)
+    fake_groq.respond(groq_errors.bad_request())
+
+    with pytest.raises(llm.LLMProviderError):
+        await llm.groq_chat([{"role": "user", "content": "json please"}], EXTRACTION_PARAMS, json_mode=True)
+
+    assert len(fake_groq.calls) == 1
+
+
 @pytest.mark.parametrize("content", ["", "   ", None])
 async def test_empty_groq_reply_is_an_output_error(fake_groq, content):
     fake_groq.respond(content)

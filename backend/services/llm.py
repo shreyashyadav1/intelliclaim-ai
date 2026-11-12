@@ -210,21 +210,43 @@ async def groq_chat(messages: Messages, params: GenerationParams, *, json_mode: 
     extra: dict[str, Any] = {"response_format": {"type": "json_object"}} if json_mode else {}
     if settings.GROQ_REASONING_EFFORT:
         extra["reasoning_effort"] = settings.GROQ_REASONING_EFFORT
-    try:
-        response = await client.chat.completions.create(
-            model=settings.GROQ_MODEL,
-            messages=messages,
-            temperature=params.temperature,
-            max_tokens=params.max_tokens,
-            **extra,
-        )
-    except groq.RateLimitError as exc:
-        logger.warning("Groq rate limit reached: %s", exc)
-        raise LLMProviderError(_RATE_LIMITED_DETAIL) from exc
-    except groq.APIError as exc:
-        logger.warning("Groq request failed (%s): %s", type(exc).__name__, exc)
-        raise LLMProviderError() from exc
-    return _message_content(response)
+    # In JSON mode Groq rejects a reply that is not valid JSON with a 400
+    # (json_validate_failed). The SDK never retries a 400, but a fresh sample
+    # usually succeeds, so these get the same retry budget as other failures.
+    attempts = 1 + (settings.LLM_MAX_RETRIES if json_mode else 0)
+    for attempt in range(1, attempts + 1):
+        try:
+            response = await client.chat.completions.create(
+                model=settings.GROQ_MODEL,
+                messages=messages,
+                temperature=params.temperature,
+                max_tokens=params.max_tokens,
+                **extra,
+            )
+        except groq.RateLimitError as exc:
+            logger.warning("Groq rate limit reached: %s", exc)
+            raise LLMProviderError(_RATE_LIMITED_DETAIL) from exc
+        except groq.BadRequestError as exc:
+            if _json_validate_failed(exc) and attempt < attempts:
+                logger.warning("Groq reply was not valid JSON; retrying (attempt %d of %d)", attempt + 1, attempts)
+                continue
+            if _json_validate_failed(exc):
+                logger.warning("Groq reply was not valid JSON after %d attempts", attempts)
+                raise LLMOutputError() from exc
+            logger.warning("Groq request failed (%s): %s", type(exc).__name__, exc)
+            raise LLMProviderError() from exc
+        except groq.APIError as exc:
+            logger.warning("Groq request failed (%s): %s", type(exc).__name__, exc)
+            raise LLMProviderError() from exc
+        return _message_content(response)
+    raise AssertionError("unreachable")  # pragma: no cover
+
+
+def _json_validate_failed(exc: groq.BadRequestError) -> bool:
+    """Whether Groq rejected the reply because JSON mode could not produce valid JSON."""
+    body = exc.body if isinstance(exc.body, dict) else {}
+    error = body.get("error", body)
+    return isinstance(error, dict) and error.get("code") == "json_validate_failed"
 
 
 async def openai_chat(messages: Messages, params: GenerationParams) -> str:
