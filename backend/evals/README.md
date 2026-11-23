@@ -464,7 +464,7 @@ latencies are only indicative.
 
 ### RAG answers
 
-All 228 questions (215 answerable, 13 unanswerable), Groq
+All 228 questions (216 answerable, 12 unanswerable), Groq
 `openai/gpt-oss-120b` with the production settings, hybrid retrieval, top 5
 chunks of 384 tokens, free tier. The free tier's daily token limit does not
 cover 228 questions in one day, so the set ran in two slices with the same
@@ -515,15 +515,15 @@ competing with body chunks is what the neighbouring chunks (run D, above)
 fix: the 7 questions are answered correctly once page 1 is sent along with
 page 2, and the 19 document-level misses (plus `q-122`, a discharge-date
 question whose summary was not retrieved) once exact identifier matches pin
-the named document (run E). Questions 1-120 were re-run with both fixes on
-2026-11-22 (below); questions 121-228 have not been re-run yet.
+the named document (run E). Both slices were re-run with both fixes on
+2026-11-22 and 2026-11-23 (below).
 
 A 10-question probe at `2ce91df`, before `9724486`, found that only 1 of 9
 answers carried a citation: gpt-oss cites excerpts as `【1】` instead of the
 requested `[1]`, and the parser read only square brackets, so the API and UI
 showed answers without sources. `9724486` rewrites those markers to `[n]`.
 
-Caveats: one run per question on synthetic documents, only 13 unanswerable
+Caveats: one run per question on synthetic documents, only 12 unanswerable
 questions; latency is not reported because the client's own retries on
 free-tier rate limits are inside the timed call, and the second slice also
 ran over an unreliable Wi-Fi connection.
@@ -558,8 +558,39 @@ Caveats: both fixes were designed after looking at failures on this same
 dataset, so this is an in-sample result, not an independent test; the
 documents are synthetic and every identifier question names a unique,
 exactly spelled document number, the best case for identifier matching; one
-run per question; questions 121-228 still have only the 11-07 run (the
-free tier's daily token limit covers about 120 questions per day).
+run per question.
+
+#### Questions 121-228 again, and all 228 with both fixes
+
+| Command (from `backend/`) | Date (UTC) | Commit | Failed requests |
+|---|---|---|---|
+| `python -m evals.run --suite rag-answer --offset 120 --output-dir evals/results/20261123-rag-answer` | 2026-11-23 15:09 | `33b2bd0` | 1 (`q-215`, an unanswerable question; a dropped connection, not scored) |
+
+`33b2bd0` differs from `200009b` (the 11-22 slice) only in this README, so
+both slices ran the same application code. Same model and settings as the
+11-07 slice.
+
+| Metric | 121-228, 11-07 at `3082ef1` | 121-228, 11-23 at `33b2bd0` | All 228, fixes (11-22 + 11-23) |
+|---|---|---|---|
+| Answer accuracy | 0.838 (83 / 99) | **1.000 (100 / 100)** | **1.000 (216 / 216)** |
+| Source document retrieved (top 5) | 0.899 | 1.000 | 1.000 (216 / 216) |
+| Answers that cite a source document | 0.838 | 1.000 | 1.000 |
+| Citation precision | 1.000 | 1.000 | 1.000 |
+| Unanswerable questions answered with the refusal, citing nothing | 8 / 8 | 7 / 7 | 11 / 11 |
+| Tokens and cost per question | 1,194 + 57, $0.00021 | 1,312 + 60, $0.00023 | |
+
+The 17 questions that changed are all identifier questions: 16 refusals on
+11-07 (7 discharge dates, 4 invoice hospitals, 2 examining physicians,
+2 invoice totals and 1 policy deductible) plus `q-204`, the request that dropped on 11-07. Each new
+answer was checked by hand against its reference value, and no answer that
+was correct on 11-07 became wrong. `q-215` was refused correctly on 11-07;
+it is the one question with no scored answer under the fixes.
+
+Caveats: the same as for questions 1-120 above. This is an in-sample result
+on synthetic documents with exactly spelled identifiers, one run per
+question, and only 12 unanswerable questions (11 scored). It shows that the
+two retrieval fixes close every gap this dataset exposed; it does not show
+the same accuracy on real documents.
 
 The rest, with a key:
 
