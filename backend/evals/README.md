@@ -515,8 +515,8 @@ competing with body chunks is what the neighbouring chunks (run D, above)
 fix: the 7 questions are answered correctly once page 1 is sent along with
 page 2, and the 19 document-level misses (plus `q-122`, a discharge-date
 question whose summary was not retrieved) once exact identifier matches pin
-the named document (run E). The full rag-answer run has not been repeated
-since.
+the named document (run E). Questions 1-120 were re-run with both fixes on
+2026-11-22 (below); questions 121-228 have not been re-run yet.
 
 A 10-question probe at `2ce91df`, before `9724486`, found that only 1 of 9
 answers carried a citation: gpt-oss cites excerpts as `【1】` instead of the
@@ -527,6 +527,39 @@ Caveats: one run per question on synthetic documents, only 13 unanswerable
 questions; latency is not reported because the client's own retries on
 free-tier rate limits are inside the timed call, and the second slice also
 ran over an unreliable Wi-Fi connection.
+
+#### Questions 1-120 again, with neighbouring chunks and identifier matches
+
+| Command (from `backend/`) | Date (UTC) | Commit | Failed requests |
+|---|---|---|---|
+| `python -m evals.run --suite rag-answer --limit 120 --output-dir evals/results/20261122-rag-answer` | 2026-11-22 23:51 | `200009b` | 0 |
+
+Same questions, model and settings as the 11-05 slice; the application
+changes since then are the neighbouring chunks (`ee740c1`), the exact
+identifier matches (`6f4061d`) and the retry of JSON-validation failures
+(`56b6e21`, which the rag-answer path does not use).
+
+| Metric | 11-05 at `9724486` | 11-22 at `200009b` |
+|---|---|---|
+| Answer accuracy | 0.914 (106 / 116) | **1.000 (116 / 116)** |
+| Source document retrieved (top 5) | 0.922 | 1.000 |
+| Answers that cite a source document | 0.914 | 1.000 |
+| Citation precision | 1.000 | 1.000 |
+| Unanswerable questions answered with the refusal, citing nothing | 4 / 4 | 4 / 4 |
+| Tokens and cost per question | 1,228 + 57, $0.00022 | 1,326 + 59, $0.00023 |
+
+Every answer that was a refusal on 11-05 is now correct, and no answer that
+was correct became wrong. The answers were checked against the reference
+values by hand for the changed questions and a random sample. The extra ~100
+prompt tokens per question are the neighbouring chunks (about 5.8 chunks per
+question instead of 5).
+
+Caveats: both fixes were designed after looking at failures on this same
+dataset, so this is an in-sample result, not an independent test; the
+documents are synthetic and every identifier question names a unique,
+exactly spelled document number, the best case for identifier matching; one
+run per question; questions 121-228 still have only the 11-07 run (the
+free tier's daily token limit covers about 120 questions per day).
 
 The rest, with a key:
 
