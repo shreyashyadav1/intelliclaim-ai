@@ -162,3 +162,17 @@ async def test_search_documents_on_an_empty_index_returns_no_results(client):
     found = await _call(client, "search_documents", query="appendicitis")
 
     assert found["results"] == []
+
+
+async def test_search_documents_marks_the_context_passages_added_around_a_match(client):
+    page_one = "DISCHARGE SUMMARY DS-3065\nDischarge date: 2026-04-27\nHospital course: stent placement."
+    page_two = "Discharge summary DS-3065 (page 2)\nDischarge medication: clopidogrel.\nDischarge instructions: rest."
+    await rag_service.index_document("ds", f"{page_one}\n{page_two}", {"filename": "ds.pdf"}, [0, len(page_one) + 1])
+
+    found = await _call(client, "search_documents", query="discharge medication instructions DS-3065", top_k=1)
+
+    context, match = found["results"]
+    assert (match["page"], match["neighbor_of"]) == (2, None)
+    assert context["page"] == 1
+    assert context["neighbor_of"] == match["chunk_id"]
+    assert "2026-04-27" in context["text"]

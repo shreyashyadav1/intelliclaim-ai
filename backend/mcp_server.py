@@ -100,12 +100,16 @@ async def _find_claim(claim: str) -> dict[str, Any]:
 @mcp.tool(annotations=READ_ONLY)
 async def search_documents(
     query: Annotated[str, Field(min_length=1, max_length=1000, description="What to look for, in plain language")],
-    top_k: Annotated[int, Field(ge=1, le=20, description="Number of passages to return")] = 5,
+    top_k: Annotated[int, Field(ge=1, le=20, description="Best-matching passages to return, plus their context")] = 5,
 ) -> dict[str, Any]:
     """Find the passages in the indexed claim documents that best match a query.
 
     Each result has the document id and filename, the page (when known), a
-    relevance score and the passage text. No AI model is involved.
+    relevance score, the passage text and its chunk id. Each of the top_k best
+    passages comes with the passages next to it in its document, so a date on
+    the page before a match is not lost; those context passages have
+    `neighbor_of` set to the chunk id of the match they belong to. No AI model
+    is involved.
     """
     try:
         return await rag_service.search(query.strip(), top_k=top_k)

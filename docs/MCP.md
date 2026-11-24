@@ -8,7 +8,7 @@ All four tools are read-only (`readOnlyHint: true`).
 
 | Tool | Arguments | Returns | Needs an AI provider |
 | --- | --- | --- | --- |
-| `search_documents` | `query`, `top_k` (1–20, default 5) | Matching passages: document id, filename, page, score and text, plus the retrieval mode | No (retrieval only) |
+| `search_documents` | `query`, `top_k` (1–20, default 5) | The `top_k` best passages in rank order, each with its neighbouring passages from the same document (`neighbor_of` names the passage they surround): document id, filename, page, score, chunk id and text, plus the retrieval mode | No (retrieval only) |
 | `get_claim` | `claim` (id or claim number) | The claim's fields, status, risk score, risk level and flags, and its linked documents | No |
 | `list_flagged_claims` | `limit` (1–50, default 10) | Claims flagged or at medium/high risk, highest score first, with the flag threshold | No |
 | `validate_claim` | `claim` (id or claim number) | Risk score, level and every flag with its severity and origin (`rule` or `ai`) | Optional: without one the AI review is skipped and `ai_review.status` is `not_configured` |
