@@ -20,7 +20,8 @@ on each document and claim. Code: `backend/services/tracing.py`.
 - Every response has an `X-Trace-Id` header (exposed to browsers through CORS),
   so a slow or failed request can be found in the trace backend.
 - Failed provider calls are error spans with the exception recorded and add no
-  usage.
+  usage. A Groq JSON-mode reply that fails validation is retried, and each
+  attempt is its own span, so retries show up in the trace.
 
 ## Cost per document and per claim
 

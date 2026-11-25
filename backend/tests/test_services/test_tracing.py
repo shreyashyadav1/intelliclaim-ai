@@ -97,6 +97,20 @@ async def test_failed_call_is_an_error_span_and_costs_nothing(fake_groq, groq_er
     assert usage.calls == 0
 
 
+async def test_each_json_validation_retry_is_its_own_span(fake_groq, groq_errors, spans, monkeypatch):
+    monkeypatch.setattr(settings, "LLM_MAX_RETRIES", 1)
+    fake_groq.respond(groq_errors.json_validate(), '{"ok": true}')
+
+    with tracing.track_usage() as usage:
+        content = await llm.groq_chat([{"role": "user", "content": "json please"}], EXTRACTION_PARAMS, json_mode=True)
+
+    assert content == '{"ok": true}'
+    rejected, accepted = spans.get_finished_spans()
+    assert not rejected.status.is_ok and rejected.events[0].name == "exception"
+    assert accepted.status.is_unset and "gen_ai.usage.input_tokens" in dict(accepted.attributes)
+    assert usage.calls == 1  # only the reply that came back has a usage block to bill
+
+
 async def test_openai_raw_response_calls_are_traced(fake_openai, spans, monkeypatch):
     """ChatOpenAI calls with_raw_response.create; the span reads usage from the parsed completion."""
     monkeypatch.setattr(settings, "OPENAI_INPUT_USD_PER_MTOK", None)
