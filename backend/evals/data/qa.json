@@ -1,0 +1,2741 @@
+{
+  "seed": 7341,
+  "questions": [
+    {
+      "id": "q-001",
+      "question": "Which hospital issued invoice INV-3023?",
+      "answer": "Juniperwick Medical Center",
+      "answer_type": "text",
+      "answer_text": "Juniperwick Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-047"
+      ]
+    },
+    {
+      "id": "q-002",
+      "question": "What was the final bill for Christopher Marshall's care?",
+      "answer": "3850.41",
+      "answer_type": "money",
+      "answer_text": "$3,850.41",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-018"
+      ]
+    },
+    {
+      "id": "q-003",
+      "question": "What is the out-of-pocket maximum on Austin Graham's health plan?",
+      "answer": "5500.00",
+      "answer_type": "money",
+      "answer_text": "$5,500.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-025"
+      ]
+    },
+    {
+      "id": "q-004",
+      "question": "What is the total amount due on invoice INV-8545?",
+      "answer": "456.37",
+      "answer_type": "money",
+      "answer_text": "$456.37",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-054"
+      ]
+    },
+    {
+      "id": "q-005",
+      "question": "How much must Kenneth Mcdonald pay each year before the insurer starts paying?",
+      "answer": "500.00",
+      "answer_type": "money",
+      "answer_text": "$500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-033"
+      ]
+    },
+    {
+      "id": "q-006",
+      "question": "What blood pressure was recorded for Luis Gilbert at the outpatient visit?",
+      "answer": "150/80 mmHg",
+      "answer_type": "text",
+      "answer_text": "150/80 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-045"
+      ]
+    },
+    {
+      "id": "q-007",
+      "question": "What annual deductible is stated on invoice INV-7391?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-005"
+      ]
+    },
+    {
+      "id": "q-008",
+      "question": "How much was Stephen Marshall billed in total for treatment of fracture of right femoral neck?",
+      "answer": "45195.97",
+      "answer_type": "money",
+      "answer_text": "$45,195.97",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-002"
+      ]
+    },
+    {
+      "id": "q-009",
+      "question": "Which hospital issued invoice INV-6761?",
+      "answer": "Tamarack Hollow General Hospital",
+      "answer_type": "text",
+      "answer_text": "Tamarack Hollow General Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-020"
+      ]
+    },
+    {
+      "id": "q-010",
+      "question": "What blood pressure was recorded for Darrell Miller at the outpatient visit?",
+      "answer": "134/88 mmHg",
+      "answer_type": "text",
+      "answer_text": "134/88 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-001"
+      ]
+    },
+    {
+      "id": "q-011",
+      "question": "What is the total amount due on invoice INV-7677?",
+      "answer": "24050.04",
+      "answer_type": "money",
+      "answer_text": "$24,050.04",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-019"
+      ]
+    },
+    {
+      "id": "q-012",
+      "question": "For how many nights did Samantha Saunders stay?",
+      "answer": "4",
+      "answer_type": "number",
+      "answer_text": "4 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-049"
+      ]
+    },
+    {
+      "id": "q-013",
+      "question": "How many days was Jerome Taylor hospitalized for sepsis, unspecified organism?",
+      "answer": "6",
+      "answer_type": "number",
+      "answer_text": "6 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-021"
+      ]
+    },
+    {
+      "id": "q-014",
+      "question": "How many days was Michael Brooks hospitalized for calculus of kidney?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-036"
+      ]
+    },
+    {
+      "id": "q-015",
+      "question": "What was Darrell Miller's BP when the doctor saw them?",
+      "answer": "134/88 mmHg",
+      "answer_type": "text",
+      "answer_text": "134/88 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-001"
+      ]
+    },
+    {
+      "id": "q-016",
+      "question": "How many days was Greg Cross hospitalized for pneumonia, unspecified organism?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-023"
+      ]
+    },
+    {
+      "id": "q-017",
+      "question": "When does coverage under policy POL-2026-46125 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-022"
+      ]
+    },
+    {
+      "id": "q-018",
+      "question": "Which hospital issued invoice INV-2303?",
+      "answer": "Marigold Quarry Regional Hospital",
+      "answer_type": "text",
+      "answer_text": "Marigold Quarry Regional Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-016"
+      ]
+    },
+    {
+      "id": "q-019",
+      "question": "Which medication was Samantha Saunders prescribed at discharge?",
+      "answer": "Acetaminophen",
+      "answer_type": "text",
+      "answer_text": "Acetaminophen",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-049"
+      ]
+    },
+    {
+      "id": "q-020",
+      "question": "On what date was the patient in discharge summary DS-3187 discharged?",
+      "answer": "2026-06-15",
+      "answer_type": "date",
+      "answer_text": "2026-06-15",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-055"
+      ]
+    },
+    {
+      "id": "q-021",
+      "question": "How much must Stephen Marshall pay each year before the insurer starts paying?",
+      "answer": "2500.00",
+      "answer_type": "money",
+      "answer_text": "$2,500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-031"
+      ]
+    },
+    {
+      "id": "q-022",
+      "question": "What is the annual deductible for policy POL-2026-73506?",
+      "answer": "3500.00",
+      "answer_type": "money",
+      "answer_text": "$3,500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-013"
+      ]
+    },
+    {
+      "id": "q-023",
+      "question": "What is the total amount due on invoice INV-3023?",
+      "answer": "626.35",
+      "answer_type": "money",
+      "answer_text": "$626.35",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-047"
+      ]
+    },
+    {
+      "id": "q-024",
+      "question": "Who was the examining physician in medical report MR-2478?",
+      "answer": "Dr. Margaret Horne",
+      "answer_type": "text",
+      "answer_text": "Dr. Margaret Horne",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-030"
+      ]
+    },
+    {
+      "id": "q-025",
+      "question": "How much was Jennifer Hunt billed in total for treatment of non-ST elevation myocardial infarction?",
+      "answer": "28599.86",
+      "answer_type": "money",
+      "answer_text": "$28,599.86",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-005"
+      ]
+    },
+    {
+      "id": "q-026",
+      "question": "Which hospital issued invoice INV-9271?",
+      "answer": "Marigold Quarry Regional Hospital",
+      "answer_type": "text",
+      "answer_text": "Marigold Quarry Regional Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-060"
+      ]
+    },
+    {
+      "id": "q-027",
+      "question": "Who was the examining physician in medical report MR-2904?",
+      "answer": "Dr. William Ruiz",
+      "answer_type": "text",
+      "answer_text": "Dr. William Ruiz",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-040"
+      ]
+    },
+    {
+      "id": "q-028",
+      "question": "What is the total amount due on invoice INV-3157?",
+      "answer": "3850.41",
+      "answer_type": "money",
+      "answer_text": "$3,850.41",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-018"
+      ]
+    },
+    {
+      "id": "q-029",
+      "question": "Which hospital issued invoice INV-3679?",
+      "answer": "Larkspur Bay Health Center",
+      "answer_type": "text",
+      "answer_text": "Larkspur Bay Health Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-051"
+      ]
+    },
+    {
+      "id": "q-030",
+      "question": "What is the annual deductible for policy POL-2026-46125?",
+      "answer": "2500.00",
+      "answer_type": "money",
+      "answer_text": "$2,500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-022"
+      ]
+    },
+    {
+      "id": "q-031",
+      "question": "When does coverage under policy POL-2026-22588 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-031"
+      ]
+    },
+    {
+      "id": "q-032",
+      "question": "How much was Timothy Ortiz billed in total for treatment of pneumonia, unspecified organism?",
+      "answer": "6799.99",
+      "answer_type": "money",
+      "answer_text": "$6,799.99",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-010"
+      ]
+    },
+    {
+      "id": "q-033",
+      "question": "Which medication was Mary Bennett prescribed at discharge?",
+      "answer": "Apixaban",
+      "answer_type": "text",
+      "answer_text": "Apixaban",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-055"
+      ]
+    },
+    {
+      "id": "q-034",
+      "question": "When does coverage under policy POL-2026-14045 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-017"
+      ]
+    },
+    {
+      "id": "q-035",
+      "question": "Which hospital issued invoice INV-2508?",
+      "answer": "Fernhollow Valley Medical Center",
+      "answer_type": "text",
+      "answer_text": "Fernhollow Valley Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-006"
+      ]
+    },
+    {
+      "id": "q-036",
+      "question": "What was the final bill for Samantha Saunders's care?",
+      "answer": "24050.04",
+      "answer_type": "money",
+      "answer_text": "$24,050.04",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-019"
+      ]
+    },
+    {
+      "id": "q-037",
+      "question": "How many days was Samantha Saunders hospitalized for acute cholecystitis?",
+      "answer": "4",
+      "answer_type": "number",
+      "answer_text": "4 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-049"
+      ]
+    },
+    {
+      "id": "q-038",
+      "question": "How many days was Peter Brown hospitalized for acute appendicitis?",
+      "answer": "2",
+      "answer_type": "number",
+      "answer_text": "2 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-057"
+      ]
+    },
+    {
+      "id": "q-039",
+      "question": "On what date was the patient in discharge summary DS-3241 discharged?",
+      "answer": "2026-05-15",
+      "answer_type": "date",
+      "answer_text": "2026-05-15",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-032"
+      ]
+    },
+    {
+      "id": "q-040",
+      "question": "How many days was Mary Bennett hospitalized for atrial fibrillation?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-055"
+      ]
+    },
+    {
+      "id": "q-041",
+      "question": "How much was Jerome Taylor billed in total for treatment of sepsis, unspecified organism?",
+      "answer": "44626.09",
+      "answer_type": "money",
+      "answer_text": "$44,626.09",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-020"
+      ]
+    },
+    {
+      "id": "q-042",
+      "question": "When does coverage under policy POL-2026-89272 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-043"
+      ]
+    },
+    {
+      "id": "q-043",
+      "question": "How much was Kenneth Mcdonald billed in total for treatment of asthma, uncomplicated?",
+      "answer": "445.26",
+      "answer_type": "money",
+      "answer_text": "$445.26",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-058"
+      ]
+    },
+    {
+      "id": "q-044",
+      "question": "How much was Luis Gilbert billed in total for treatment of migraine, not intractable?",
+      "answer": "694.32",
+      "answer_type": "money",
+      "answer_text": "$694.32",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-008"
+      ]
+    },
+    {
+      "id": "q-045",
+      "question": "What is the total amount due on invoice INV-3693?",
+      "answer": "12413.73",
+      "answer_type": "money",
+      "answer_text": "$12,413.73",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-041"
+      ]
+    },
+    {
+      "id": "q-046",
+      "question": "How much must Amber Nichols pay each year before the insurer starts paying?",
+      "answer": "1000.00",
+      "answer_type": "money",
+      "answer_text": "$1,000.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-004"
+      ]
+    },
+    {
+      "id": "q-047",
+      "question": "What is the total amount due on invoice INV-3679?",
+      "answer": "400.80",
+      "answer_type": "money",
+      "answer_text": "$400.80",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-051"
+      ]
+    },
+    {
+      "id": "q-048",
+      "question": "What is the total amount due on invoice INV-5620?",
+      "answer": "19649.68",
+      "answer_type": "money",
+      "answer_text": "$19,649.68",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-011"
+      ]
+    },
+    {
+      "id": "q-049",
+      "question": "Which hospital issued invoice INV-5349?",
+      "answer": "Tamarack Hollow General Hospital",
+      "answer_type": "text",
+      "answer_text": "Tamarack Hollow General Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-007"
+      ]
+    },
+    {
+      "id": "q-050",
+      "question": "What was the final bill for Cody Davis's care?",
+      "answer": "30950.05",
+      "answer_type": "money",
+      "answer_text": "$30,950.05",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-015"
+      ]
+    },
+    {
+      "id": "q-051",
+      "question": "Which medication was Karen Mccoy prescribed at discharge?",
+      "answer": "Clopidogrel",
+      "answer_type": "text",
+      "answer_text": "Clopidogrel",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-003"
+      ]
+    },
+    {
+      "id": "q-052",
+      "question": "What was Jennifer Martinez's BP when the doctor saw them?",
+      "answer": "119/75 mmHg",
+      "answer_type": "text",
+      "answer_text": "119/75 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-009"
+      ]
+    },
+    {
+      "id": "q-053",
+      "question": "Which hospital issued invoice INV-3157?",
+      "answer": "Juniperwick Medical Center",
+      "answer_type": "text",
+      "answer_text": "Juniperwick Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-018"
+      ]
+    },
+    {
+      "id": "q-054",
+      "question": "What blood pressure was recorded for Maria Lewis at the outpatient visit?",
+      "answer": "151/80 mmHg",
+      "answer_type": "text",
+      "answer_text": "151/80 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-030"
+      ]
+    },
+    {
+      "id": "q-055",
+      "question": "Which hospital issued invoice INV-2632?",
+      "answer": "Cinderholt Memorial Hospital",
+      "answer_type": "text",
+      "answer_text": "Cinderholt Memorial Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-002"
+      ]
+    },
+    {
+      "id": "q-056",
+      "question": "For how many nights did Stephen Marshall stay?",
+      "answer": "7",
+      "answer_type": "number",
+      "answer_text": "7 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-032"
+      ]
+    },
+    {
+      "id": "q-057",
+      "question": "What was the final bill for Jennifer Hunt's care?",
+      "answer": "28599.86",
+      "answer_type": "money",
+      "answer_text": "$28,599.86",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-005"
+      ]
+    },
+    {
+      "id": "q-058",
+      "question": "What was Maria Lewis's BP when the doctor saw them?",
+      "answer": "151/80 mmHg",
+      "answer_type": "text",
+      "answer_text": "151/80 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-030"
+      ]
+    },
+    {
+      "id": "q-059",
+      "question": "What was Austin Graham's BP when the doctor saw them?",
+      "answer": "132/66 mmHg",
+      "answer_type": "text",
+      "answer_text": "132/66 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-042"
+      ]
+    },
+    {
+      "id": "q-060",
+      "question": "When does coverage under policy POL-2026-45039 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-029"
+      ]
+    },
+    {
+      "id": "q-061",
+      "question": "How much was Greg Cross billed in total for treatment of pneumonia, unspecified organism?",
+      "answer": "15793.31",
+      "answer_type": "money",
+      "answer_text": "$15,793.31",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-060"
+      ]
+    },
+    {
+      "id": "q-062",
+      "question": "What is the out-of-pocket maximum on Karen Mccoy's health plan?",
+      "answer": "1500.00",
+      "answer_type": "money",
+      "answer_text": "$1,500.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-028"
+      ]
+    },
+    {
+      "id": "q-063",
+      "question": "What annual deductible is stated on invoice INV-5349?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-007"
+      ]
+    },
+    {
+      "id": "q-064",
+      "question": "What is the annual deductible for policy POL-2026-98805?",
+      "answer": "1000.00",
+      "answer_type": "money",
+      "answer_text": "$1,000.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-004"
+      ]
+    },
+    {
+      "id": "q-065",
+      "question": "How much was Maria Lewis billed in total for treatment of acute upper respiratory infection?",
+      "answer": "536.59",
+      "answer_type": "money",
+      "answer_text": "$536.59",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-035"
+      ]
+    },
+    {
+      "id": "q-066",
+      "question": "What is the out-of-pocket maximum on William Simon's health plan?",
+      "answer": "8000.00",
+      "answer_type": "money",
+      "answer_text": "$8,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-022"
+      ]
+    },
+    {
+      "id": "q-067",
+      "question": "How much was Amber Nichols billed in total for treatment of type 2 diabetes mellitus without complications?",
+      "answer": "622.10",
+      "answer_type": "money",
+      "answer_text": "$622.10",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-006"
+      ]
+    },
+    {
+      "id": "q-068",
+      "question": "Which hospital issued invoice INV-3605?",
+      "answer": "Marigold Quarry Regional Hospital",
+      "answer_type": "text",
+      "answer_text": "Marigold Quarry Regional Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-058"
+      ]
+    },
+    {
+      "id": "q-069",
+      "question": "On what date was the patient in discharge summary DS-3096 discharged?",
+      "answer": "2026-03-11",
+      "answer_type": "date",
+      "answer_text": "2026-03-11",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-036"
+      ]
+    },
+    {
+      "id": "q-070",
+      "question": "What was the final bill for Peter Brown's care?",
+      "answer": "23875.89",
+      "answer_type": "money",
+      "answer_text": "$23,875.89",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-016"
+      ]
+    },
+    {
+      "id": "q-071",
+      "question": "How much must Maria Lewis pay each year before the insurer starts paying?",
+      "answer": "2500.00",
+      "answer_type": "money",
+      "answer_text": "$2,500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-029"
+      ]
+    },
+    {
+      "id": "q-072",
+      "question": "How much must Todd Zuniga pay each year before the insurer starts paying?",
+      "answer": "1000.00",
+      "answer_type": "money",
+      "answer_text": "$1,000.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-017"
+      ]
+    },
+    {
+      "id": "q-073",
+      "question": "What was the final bill for William Simon's care?",
+      "answer": "19649.68",
+      "answer_type": "money",
+      "answer_text": "$19,649.68",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-011"
+      ]
+    },
+    {
+      "id": "q-074",
+      "question": "Who was the examining physician in medical report MR-2366?",
+      "answer": "Dr. Michael Meza",
+      "answer_type": "text",
+      "answer_text": "Dr. Michael Meza",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-001"
+      ]
+    },
+    {
+      "id": "q-075",
+      "question": "How much was Brittany Frazier billed in total for treatment of cellulitis of right lower limb?",
+      "answer": "888.72",
+      "answer_type": "money",
+      "answer_text": "$888.72",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-037"
+      ]
+    },
+    {
+      "id": "q-076",
+      "question": "What was Brittany Frazier's BP when the doctor saw them?",
+      "answer": "122/66 mmHg",
+      "answer_type": "text",
+      "answer_text": "122/66 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-012"
+      ]
+    },
+    {
+      "id": "q-077",
+      "question": "Which medication was Stephen Marshall prescribed at discharge?",
+      "answer": "Enoxaparin",
+      "answer_type": "text",
+      "answer_text": "Enoxaparin",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-032"
+      ]
+    },
+    {
+      "id": "q-078",
+      "question": "Which medication was Michael Brooks prescribed at discharge?",
+      "answer": "Tamsulosin",
+      "answer_type": "text",
+      "answer_text": "Tamsulosin",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-036"
+      ]
+    },
+    {
+      "id": "q-079",
+      "question": "What was Kenneth Mcdonald's BP when the doctor saw them?",
+      "answer": "132/69 mmHg",
+      "answer_type": "text",
+      "answer_text": "132/69 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-048"
+      ]
+    },
+    {
+      "id": "q-080",
+      "question": "When does coverage under policy POL-2026-29885 end?",
+      "answer": "2027-03-31",
+      "answer_type": "date",
+      "answer_text": "03/31/2027",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-025"
+      ]
+    },
+    {
+      "id": "q-081",
+      "question": "What is the out-of-pocket maximum on Caitlyn Schmidt's health plan?",
+      "answer": "15000.00",
+      "answer_type": "money",
+      "answer_text": "$15,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-043"
+      ]
+    },
+    {
+      "id": "q-082",
+      "question": "What annual deductible is stated on invoice INV-2632?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-002"
+      ]
+    },
+    {
+      "id": "q-083",
+      "question": "What is the out-of-pocket maximum on Luis Gilbert's health plan?",
+      "answer": "11500.00",
+      "answer_type": "money",
+      "answer_text": "$11,500.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-013"
+      ]
+    },
+    {
+      "id": "q-084",
+      "question": "What is the total amount due on invoice INV-3678?",
+      "answer": "320.40",
+      "answer_type": "money",
+      "answer_text": "$320.40",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-046"
+      ]
+    },
+    {
+      "id": "q-085",
+      "question": "What is the out-of-pocket maximum on Todd Zuniga's health plan?",
+      "answer": "4000.00",
+      "answer_type": "money",
+      "answer_text": "$4,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-017"
+      ]
+    },
+    {
+      "id": "q-086",
+      "question": "What is the total amount due on invoice INV-2632?",
+      "answer": "45195.97",
+      "answer_type": "money",
+      "answer_text": "$45,195.97",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-002"
+      ]
+    },
+    {
+      "id": "q-087",
+      "question": "Which medication was Jennifer Hunt prescribed at discharge?",
+      "answer": "Clopidogrel",
+      "answer_type": "text",
+      "answer_text": "Clopidogrel",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-056"
+      ]
+    },
+    {
+      "id": "q-088",
+      "question": "What is the total amount due on invoice INV-8865?",
+      "answer": "15887.00",
+      "answer_type": "money",
+      "answer_text": "$15,887.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-034"
+      ]
+    },
+    {
+      "id": "q-089",
+      "question": "For how many nights did Jerome Taylor stay?",
+      "answer": "6",
+      "answer_type": "number",
+      "answer_text": "6 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-021"
+      ]
+    },
+    {
+      "id": "q-090",
+      "question": "What blood pressure was recorded for Amber Nichols at the outpatient visit?",
+      "answer": "148/92 mmHg",
+      "answer_type": "text",
+      "answer_text": "148/92 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-027"
+      ]
+    },
+    {
+      "id": "q-091",
+      "question": "What was Amber Nichols's BP when the doctor saw them?",
+      "answer": "148/92 mmHg",
+      "answer_type": "text",
+      "answer_text": "148/92 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-027"
+      ]
+    },
+    {
+      "id": "q-092",
+      "question": "Which medication was Cody Davis prescribed at discharge?",
+      "answer": "Oxycodone",
+      "answer_type": "text",
+      "answer_text": "Oxycodone",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-026"
+      ]
+    },
+    {
+      "id": "q-093",
+      "question": "How much must Luis Gilbert pay each year before the insurer starts paying?",
+      "answer": "3500.00",
+      "answer_type": "money",
+      "answer_text": "$3,500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-013"
+      ]
+    },
+    {
+      "id": "q-094",
+      "question": "What is the total amount due on invoice INV-7391?",
+      "answer": "28599.86",
+      "answer_type": "money",
+      "answer_text": "$28,599.86",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-005"
+      ]
+    },
+    {
+      "id": "q-095",
+      "question": "How many days was Jennifer Hunt hospitalized for non-ST elevation myocardial infarction?",
+      "answer": "6",
+      "answer_type": "number",
+      "answer_text": "6 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-056"
+      ]
+    },
+    {
+      "id": "q-096",
+      "question": "What was Julie Hodge's BP when the doctor saw them?",
+      "answer": "140/80 mmHg",
+      "answer_type": "text",
+      "answer_text": "140/80 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-059"
+      ]
+    },
+    {
+      "id": "q-097",
+      "question": "What is the annual deductible for policy POL-2026-14045?",
+      "answer": "1000.00",
+      "answer_type": "money",
+      "answer_text": "$1,000.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-017"
+      ]
+    },
+    {
+      "id": "q-098",
+      "question": "What was the final bill for Karen Mccoy's care?",
+      "answer": "42048.92",
+      "answer_type": "money",
+      "answer_text": "$42,048.92",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-014"
+      ]
+    },
+    {
+      "id": "q-099",
+      "question": "What is the annual deductible for policy POL-2026-19089?",
+      "answer": "500.00",
+      "answer_type": "money",
+      "answer_text": "$500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-033"
+      ]
+    },
+    {
+      "id": "q-100",
+      "question": "Which hospital issued invoice INV-5500?",
+      "answer": "Cinderholt Memorial Hospital",
+      "answer_type": "text",
+      "answer_text": "Cinderholt Memorial Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-037"
+      ]
+    },
+    {
+      "id": "q-101",
+      "question": "What was Luis Gilbert's BP when the doctor saw them?",
+      "answer": "150/80 mmHg",
+      "answer_type": "text",
+      "answer_text": "150/80 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-045"
+      ]
+    },
+    {
+      "id": "q-102",
+      "question": "How much must Austin Graham pay each year before the insurer starts paying?",
+      "answer": "1500.00",
+      "answer_type": "money",
+      "answer_text": "$1,500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-025"
+      ]
+    },
+    {
+      "id": "q-103",
+      "question": "How much must Cody Davis pay each year before the insurer starts paying?",
+      "answer": "1500.00",
+      "answer_type": "money",
+      "answer_text": "$1,500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-044"
+      ]
+    },
+    {
+      "id": "q-104",
+      "question": "What was Caitlyn Schmidt's BP when the doctor saw them?",
+      "answer": "116/68 mmHg",
+      "answer_type": "text",
+      "answer_text": "116/68 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-024"
+      ]
+    },
+    {
+      "id": "q-105",
+      "question": "Who was the examining physician in medical report MR-2934?",
+      "answer": "Dr. Carolyn Fisher",
+      "answer_type": "text",
+      "answer_text": "Dr. Carolyn Fisher",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-024"
+      ]
+    },
+    {
+      "id": "q-106",
+      "question": "Who was the examining physician in medical report MR-2639?",
+      "answer": "Dr. Jacob Manning",
+      "answer_type": "text",
+      "answer_text": "Dr. Jacob Manning",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-048"
+      ]
+    },
+    {
+      "id": "q-107",
+      "question": "How much was Darrell Miller billed in total for treatment of acute upper respiratory infection?",
+      "answer": "400.80",
+      "answer_type": "money",
+      "answer_text": "$400.80",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-051"
+      ]
+    },
+    {
+      "id": "q-108",
+      "question": "What was the final bill for Jennifer Martinez's care?",
+      "answer": "714.95",
+      "answer_type": "money",
+      "answer_text": "$714.95",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-007"
+      ]
+    },
+    {
+      "id": "q-109",
+      "question": "For how many nights did Karen Mccoy stay?",
+      "answer": "7",
+      "answer_type": "number",
+      "answer_text": "7 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-003"
+      ]
+    },
+    {
+      "id": "q-110",
+      "question": "How many days was Timothy Ortiz hospitalized for pneumonia, unspecified organism?",
+      "answer": "6",
+      "answer_type": "number",
+      "answer_text": "6 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-052"
+      ]
+    },
+    {
+      "id": "q-111",
+      "question": "How much was Austin Graham billed in total for treatment of type 2 diabetes mellitus without complications?",
+      "answer": "456.37",
+      "answer_type": "money",
+      "answer_text": "$456.37",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-054"
+      ]
+    },
+    {
+      "id": "q-112",
+      "question": "What total amount was billed according to discharge summary DS-3344?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-026"
+      ]
+    },
+    {
+      "id": "q-113",
+      "question": "Who was the examining physician in medical report MR-2713?",
+      "answer": "Dr. Margaret Horne",
+      "answer_type": "text",
+      "answer_text": "Dr. Margaret Horne",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-038"
+      ]
+    },
+    {
+      "id": "q-114",
+      "question": "What is the total amount due on invoice INV-2508?",
+      "answer": "622.10",
+      "answer_type": "money",
+      "answer_text": "$622.10",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-006"
+      ]
+    },
+    {
+      "id": "q-115",
+      "question": "What was the final bill for Stephen Marshall's care?",
+      "answer": "45195.97",
+      "answer_type": "money",
+      "answer_text": "$45,195.97",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-002"
+      ]
+    },
+    {
+      "id": "q-116",
+      "question": "What is the annual deductible for policy POL-2026-88682?",
+      "answer": "500.00",
+      "answer_type": "money",
+      "answer_text": "$500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-028"
+      ]
+    },
+    {
+      "id": "q-117",
+      "question": "What is the total amount due on invoice INV-3817?",
+      "answer": "6799.99",
+      "answer_type": "money",
+      "answer_text": "$6,799.99",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-010"
+      ]
+    },
+    {
+      "id": "q-118",
+      "question": "Which medication was Peter Brown prescribed at discharge?",
+      "answer": "Oxycodone",
+      "answer_type": "text",
+      "answer_text": "Oxycodone",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-057"
+      ]
+    },
+    {
+      "id": "q-119",
+      "question": "Which hospital issued invoice INV-5620?",
+      "answer": "Juniperwick Medical Center",
+      "answer_type": "text",
+      "answer_text": "Juniperwick Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-011"
+      ]
+    },
+    {
+      "id": "q-120",
+      "question": "How much must William Simon pay each year before the insurer starts paying?",
+      "answer": "2500.00",
+      "answer_type": "money",
+      "answer_text": "$2,500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-022"
+      ]
+    },
+    {
+      "id": "q-121",
+      "question": "What blood pressure was recorded for Julie Hodge at the outpatient visit?",
+      "answer": "140/80 mmHg",
+      "answer_type": "text",
+      "answer_text": "140/80 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-059"
+      ]
+    },
+    {
+      "id": "q-122",
+      "question": "On what date was the patient in discharge summary DS-3991 discharged?",
+      "answer": "2026-05-26",
+      "answer_type": "date",
+      "answer_text": "2026-05-26",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-021"
+      ]
+    },
+    {
+      "id": "q-123",
+      "question": "How many days was William Simon hospitalized for acute cholecystitis?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-050"
+      ]
+    },
+    {
+      "id": "q-124",
+      "question": "What is the total amount due on invoice INV-9242?",
+      "answer": "350.19",
+      "answer_type": "money",
+      "answer_text": "$350.19",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-053"
+      ]
+    },
+    {
+      "id": "q-125",
+      "question": "What blood pressure was recorded for Christopher Marshall at the outpatient visit?",
+      "answer": "135/82 mmHg",
+      "answer_type": "text",
+      "answer_text": "135/82 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-038"
+      ]
+    },
+    {
+      "id": "q-126",
+      "question": "What annual deductible is stated on invoice INV-2508?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-006"
+      ]
+    },
+    {
+      "id": "q-127",
+      "question": "What total amount was billed according to discharge summary DS-3812?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-023"
+      ]
+    },
+    {
+      "id": "q-128",
+      "question": "Who was the examining physician in medical report MR-2936?",
+      "answer": "Dr. Kristopher Brown",
+      "answer_type": "text",
+      "answer_text": "Dr. Kristopher Brown",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-009"
+      ]
+    },
+    {
+      "id": "q-129",
+      "question": "What is the annual deductible for policy POL-2026-89272?",
+      "answer": "5000.00",
+      "answer_type": "money",
+      "answer_text": "$5,000.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-043"
+      ]
+    },
+    {
+      "id": "q-130",
+      "question": "What is the total amount due on invoice INV-8982?",
+      "answer": "536.59",
+      "answer_type": "money",
+      "answer_text": "$536.59",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-035"
+      ]
+    },
+    {
+      "id": "q-131",
+      "question": "On what date was the patient in discharge summary DS-3157 discharged?",
+      "answer": "2026-02-11",
+      "answer_type": "date",
+      "answer_text": "2026-02-11",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-056"
+      ]
+    },
+    {
+      "id": "q-132",
+      "question": "Which hospital issued invoice INV-3678?",
+      "answer": "Fernhollow Valley Medical Center",
+      "answer_type": "text",
+      "answer_text": "Fernhollow Valley Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-046"
+      ]
+    },
+    {
+      "id": "q-133",
+      "question": "What was Christopher Marshall's BP when the doctor saw them?",
+      "answer": "135/82 mmHg",
+      "answer_type": "text",
+      "answer_text": "135/82 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-038"
+      ]
+    },
+    {
+      "id": "q-134",
+      "question": "When does coverage under policy POL-2026-74654 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-044"
+      ]
+    },
+    {
+      "id": "q-135",
+      "question": "How much was Michael Brooks billed in total for treatment of calculus of kidney?",
+      "answer": "12413.73",
+      "answer_type": "money",
+      "answer_text": "$12,413.73",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-041"
+      ]
+    },
+    {
+      "id": "q-136",
+      "question": "What blood pressure was recorded for Brittany Frazier at the outpatient visit?",
+      "answer": "122/66 mmHg",
+      "answer_type": "text",
+      "answer_text": "122/66 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-012"
+      ]
+    },
+    {
+      "id": "q-137",
+      "question": "For how many nights did Cody Davis stay?",
+      "answer": "1",
+      "answer_type": "number",
+      "answer_text": "1 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-026"
+      ]
+    },
+    {
+      "id": "q-138",
+      "question": "What is the total amount due on invoice INV-9271?",
+      "answer": "15793.31",
+      "answer_type": "money",
+      "answer_text": "$15,793.31",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-060"
+      ]
+    },
+    {
+      "id": "q-139",
+      "question": "What blood pressure was recorded for Jennifer Martinez at the outpatient visit?",
+      "answer": "119/75 mmHg",
+      "answer_type": "text",
+      "answer_text": "119/75 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-009"
+      ]
+    },
+    {
+      "id": "q-140",
+      "question": "How much was Peter Brown billed in total for treatment of acute appendicitis?",
+      "answer": "23875.89",
+      "answer_type": "money",
+      "answer_text": "$23,875.89",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-016"
+      ]
+    },
+    {
+      "id": "q-141",
+      "question": "On what date was the patient in discharge summary DS-3065 discharged?",
+      "answer": "2026-04-27",
+      "answer_type": "date",
+      "answer_text": "2026-04-27",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-003"
+      ]
+    },
+    {
+      "id": "q-142",
+      "question": "What blood pressure was recorded for Caitlyn Schmidt at the outpatient visit?",
+      "answer": "116/68 mmHg",
+      "answer_type": "text",
+      "answer_text": "116/68 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-024"
+      ]
+    },
+    {
+      "id": "q-143",
+      "question": "What was Todd Zuniga's BP when the doctor saw them?",
+      "answer": "146/76 mmHg",
+      "answer_type": "text",
+      "answer_text": "146/76 mmHg",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-040"
+      ]
+    },
+    {
+      "id": "q-144",
+      "question": "When does coverage under policy POL-2026-88682 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-028"
+      ]
+    },
+    {
+      "id": "q-145",
+      "question": "Which hospital issued invoice INV-8865?",
+      "answer": "Wrenfield Crossing Hospital",
+      "answer_type": "text",
+      "answer_text": "Wrenfield Crossing Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-034"
+      ]
+    },
+    {
+      "id": "q-146",
+      "question": "How much must Julie Hodge pay each year before the insurer starts paying?",
+      "answer": "5000.00",
+      "answer_type": "money",
+      "answer_text": "$5,000.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-039"
+      ]
+    },
+    {
+      "id": "q-147",
+      "question": "What is the total amount due on invoice INV-5349?",
+      "answer": "714.95",
+      "answer_type": "money",
+      "answer_text": "$714.95",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-007"
+      ]
+    },
+    {
+      "id": "q-148",
+      "question": "What is the out-of-pocket maximum on Stephen Marshall's health plan?",
+      "answer": "5000.00",
+      "answer_type": "money",
+      "answer_text": "$5,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-031"
+      ]
+    },
+    {
+      "id": "q-149",
+      "question": "What total amount was billed according to discharge summary DS-3065?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-003"
+      ]
+    },
+    {
+      "id": "q-150",
+      "question": "Which hospital issued invoice INV-8201?",
+      "answer": "Fernhollow Valley Medical Center",
+      "answer_type": "text",
+      "answer_text": "Fernhollow Valley Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-014"
+      ]
+    },
+    {
+      "id": "q-151",
+      "question": "What is the total amount due on invoice INV-2303?",
+      "answer": "23875.89",
+      "answer_type": "money",
+      "answer_text": "$23,875.89",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-016"
+      ]
+    },
+    {
+      "id": "q-152",
+      "question": "What is the total amount due on invoice INV-8201?",
+      "answer": "42048.92",
+      "answer_type": "money",
+      "answer_text": "$42,048.92",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-014"
+      ]
+    },
+    {
+      "id": "q-153",
+      "question": "How much was Samantha Saunders billed in total for treatment of acute cholecystitis?",
+      "answer": "24050.04",
+      "answer_type": "money",
+      "answer_text": "$24,050.04",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-019"
+      ]
+    },
+    {
+      "id": "q-154",
+      "question": "What blood pressure was recorded for Todd Zuniga at the outpatient visit?",
+      "answer": "146/76 mmHg",
+      "answer_type": "text",
+      "answer_text": "146/76 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-040"
+      ]
+    },
+    {
+      "id": "q-155",
+      "question": "How many days was Stephen Marshall hospitalized for fracture of right femoral neck?",
+      "answer": "7",
+      "answer_type": "number",
+      "answer_text": "7 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-032"
+      ]
+    },
+    {
+      "id": "q-156",
+      "question": "For how many nights did Peter Brown stay?",
+      "answer": "2",
+      "answer_type": "number",
+      "answer_text": "2 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-057"
+      ]
+    },
+    {
+      "id": "q-157",
+      "question": "What is the out-of-pocket maximum on Julie Hodge's health plan?",
+      "answer": "15500.00",
+      "answer_type": "money",
+      "answer_text": "$15,500.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-039"
+      ]
+    },
+    {
+      "id": "q-158",
+      "question": "When does coverage under policy POL-2026-95671 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-039"
+      ]
+    },
+    {
+      "id": "q-159",
+      "question": "What is the total amount due on invoice INV-3605?",
+      "answer": "445.26",
+      "answer_type": "money",
+      "answer_text": "$445.26",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-058"
+      ]
+    },
+    {
+      "id": "q-160",
+      "question": "How much was Caitlyn Schmidt billed in total for treatment of essential (primary) hypertension?",
+      "answer": "350.19",
+      "answer_type": "money",
+      "answer_text": "$350.19",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-053"
+      ]
+    },
+    {
+      "id": "q-161",
+      "question": "What is the out-of-pocket maximum on Kenneth Mcdonald's health plan?",
+      "answer": "2000.00",
+      "answer_type": "money",
+      "answer_text": "$2,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-033"
+      ]
+    },
+    {
+      "id": "q-162",
+      "question": "What is the total amount due on invoice INV-5500?",
+      "answer": "888.72",
+      "answer_type": "money",
+      "answer_text": "$888.72",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-037"
+      ]
+    },
+    {
+      "id": "q-163",
+      "question": "How much must Karen Mccoy pay each year before the insurer starts paying?",
+      "answer": "500.00",
+      "answer_type": "money",
+      "answer_text": "$500.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-028"
+      ]
+    },
+    {
+      "id": "q-164",
+      "question": "On what date was the patient in discharge summary DS-3840 discharged?",
+      "answer": "2026-01-17",
+      "answer_type": "date",
+      "answer_text": "2026-01-17",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-050"
+      ]
+    },
+    {
+      "id": "q-165",
+      "question": "Which hospital issued invoice INV-3817?",
+      "answer": "Bramblemoor Community Clinic",
+      "answer_type": "text",
+      "answer_text": "Bramblemoor Community Clinic",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-010"
+      ]
+    },
+    {
+      "id": "q-166",
+      "question": "Who was the examining physician in medical report MR-2566?",
+      "answer": "Dr. William Ruiz",
+      "answer_type": "text",
+      "answer_text": "Dr. William Ruiz",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-027"
+      ]
+    },
+    {
+      "id": "q-167",
+      "question": "Which hospital issued invoice INV-9463?",
+      "answer": "Bramblemoor Community Clinic",
+      "answer_type": "text",
+      "answer_text": "Bramblemoor Community Clinic",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-008"
+      ]
+    },
+    {
+      "id": "q-168",
+      "question": "How many days was Karen Mccoy hospitalized for non-ST elevation myocardial infarction?",
+      "answer": "7",
+      "answer_type": "number",
+      "answer_text": "7 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-003"
+      ]
+    },
+    {
+      "id": "q-169",
+      "question": "How much was Christopher Marshall billed in total for treatment of fracture of lower end of right radius?",
+      "answer": "3850.41",
+      "answer_type": "money",
+      "answer_text": "$3,850.41",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-018"
+      ]
+    },
+    {
+      "id": "q-170",
+      "question": "Who was the examining physician in medical report MR-2397?",
+      "answer": "Dr. Margaret Horne",
+      "answer_type": "text",
+      "answer_text": "Dr. Margaret Horne",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-059"
+      ]
+    },
+    {
+      "id": "q-171",
+      "question": "On what date was the patient in discharge summary DS-3730 discharged?",
+      "answer": "2026-05-16",
+      "answer_type": "date",
+      "answer_text": "2026-05-16",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-057"
+      ]
+    },
+    {
+      "id": "q-172",
+      "question": "What is the out-of-pocket maximum on Maria Lewis's health plan?",
+      "answer": "5000.00",
+      "answer_type": "money",
+      "answer_text": "$5,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-029"
+      ]
+    },
+    {
+      "id": "q-173",
+      "question": "What annual deductible is stated on invoice INV-9463?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-008"
+      ]
+    },
+    {
+      "id": "q-174",
+      "question": "How much was William Simon billed in total for treatment of acute cholecystitis?",
+      "answer": "19649.68",
+      "answer_type": "money",
+      "answer_text": "$19,649.68",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-011"
+      ]
+    },
+    {
+      "id": "q-175",
+      "question": "What was the final bill for Timothy Ortiz's care?",
+      "answer": "6799.99",
+      "answer_type": "money",
+      "answer_text": "$6,799.99",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-010"
+      ]
+    },
+    {
+      "id": "q-176",
+      "question": "What is the annual deductible for policy POL-2026-95671?",
+      "answer": "5000.00",
+      "answer_type": "money",
+      "answer_text": "$5,000.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-039"
+      ]
+    },
+    {
+      "id": "q-177",
+      "question": "What was the final bill for Luis Gilbert's care?",
+      "answer": "694.32",
+      "answer_type": "money",
+      "answer_text": "$694.32",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-008"
+      ]
+    },
+    {
+      "id": "q-178",
+      "question": "What is the annual deductible for policy POL-2026-29885?",
+      "answer": "1500.00",
+      "answer_type": "money",
+      "answer_text": "$1,500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-025"
+      ]
+    },
+    {
+      "id": "q-179",
+      "question": "What is the annual deductible for policy POL-2026-45039?",
+      "answer": "2500.00",
+      "answer_type": "money",
+      "answer_text": "$2,500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-029"
+      ]
+    },
+    {
+      "id": "q-180",
+      "question": "What is the annual deductible for policy POL-2026-74654?",
+      "answer": "1500.00",
+      "answer_type": "money",
+      "answer_text": "$1,500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-044"
+      ]
+    },
+    {
+      "id": "q-181",
+      "question": "On what date was the patient in discharge summary DS-3812 discharged?",
+      "answer": "2026-04-11",
+      "answer_type": "date",
+      "answer_text": "2026-04-11",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-023"
+      ]
+    },
+    {
+      "id": "q-182",
+      "question": "For how many nights did Timothy Ortiz stay?",
+      "answer": "6",
+      "answer_type": "number",
+      "answer_text": "6 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-052"
+      ]
+    },
+    {
+      "id": "q-183",
+      "question": "How much was Mary Bennett billed in total for treatment of atrial fibrillation?",
+      "answer": "15887.00",
+      "answer_type": "money",
+      "answer_text": "$15,887.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-034"
+      ]
+    },
+    {
+      "id": "q-184",
+      "question": "Which medication was Greg Cross prescribed at discharge?",
+      "answer": "Amoxicillin-clavulanate",
+      "answer_type": "text",
+      "answer_text": "Amoxicillin-clavulanate",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-023"
+      ]
+    },
+    {
+      "id": "q-185",
+      "question": "What is the total amount due on invoice INV-6761?",
+      "answer": "44626.09",
+      "answer_type": "money",
+      "answer_text": "$44,626.09",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-020"
+      ]
+    },
+    {
+      "id": "q-186",
+      "question": "For how many nights did Mary Bennett stay?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-055"
+      ]
+    },
+    {
+      "id": "q-187",
+      "question": "Which hospital issued invoice INV-8545?",
+      "answer": "Fernhollow Valley Medical Center",
+      "answer_type": "text",
+      "answer_text": "Fernhollow Valley Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-054"
+      ]
+    },
+    {
+      "id": "q-188",
+      "question": "Who was the examining physician in medical report MR-2987?",
+      "answer": "Dr. William Ruiz",
+      "answer_type": "text",
+      "answer_text": "Dr. William Ruiz",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-042"
+      ]
+    },
+    {
+      "id": "q-189",
+      "question": "Who was the examining physician in medical report MR-2769?",
+      "answer": "Dr. Natalie Gonzalez",
+      "answer_type": "text",
+      "answer_text": "Dr. Natalie Gonzalez",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-012"
+      ]
+    },
+    {
+      "id": "q-190",
+      "question": "How much was Julie Hodge billed in total for treatment of asthma, uncomplicated?",
+      "answer": "626.35",
+      "answer_type": "money",
+      "answer_text": "$626.35",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-047"
+      ]
+    },
+    {
+      "id": "q-191",
+      "question": "What annual deductible is stated on invoice INV-3817?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-010"
+      ]
+    },
+    {
+      "id": "q-192",
+      "question": "Which medication was William Simon prescribed at discharge?",
+      "answer": "Acetaminophen",
+      "answer_type": "text",
+      "answer_text": "Acetaminophen",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-050"
+      ]
+    },
+    {
+      "id": "q-193",
+      "question": "On what date was the patient in discharge summary DS-3222 discharged?",
+      "answer": "2026-04-13",
+      "answer_type": "date",
+      "answer_text": "2026-04-13",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-052"
+      ]
+    },
+    {
+      "id": "q-194",
+      "question": "Which hospital issued invoice INV-3693?",
+      "answer": "Bramblemoor Community Clinic",
+      "answer_type": "text",
+      "answer_text": "Bramblemoor Community Clinic",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-041"
+      ]
+    },
+    {
+      "id": "q-195",
+      "question": "What is the annual deductible for policy POL-2026-22588?",
+      "answer": "2500.00",
+      "answer_type": "money",
+      "answer_text": "$2,500.00",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-031"
+      ]
+    },
+    {
+      "id": "q-196",
+      "question": "What blood pressure was recorded for Austin Graham at the outpatient visit?",
+      "answer": "132/66 mmHg",
+      "answer_type": "text",
+      "answer_text": "132/66 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-042"
+      ]
+    },
+    {
+      "id": "q-197",
+      "question": "What is the out-of-pocket maximum on Amber Nichols's health plan?",
+      "answer": "2000.00",
+      "answer_type": "money",
+      "answer_text": "$2,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-004"
+      ]
+    },
+    {
+      "id": "q-198",
+      "question": "How much must Caitlyn Schmidt pay each year before the insurer starts paying?",
+      "answer": "5000.00",
+      "answer_type": "money",
+      "answer_text": "$5,000.00",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-043"
+      ]
+    },
+    {
+      "id": "q-199",
+      "question": "What is the total amount due on invoice INV-8351?",
+      "answer": "30950.05",
+      "answer_type": "money",
+      "answer_text": "$30,950.05",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-015"
+      ]
+    },
+    {
+      "id": "q-200",
+      "question": "What is the out-of-pocket maximum on Cody Davis's health plan?",
+      "answer": "3000.00",
+      "answer_type": "money",
+      "answer_text": "$3,000.00",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-044"
+      ]
+    },
+    {
+      "id": "q-201",
+      "question": "How many days was Cody Davis hospitalized for acute appendicitis?",
+      "answer": "1",
+      "answer_type": "number",
+      "answer_text": "1 day",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-026"
+      ]
+    },
+    {
+      "id": "q-202",
+      "question": "Which hospital issued invoice INV-9242?",
+      "answer": "Wrenfield Crossing Hospital",
+      "answer_type": "text",
+      "answer_text": "Wrenfield Crossing Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-053"
+      ]
+    },
+    {
+      "id": "q-203",
+      "question": "How much was Karen Mccoy billed in total for treatment of non-ST elevation myocardial infarction?",
+      "answer": "42048.92",
+      "answer_type": "money",
+      "answer_text": "$42,048.92",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-014"
+      ]
+    },
+    {
+      "id": "q-204",
+      "question": "Which hospital issued invoice INV-7391?",
+      "answer": "Juniperwick Medical Center",
+      "answer_type": "text",
+      "answer_text": "Juniperwick Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-005"
+      ]
+    },
+    {
+      "id": "q-205",
+      "question": "Which hospital issued invoice INV-7677?",
+      "answer": "Marigold Quarry Regional Hospital",
+      "answer_type": "text",
+      "answer_text": "Marigold Quarry Regional Hospital",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-019"
+      ]
+    },
+    {
+      "id": "q-206",
+      "question": "For how many nights did William Simon stay?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-050"
+      ]
+    },
+    {
+      "id": "q-207",
+      "question": "When does coverage under policy POL-2026-19089 end?",
+      "answer": "2027-06-30",
+      "answer_type": "date",
+      "answer_text": "06/30/2027",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-033"
+      ]
+    },
+    {
+      "id": "q-208",
+      "question": "What total amount was billed according to discharge summary DS-3241?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-032"
+      ]
+    },
+    {
+      "id": "q-209",
+      "question": "When does coverage under policy POL-2026-73506 end?",
+      "answer": "2026-12-31",
+      "answer_type": "date",
+      "answer_text": "12/31/2026",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-013"
+      ]
+    },
+    {
+      "id": "q-210",
+      "question": "What is the total amount due on invoice INV-9463?",
+      "answer": "694.32",
+      "answer_type": "money",
+      "answer_text": "$694.32",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-008"
+      ]
+    },
+    {
+      "id": "q-211",
+      "question": "On what date was the patient in discharge summary DS-3158 discharged?",
+      "answer": "2026-02-14",
+      "answer_type": "date",
+      "answer_text": "2026-02-14",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-049"
+      ]
+    },
+    {
+      "id": "q-212",
+      "question": "For how many nights did Michael Brooks stay?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-036"
+      ]
+    },
+    {
+      "id": "q-213",
+      "question": "For how many nights did Greg Cross stay?",
+      "answer": "3",
+      "answer_type": "number",
+      "answer_text": "3 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-023"
+      ]
+    },
+    {
+      "id": "q-214",
+      "question": "Who was the examining physician in medical report MR-2686?",
+      "answer": "Dr. Katie Rodriguez",
+      "answer_type": "text",
+      "answer_text": "Dr. Katie Rodriguez",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-045"
+      ]
+    },
+    {
+      "id": "q-215",
+      "question": "What total amount was billed according to discharge summary DS-3096?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-036"
+      ]
+    },
+    {
+      "id": "q-216",
+      "question": "Which medication was Jerome Taylor prescribed at discharge?",
+      "answer": "Levofloxacin",
+      "answer_type": "text",
+      "answer_text": "Levofloxacin",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-021"
+      ]
+    },
+    {
+      "id": "q-217",
+      "question": "Which medication was Timothy Ortiz prescribed at discharge?",
+      "answer": "Amoxicillin-clavulanate",
+      "answer_type": "text",
+      "answer_text": "Amoxicillin-clavulanate",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-052"
+      ]
+    },
+    {
+      "id": "q-218",
+      "question": "Which hospital issued invoice INV-8982?",
+      "answer": "Juniperwick Medical Center",
+      "answer_type": "text",
+      "answer_text": "Juniperwick Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-035"
+      ]
+    },
+    {
+      "id": "q-219",
+      "question": "For how many nights did Jennifer Hunt stay?",
+      "answer": "6",
+      "answer_type": "number",
+      "answer_text": "6 day",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-056"
+      ]
+    },
+    {
+      "id": "q-220",
+      "question": "What was the final bill for Amber Nichols's care?",
+      "answer": "622.10",
+      "answer_type": "money",
+      "answer_text": "$622.10",
+      "answerable": true,
+      "style": "paraphrase",
+      "source_document_ids": [
+        "doc-006"
+      ]
+    },
+    {
+      "id": "q-221",
+      "question": "What blood pressure was recorded for Kenneth Mcdonald at the outpatient visit?",
+      "answer": "132/69 mmHg",
+      "answer_type": "text",
+      "answer_text": "132/69 mmHg",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-048"
+      ]
+    },
+    {
+      "id": "q-222",
+      "question": "How much was Todd Zuniga billed in total for treatment of essential (primary) hypertension?",
+      "answer": "320.40",
+      "answer_type": "money",
+      "answer_text": "$320.40",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-046"
+      ]
+    },
+    {
+      "id": "q-223",
+      "question": "What total amount was billed according to discharge summary DS-3991?",
+      "answer": null,
+      "answer_type": "none",
+      "answer_text": null,
+      "answerable": false,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-021"
+      ]
+    },
+    {
+      "id": "q-224",
+      "question": "How much was Cody Davis billed in total for treatment of acute appendicitis?",
+      "answer": "30950.05",
+      "answer_type": "money",
+      "answer_text": "$30,950.05",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-015"
+      ]
+    },
+    {
+      "id": "q-225",
+      "question": "How much was Jennifer Martinez billed in total for treatment of low back pain?",
+      "answer": "714.95",
+      "answer_type": "money",
+      "answer_text": "$714.95",
+      "answerable": true,
+      "style": "descriptive",
+      "source_document_ids": [
+        "doc-007"
+      ]
+    },
+    {
+      "id": "q-226",
+      "question": "On what date was the patient in discharge summary DS-3344 discharged?",
+      "answer": "2026-05-06",
+      "answer_type": "date",
+      "answer_text": "2026-05-06",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-026"
+      ]
+    },
+    {
+      "id": "q-227",
+      "question": "When does coverage under policy POL-2026-98805 end?",
+      "answer": "2027-03-31",
+      "answer_type": "date",
+      "answer_text": "03/31/2027",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-004"
+      ]
+    },
+    {
+      "id": "q-228",
+      "question": "Which hospital issued invoice INV-8351?",
+      "answer": "Fernhollow Valley Medical Center",
+      "answer_type": "text",
+      "answer_text": "Fernhollow Valley Medical Center",
+      "answerable": true,
+      "style": "identifier",
+      "source_document_ids": [
+        "doc-015"
+      ]
+    }
+  ]
+}

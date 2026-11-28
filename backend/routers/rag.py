@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field, StringConstraints
 from db.connection import get_database
 from security import BULK_LIMIT, SEARCH_LIMIT, WRITE_LIMIT, limiter, require_admin_key
 from services.llm import LLMError
+from services.rag_errors import IncompatibleIndexError
 from services.rag_service import rag_service
 
 logger = logging.getLogger("intelliclaim.rag")
@@ -37,12 +38,27 @@ def _index_metadata(doc: dict) -> dict:
     }
 
 
+def _page_starts(doc: dict) -> list[int] | None:
+    """Page offsets stored at upload; a one-page document without them starts page 1 at 0."""
+    if doc.get("page_starts"):
+        return doc["page_starts"]
+    return [0] if doc.get("page_count") == 1 else None
+
+
+async def _index(doc: dict) -> int:
+    return await rag_service.index_document(
+        doc["_id"], doc["extracted_text"], _index_metadata(doc), page_starts=_page_starts(doc)
+    )
+
+
 @router.post("/rag/query")
 @limiter.limit(SEARCH_LIMIT)
 async def rag_query(request: Request, payload: QueryRequest):
     """Query documents using RAG (natural language search).
 
-    503 when no AI provider is configured, 502 when the provider fails.
+    503 when no AI provider is configured, 502 when the provider fails and 409
+    when the index was built with another embedding model (rebuild it with
+    POST /api/rag/index-all).
     """
     return await rag_service.query(payload.question, top_k=payload.top_k)
 
@@ -60,8 +76,8 @@ async def index_document(request: Request, document_id: str):
         raise HTTPException(status_code=400, detail="Document has no extracted text")
 
     try:
-        chunks = await rag_service.index_document(document_id, doc["extracted_text"], _index_metadata(doc))
-    except LLMError:
+        chunks = await _index(doc)
+    except (LLMError, IncompatibleIndexError):
         raise
     except Exception:
         logger.exception("Indexing failed for %s", document_id)
@@ -72,31 +88,34 @@ async def index_document(request: Request, document_id: str):
 @router.post("/rag/index-all", dependencies=[Depends(require_admin_key)])
 @limiter.limit(BULK_LIMIT)
 async def index_all_documents(request: Request):
-    """Re-index all processed documents."""
+    """Rebuild the search index from every processed document.
+
+    The collection is replaced first, which also clears vectors left behind by
+    an earlier embedding model or chunking, then each document is re-indexed.
+    """
     db = get_database()
     cursor = db.documents.find({"processing_status": "processed", "extracted_text": {"$nin": [None, ""]}})
     docs = await cursor.to_list(length=10000)
 
+    await rag_service.reset_index()
     indexed = 0
     errors = 0
-    for position, doc in enumerate(docs):
+    chunks_indexed = 0
+    for doc in docs:
         try:
-            chunks = await rag_service.index_document(doc["_id"], doc["extracted_text"], _index_metadata(doc))
-        except LLMError as exc:
-            # The embedding provider is down; the remaining documents would fail too.
-            logger.warning("Stopping re-index at %s: %s", doc["_id"], exc.detail)
-            errors += len(docs) - position
-            break
+            chunks = await _index(doc)
         except Exception:
             logger.exception("Failed to index %s", doc["_id"])
             errors += 1
             continue
         if chunks:
             indexed += 1
+            chunks_indexed += chunks
         else:
             errors += 1
 
-    return {"indexed": indexed, "errors": errors, "total": len(docs)}
+    logger.info("Rebuilt the search index: %d of %d documents, %d chunks", indexed, len(docs), chunks_indexed)
+    return {"indexed": indexed, "errors": errors, "total": len(docs), "chunks_indexed": chunks_indexed}
 
 
 @router.get("/rag/stats")

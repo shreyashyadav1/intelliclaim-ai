@@ -14,6 +14,7 @@ from db.connection import get_database
 from models.claim import ClaimUpdate
 from security import WRITE_LIMIT, limiter, require_admin_key
 from services.claim_service import detach_claim_documents
+from services.risk_levels import RISK_LEVELS, risk_score_condition
 from utils.helpers import utc_now
 
 logger = logging.getLogger("intelliclaim.claims")
@@ -30,20 +31,18 @@ async def list_claims(
     risk_level: str | None = None,
     search: str | None = Query(None, max_length=100),
 ):
-    """List claims with optional filters and pagination."""
+    """List claims with optional filters and pagination.
+
+    risk_level is low, medium or high (bands in services.risk_levels); other values are ignored.
+    """
     db = get_database()
     query = {}
 
     if status:
         query["status"] = status
 
-    if risk_level:
-        if risk_level == "low":
-            query["risk_score"] = {"$lt": 30}
-        elif risk_level == "medium":
-            query["risk_score"] = {"$gte": 30, "$lt": 60}
-        elif risk_level == "high":
-            query["risk_score"] = {"$gte": 60}
+    if risk_level in RISK_LEVELS:
+        query["risk_score"] = risk_score_condition(risk_level)
 
     if search and search.strip():
         # Escape the input so it is matched literally rather than run as a regex.

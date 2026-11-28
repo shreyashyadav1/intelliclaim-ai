@@ -14,7 +14,10 @@ Composite score (capped at 100):
     sum of rule-flag severity weights + ai_risk_score x 0.4 x mean AI flag confidence
 
 Each flag carries origin "rule" or "ai", and only rule flags contribute
-severity weights, so every finding is counted exactly once.
+severity weights, so every finding is counted exactly once. The score maps
+to a risk level in services.risk_levels: medium from RISK_FLAG_THRESHOLD
+(default 15, so a single medium- or high-severity rule finding is enough),
+high from 60.
 
 Without a configured provider the AI layer is skipped and reported as
 ai_review.status = "not_configured". When a configured provider fails, the
@@ -34,6 +37,7 @@ from db.connection import get_database
 from models.validation import REVIEW_KEYS, AIReview
 from services import llm
 from services.llm import LLMError, LLMOutputError
+from services.risk_levels import risk_level
 from utils.helpers import parse_amount
 
 logger = logging.getLogger("intelliclaim.validation")
@@ -188,12 +192,11 @@ class ValidationService:
         flags.extend(ai_flags)
 
         # 6. Composite risk score (rule-based + AI)
-        risk_score = self._calculate_risk_score(flags, ai.review)
-        risk_level = self._get_risk_level(risk_score)
+        risk_score = round(self._calculate_risk_score(flags, ai.review), 1)
 
         return {
-            "risk_score": round(risk_score, 1),
-            "risk_level": risk_level,
+            "risk_score": risk_score,
+            "risk_level": risk_level(risk_score),
             "flags": flags,
             "is_duplicate": is_duplicate,
             "total_flags": len(flags),
@@ -413,14 +416,6 @@ class ValidationService:
         )
         ai_score = review.ai_risk_score * AI_SCORE_WEIGHT * review.average_confidence
         return min(rule_score + ai_score, 100.0)
-
-    def _get_risk_level(self, score: float) -> str:
-        """Classify risk level from composite score."""
-        if score >= 60:
-            return "high"
-        elif score >= 30:
-            return "medium"
-        return "low"
 
 
 # Module-level singleton

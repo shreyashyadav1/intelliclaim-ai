@@ -23,6 +23,8 @@ from utils.pdf_parser import (
     count_pages,
     parse_image,
     parse_pdf,
+    read_image,
+    read_pdf,
 )
 
 requires_tesseract = pytest.mark.skipif(shutil.which("tesseract") is None, reason="tesseract is not installed")
@@ -140,6 +142,24 @@ def test_partially_scanned_pdf_without_tesseract_keeps_the_text_pages(tmp_path, 
         text = parse_pdf(path, max_pages=50)
     assert "proper text layer" in text
     assert "pages [2]" in caplog.text
+
+
+def test_read_pdf_records_where_each_page_starts(tmp_path, fake_ocr):
+    path = write_pdf(
+        tmp_path / "two.pdf",
+        [("text", "Page one has a proper text layer with plenty of characters."), ("scan", text_image())],
+    )
+    paged = read_pdf(path, max_pages=50)
+
+    assert len(paged.page_starts) == 2
+    assert paged.text[: paged.page_starts[1]].strip() == "Page one has a proper text layer with plenty of characters."
+    assert paged.text[paged.page_starts[1]:] == "OCR text from page 1 with enough characters"
+
+
+def test_read_image_gives_every_tiff_frame_a_page(tmp_path, fake_ocr):
+    paged = read_image(write_tiff(tmp_path / "scan.tiff", [text_image(), text_image()]), max_pages=50)
+    assert len(paged.page_starts) == 2
+    assert paged.text[paged.page_starts[1]:].endswith("page 2 with enough characters")
 
 
 def test_page_limit(tmp_path):

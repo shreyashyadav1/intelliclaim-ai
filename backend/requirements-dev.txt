@@ -4,3 +4,7 @@ pytest==9.1.1
 pytest-asyncio==1.4.0
 pytest-cov==7.1.0
 ruff==0.16.8
+
+# Evaluation harness (backend/evals)
+Faker==40.40.0
+RapidFuzz==3.14.6
