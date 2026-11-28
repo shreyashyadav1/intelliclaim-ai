@@ -273,6 +273,41 @@ class RAGService:
         logger.info("RAG answered via %s (%s retrieval): %s", answer["provider"], mode, question[:80])
         return self._response(answer["text"], output["docs"], answer["provider"], mode)
 
+    async def search(self, question: str, top_k: int = 5) -> dict[str, Any]:
+        """Retrieve the chunks most relevant to a question, without asking a model.
+
+        Uses the same retriever as query() (RAG_RETRIEVAL_MODE), so it needs no
+        AI provider. Each result is a source_documents entry plus the chunk's
+        full text and its chunk id. The retriever surrounds each of the top_k
+        ranked chunks with its neighbouring chunks (RAG_NEIGHBOR_CHUNKS), so
+        there can be more than top_k results; a neighbour's `neighbor_of` is
+        the chunk id of the ranked chunk it was added for, and None on ranked
+        chunks.
+
+        Raises:
+            IncompatibleIndexError: the index must be rebuilt first.
+        """
+        mode = settings.RAG_RETRIEVAL_MODE
+        index = await asyncio.to_thread(self._vector_index)
+        if await asyncio.to_thread(index.count) == 0:
+            return {"results": [], "retrieval_mode": mode}
+        await asyncio.to_thread(index.check_compatible)
+
+        retriever = await asyncio.to_thread(index.retriever, mode, top_k)
+        docs = await retriever.ainvoke(question)
+        return {
+            "results": [
+                {
+                    **_source(doc),
+                    "text": doc.page_content,
+                    "chunk_id": doc.metadata.get("chunk_id"),
+                    "neighbor_of": doc.metadata.get("neighbor_of"),
+                }
+                for doc in docs
+            ],
+            "retrieval_mode": mode,
+        }
+
     @staticmethod
     def _answer_chain():
         """The answer step: mock template, or each configured provider in order."""
