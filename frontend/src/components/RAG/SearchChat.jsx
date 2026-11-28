@@ -1,164 +1,208 @@
 import { useEffect, useRef, useState } from 'react';
-import { AlertCircle, Bot, FileText, RefreshCw, Send, Sparkles, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { getErrorMessage, ragApi } from '../../services/api';
 import MockBadge from '../Shared/MockBadge';
 import './SearchChat.css';
 
 const suggestedQuestions = [
-  'What was the diagnosis in Claim CLM-2026-10004?',
-  'Show all claims involving knee surgery',
-  'What is the total cost of claims from Metro General Hospital?',
-  'List patients with treatment costs over $50,000',
+  'Which patients were treated at Metro General Hospital?',
+  'What did the knee replacement claims cost?',
+  'List claims with treatment costs over $50,000',
+  'Which claims were for pneumonia, and where were they treated?',
 ];
 
-const MESSAGE_ICONS = { user: User, assistant: Bot, error: AlertCircle };
+const prefersReducedMotion = () => Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
 
 function formatMatch(score) {
   const clamped = Math.min(Math.max(Number(score) || 0, 0), 1);
   return `${(clamped * 100).toFixed(0)}%`;
 }
 
-function ChatMessage({ message, onRetry, disabled }) {
-  const Icon = MESSAGE_ICONS[message.role];
-  const variant = message.role === 'user' ? 'user' : 'assistant';
+const SNIPPET_PREVIEW_LINES = 4;
+
+function Citation({ src }) {
+  const [expanded, setExpanded] = useState(false);
+  const snippet = src.text_snippet ?? '';
+  const long = snippet.split('\n').length > SNIPPET_PREVIEW_LINES || snippet.length > 220;
 
   return (
-    <div className={`chat-message chat-message--${variant} ${message.role === 'error' ? 'chat-message--error' : ''}`}>
-      <div className="chat-message-avatar">
-        <Icon size={16} />
-      </div>
-      <div className="chat-message-content" role={message.role === 'error' ? 'alert' : undefined}>
-        {message.role === 'error' && <p className="chat-error-title">The search failed</p>}
-        <p>{message.content}</p>
-
-        {message.role === 'error' && (
-          <button type="button" className="chat-retry-btn" onClick={() => onRetry(message.question)} disabled={disabled}>
-            <RefreshCw size={12} /> Try again
-          </button>
-        )}
-
-        {message.role === 'assistant' && message.source === 'mock' && (
-          <div className="chat-message-meta">
-            <MockBadge source={message.source} />
-          </div>
-        )}
-
-        {message.sources?.length > 0 && (
-          <div className="chat-sources">
-            <span className="chat-sources-label">Sources:</span>
-            {message.sources.map((src, index) => (
-              <div key={index} className="chat-source-item" title={src.text_snippet}>
-                <FileText size={12} />
-                <span className="chat-source-name">{src.filename || src.doc_id}</span>
-                <span className="chat-source-score">{formatMatch(src.score)}</span>
-              </div>
-            ))}
-          </div>
+    <li className="citation">
+      <div className="citation-head">
+        <span className="citation-name" translate="no">{src.filename || src.doc_id}</span>
+        <span className="citation-score">
+          <span className="tabular">{formatMatch(src.score)}</span> match
+        </span>
+        {src.doc_id && (
+          <Link to={`/documents?doc=${encodeURIComponent(src.doc_id)}`} className="text-link citation-open">
+            Open document
+          </Link>
         )}
       </div>
+      {snippet && (
+        <blockquote className="citation-snippet" data-clamped={(long && !expanded) || undefined}>
+          {snippet}
+        </blockquote>
+      )}
+      {long && (
+        <button type="button" className="citation-toggle" aria-expanded={expanded} onClick={() => setExpanded((open) => !open)}>
+          {expanded ? 'Show less of the passage' : 'Show the whole passage'}
+        </button>
+      )}
+    </li>
+  );
+}
+
+function Citations({ sources }) {
+  return (
+    <div className="citations">
+      <h3 className="citations-title">Sources</h3>
+      <ol className="citations-list">
+        {sources.map((src, index) => <Citation key={`${src.doc_id}-${index}`} src={src} />)}
+      </ol>
     </div>
   );
 }
 
+function Exchange({ exchange, onRetry, disabled }) {
+  const { question, status, answer, error } = exchange;
+  return (
+    <article className="exchange">
+      <h2 className="exchange-question">{question}</h2>
+
+      {status === 'loading' && (
+        <p className="exchange-pending" role="status">
+          <Loader2 size={16} className="spin" aria-hidden="true" />
+          Searching the indexed documents…
+        </p>
+      )}
+
+      {status === 'error' && (
+        <div className="exchange-error" role="alert">
+          <AlertCircle size={16} aria-hidden="true" />
+          <div>
+            <p className="exchange-error-title">The search failed</p>
+            <p>{error}</p>
+            <button type="button" className="btn btn-secondary btn-sm" onClick={() => onRetry(exchange)} disabled={disabled}>
+              <RefreshCw size={14} aria-hidden="true" /> Try again
+            </button>
+          </div>
+        </div>
+      )}
+
+      {status === 'done' && (
+        <div className="exchange-answer">
+          <p className="exchange-answer-label">
+            Answer <MockBadge source={answer.source} />
+          </p>
+          <p className="exchange-answer-text">{answer.content}</p>
+          {answer.sources.length > 0 && <Citations sources={answer.sources} />}
+        </div>
+      )}
+    </article>
+  );
+}
+
 export default function SearchChat() {
-  const [messages, setMessages] = useState([]);
+  const [exchanges, setExchanges] = useState([]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
+  const loading = exchanges.some((exchange) => exchange.status === 'loading');
+  const endRef = useRef(null);
+  const inputRef = useRef(null);
+  const nextId = useRef(0);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, loading]);
+    if (exchanges.length === 0) return;
+    endRef.current?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'end' });
+  }, [exchanges]);
 
-  const ask = async (text) => {
-    const question = text.trim();
-    if (!question || loading) return;
-
-    setMessages((current) => [...current, { role: 'user', content: question }]);
-    setInput('');
-    setLoading(true);
-
+  const run = async (id, question) => {
     try {
       const result = await ragApi.query(question);
-      setMessages((current) => [...current, {
-        role: 'assistant',
+      const answer = {
         content: result.answer || 'The search service returned an empty answer.',
         sources: result.sources ?? result.source_documents ?? [],
         source: result.source,
-      }]);
+      };
+      setExchanges((current) => current.map((item) => (item.id === id ? { ...item, status: 'done', answer } : item)));
     } catch (err) {
-      setMessages((current) => [...current, { role: 'error', content: getErrorMessage(err), question }]);
-    } finally {
-      setLoading(false);
+      setExchanges((current) => current.map((item) => (
+        item.id === id ? { ...item, status: 'error', error: getErrorMessage(err) } : item
+      )));
     }
+  };
+
+  const ask = (text) => {
+    const question = text.trim();
+    if (!question || loading) return;
+    nextId.current += 1;
+    const id = nextId.current;
+    setExchanges((current) => [...current, { id, question, status: 'loading' }]);
+    setInput('');
+    run(id, question);
+  };
+
+  const retry = (exchange) => {
+    if (loading) return;
+    setExchanges((current) => current.map((item) => (
+      item.id === exchange.id ? { ...item, status: 'loading', error: null } : item
+    )));
+    run(exchange.id, exchange.question);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!input.trim()) {
+      inputRef.current?.focus();
+      return;
+    }
     ask(input);
   };
 
   return (
     <div className="search-chat" id="rag-search-chat">
-      {messages.length === 0 ? (
-        <div className="search-chat-empty">
-          <div className="search-chat-empty-icon">
-            <Sparkles size={36} />
-          </div>
-          <h3>Ask about your claims</h3>
-          <p>Use natural language to search across all indexed claim documents</p>
-          <div className="suggested-questions">
+      {exchanges.length === 0 ? (
+        <div className="search-intro">
+          <p className="search-intro-text">
+            Only indexed documents are searched. Index more from <Link to="/documents" className="text-link">Documents</Link>.
+          </p>
+          <h2 className="search-intro-title">Try one of these</h2>
+          <ul className="suggested-questions" role="list">
             {suggestedQuestions.map((question, index) => (
-              <button
-                key={question}
-                type="button"
-                className="suggested-btn"
-                onClick={() => ask(question)}
-                id={`suggested-q-${index}`}
-              >
-                {question}
-              </button>
+              <li key={question}>
+                <button type="button" className="suggested-btn" onClick={() => ask(question)} id={`suggested-q-${index}`}>
+                  {question}
+                </button>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       ) : (
-        <div className="search-chat-messages" role="log" aria-live="polite">
-          {messages.map((message, index) => (
-            <ChatMessage key={index} message={message} onRetry={ask} disabled={loading} />
+        <div className="search-transcript" role="log" aria-live="polite" aria-label="Questions and answers">
+          {exchanges.map((exchange) => (
+            <Exchange key={exchange.id} exchange={exchange} onRetry={retry} disabled={loading} />
           ))}
-          {loading && (
-            <div className="chat-message chat-message--assistant">
-              <div className="chat-message-avatar"><Bot size={16} /></div>
-              <div className="chat-message-content">
-                <div className="typing-indicator" role="status" aria-label="Searching documents">
-                  <span></span><span></span><span></span>
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+          <div ref={endRef} />
         </div>
       )}
 
-      <form className="search-chat-input-wrapper" onSubmit={handleSubmit}>
+      <form className="search-composer" onSubmit={handleSubmit}>
         <input
+          ref={inputRef}
           type="text"
-          placeholder="Ask about your claims..."
+          name="question"
+          autoComplete="off"
+          placeholder="Ask about patients, diagnoses, hospitals or amounts…"
           aria-label="Ask a question about your claims"
           value={input}
           onChange={(event) => setInput(event.target.value)}
           disabled={loading}
-          className="search-chat-input"
+          className="search-composer-input"
           id="rag-search-input"
         />
-        <button
-          type="submit"
-          className="search-chat-send"
-          disabled={loading || !input.trim()}
-          aria-label="Send question"
-          id="rag-send-btn"
-        >
-          <Send size={18} />
+        <button type="submit" className="btn btn-primary search-composer-send" disabled={loading} id="rag-send-btn">
+          {loading && <Loader2 size={16} className="spin" aria-hidden="true" />}
+          Ask
         </button>
       </form>
     </div>

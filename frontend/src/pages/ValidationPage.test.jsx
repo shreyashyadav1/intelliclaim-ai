@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { mockApi } from '../test/mockApi';
 import { renderWithRouter } from '../test/render';
+import { DEFAULT_FLAG_THRESHOLD, setFlagThreshold } from '../utils/format';
 import ValidationPage from './ValidationPage';
 
 const flaggedClaim = {
@@ -15,6 +16,25 @@ const flaggedClaim = {
 };
 
 describe('ValidationPage', () => {
+  afterEach(() => setFlagThreshold(DEFAULT_FLAG_THRESHOLD));
+
+  it('colours and describes risk with the threshold the API reports', async () => {
+    mockApi({
+      'GET /validate/flagged': { data: { claims: [{ ...flaggedClaim, status: 'pending', risk_score: 25 }], total: 1, flag_threshold: 30 } },
+    });
+    renderWithRouter(<ValidationPage />);
+
+    // 25 is below the reported threshold of 30, so it is shown as low risk (green), not medium.
+    expect(await screen.findByText('Risk: 25')).toHaveStyle({ color: '#1e7546' });
+  });
+
+  it('states the reported threshold when nothing is flagged', async () => {
+    mockApi({ 'GET /validate/flagged': { data: { claims: [], total: 0, flag_threshold: 20 } } });
+    renderWithRouter(<ValidationPage />);
+
+    expect(await screen.findByText(/flagged or score 20 or more/)).toBeInTheDocument();
+  });
+
   it('validates pending claims through POST /batch-validate and refreshes the list', async () => {
     let flaggedResponse = { claims: [], total: 0 };
     const requests = mockApi({
@@ -51,6 +71,24 @@ describe('ValidationPage', () => {
     ]);
     expect(requests[1].params).toMatchObject({ status: 'pending', limit: 100 });
     expect(requests[2].body).toEqual({ claim_ids: ['clm-1', 'clm-2'] });
+  });
+
+  it('says when the batch was reviewed by the mock LLM', async () => {
+    mockApi({
+      'GET /validate/flagged': { data: { claims: [], total: 0 } },
+      'GET /claims': { data: { claims: [{ id: 'clm-1' }], total: 1 } },
+      'POST /batch-validate': {
+        data: {
+          results: [{ claim_id: 'clm-1', risk_score: 15, risk_level: 'medium', flags: [], ai_review: { source: 'mock' } }],
+          total_validated: 1,
+        },
+      },
+    });
+    const { user } = renderWithRouter(<ValidationPage />);
+
+    await user.click(await screen.findByRole('button', { name: 'Validate pending' }));
+
+    expect(await screen.findByText(/AI review used the mock LLM\./)).toBeInTheDocument();
   });
 
   it('does not call the batch endpoint when nothing is pending', async () => {

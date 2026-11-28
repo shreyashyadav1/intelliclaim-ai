@@ -1,9 +1,9 @@
-import { AlertCircle, CheckCircle, Info, X } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react';
 import './Shared.css';
 
-const ICONS = { success: CheckCircle, error: AlertCircle, info: Info };
+const ICONS = { success: CheckCircle2, error: AlertCircle, info: Info };
 
-/** Inline, dismissible feedback banner for the result of a user action. */
+/** Inline, dismissible feedback for the result of a user action. */
 export default function Notice({ tone = 'info', children, onDismiss }) {
   const Icon = ICONS[tone] ?? Info;
   return (

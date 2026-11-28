@@ -10,7 +10,7 @@ const REPO_URL = 'https://github.com/shreyashyadav1/intelliclaim-ai';
  * banner only speaks to the "the whole API is down" case.
  */
 export default function OfflineBanner() {
-  const offline = useApiHealth();
+  const { offline } = useApiHealth();
   const [dismissed, setDismissed] = useState(false);
   // Tracks whether `dismissed` still applies to the current outage. Updating
   // state during render (rather than in an effect) is the recommended way to
@@ -28,7 +28,7 @@ export default function OfflineBanner() {
       <Notice tone="info" onDismiss={() => setDismissed(true)}>
         The live demo&rsquo;s server is offline right now, so data can&rsquo;t load. The
         source code, tests and screenshots are on{' '}
-        <a href={REPO_URL} target="_blank" rel="noreferrer">GitHub</a>.
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub</a>.
       </Notice>
     </div>
   );

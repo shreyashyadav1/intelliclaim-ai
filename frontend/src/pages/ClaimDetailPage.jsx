@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import ClaimDetail from '../components/Claims/ClaimDetail';
+import PageHeader from '../components/Shared/PageHeader';
 import { ErrorState, LoadingState } from '../components/Shared/StateMessage';
 import { useApiQuery } from '../hooks/useApiQuery';
 import { claimsApi, getErrorMessage, validationApi } from '../services/api';
-import '../components/Claims/ClaimDetail.css';
 
 const IDLE_VALIDATION = { running: false, result: null, error: null };
+const BACK = { to: '/claims', label: 'All claims' };
 
 function ClaimDetailView({ id }) {
   const loadClaim = useCallback(() => claimsApi.get(id), [id]);
@@ -42,11 +42,23 @@ function ClaimDetailView({ id }) {
   };
 
   if (claim.error) {
-    return claim.error.status === 404
-      ? <ErrorState title="Claim not found" message="It may have been deleted, or the link is incorrect." />
-      : <ErrorState title="Couldn't load this claim" message={getErrorMessage(claim.error)} onRetry={claim.refetch} />;
+    return (
+      <>
+        <PageHeader title="Claim" back={BACK} />
+        {claim.error.status === 404
+          ? <ErrorState title="Claim not found" message="It may have been deleted, or the link is incorrect. Find it again in the claims list." />
+          : <ErrorState title="Couldn't load this claim" message={getErrorMessage(claim.error)} onRetry={claim.refetch} />}
+      </>
+    );
   }
-  if (!claim.data) return <LoadingState label="Loading claim…" />;
+  if (!claim.data) {
+    return (
+      <>
+        <PageHeader title="Claim" back={BACK} />
+        <LoadingState label="Loading claim…" />
+      </>
+    );
+  }
 
   return (
     <ClaimDetail
@@ -64,13 +76,8 @@ function ClaimDetailView({ id }) {
 
 export default function ClaimDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
-
   return (
-    <div className="page-enter" id="claim-detail-page">
-      <button className="claim-detail-back" onClick={() => navigate('/claims')} id="back-to-claims">
-        <ArrowLeft size={18} /> Back to Claims
-      </button>
+    <div id="claim-detail-page">
       {/* Keyed so status and validation state never carry over to another claim. */}
       <ClaimDetailView key={id} id={id} />
     </div>

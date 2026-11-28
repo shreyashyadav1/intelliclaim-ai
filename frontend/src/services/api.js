@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { setFlagThreshold } from '../utils/format';
 
 /**
  * Base URL of the IntelliClaim API, including the `/api` prefix,
@@ -137,7 +138,12 @@ export const BATCH_VALIDATE_LIMIT = 100;
 
 export const validationApi = {
   validate: (claimId) => api.post(`/validate/${claimId}`, null, SLOW_REQUEST),
-  getFlagged: (params) => api.get('/validate/flagged', { params }),
+  /** Flagged claims. The response's flag_threshold also sets the risk bands used for colours. */
+  getFlagged: async (params) => {
+    const data = await api.get('/validate/flagged', { params });
+    setFlagThreshold(data?.flag_threshold);
+    return data;
+  },
   /**
    * Validates claims through POST /batch-validate, sending sequential requests of at
    * most BATCH_VALIDATE_LIMIT IDs. Resolves to `{ results, total_validated }`.

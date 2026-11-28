@@ -15,9 +15,24 @@ const doc = (id, filename, extra = {}) => ({
   ...extra,
 });
 
-const documentNames = () => screen.getAllByRole('heading', { level: 4 }).map((heading) => heading.textContent);
+const documentNames = () => screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent);
 
 describe('DocumentsPage', () => {
+  it('opens the document viewer outside the page container', async () => {
+    mockApi({
+      'GET /documents': { data: { documents: [doc('doc-a', 'invoice_a.pdf')], total: 1 } },
+      'GET /documents/doc-a': { data: doc('doc-a', 'invoice_a.pdf', { extracted_text: 'Total due: $10.00' }) },
+    });
+    const { user, container } = renderWithRouter(<DocumentsPage />);
+
+    await user.click(await screen.findByRole('button', { name: 'View invoice_a.pdf' }));
+
+    const dialog = await screen.findByRole('dialog');
+    expect(container).not.toContainElement(dialog);
+    expect(dialog.closest('#documents-page')).toBeNull();
+    expect(await screen.findByText('Total due: $10.00')).toBeInTheDocument();
+  });
+
   it('restores a document in place when the delete request fails', async () => {
     const pendingDelete = deferred();
     mockApi({
@@ -27,6 +42,7 @@ describe('DocumentsPage', () => {
     const { user } = renderWithRouter(<DocumentsPage />);
 
     await user.click(await screen.findByRole('button', { name: 'Delete invoice_a.pdf' }));
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
 
     // Removed optimistically while the request is in flight...
     expect(documentNames()).toEqual(['invoice_b.pdf']);
@@ -47,6 +63,7 @@ describe('DocumentsPage', () => {
     const { user } = renderWithRouter(<DocumentsPage />);
 
     await user.click(await screen.findByRole('button', { name: 'Delete invoice_a.pdf' }));
+    await user.click(screen.getByRole('button', { name: 'Delete' }));
 
     expect(await screen.findByText('Deleted invoice_a.pdf.')).toBeInTheDocument();
     expect(documentNames()).toEqual(['invoice_b.pdf']);
@@ -78,6 +95,7 @@ describe('DocumentsPage', () => {
           document_id: 'doc-a',
           extracted_data: { patient_name: 'Dana Whitfield', treatment_cost: 18250 },
           confidence_score: 0.82,
+          completeness: 0.82,
           is_new_claim: true,
         },
       },
@@ -89,7 +107,8 @@ describe('DocumentsPage', () => {
 
     expect(await screen.findByText('Dana Whitfield')).toBeInTheDocument();
     expect(screen.getByText('$18,250')).toBeInTheDocument();
-    expect(screen.getByText('82% confidence')).toBeInTheDocument();
+    expect(screen.getByText('Completeness')).toBeInTheDocument();
+    expect(screen.getByText('82%')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View claim' })).toHaveAttribute('href', '/claims/clm-9');
 
     await user.click(screen.getByRole('button', { name: 'Index for search' }));
@@ -97,6 +116,47 @@ describe('DocumentsPage', () => {
     expect(await screen.findByText(/is indexed and can be queried from AI Search/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Indexed for search' })).toBeDisabled();
     await waitFor(() => expect(requests.map((request) => `${request.method} ${request.url}`)).toContain('POST /rag/index/doc-a'));
+  });
+
+  it('opens a document from its link and traces extracted fields into its text', async () => {
+    const text = 'Patient: Dana Whitfield\nTotal due: $18,250.00';
+    mockApi({
+      'GET /documents': { data: { documents: [doc('doc-a', 'invoice_a.pdf')], total: 1 } },
+      'GET /documents/doc-a': { data: doc('doc-a', 'invoice_a.pdf', { extracted_text: text }) },
+      'POST /extract/doc-a': {
+        data: {
+          claim_id: 'clm-9',
+          extracted_data: { patient_name: 'Dana Whitfield', treatment_cost: 18250 },
+          completeness: 0.18,
+          is_new_claim: true,
+          source: 'mock',
+        },
+      },
+    });
+    const { user } = renderWithRouter(<DocumentsPage />, { route: '/documents?doc=doc-a' });
+
+    const dialog = await screen.findByRole('dialog', { name: 'invoice_a.pdf' });
+    expect(await screen.findByText('Total due: $18,250.00')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Extract claim data' }));
+
+    expect(await screen.findByRole('button', { name: 'Show patient name in the document: Line 1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show treatment cost in the document: Line 2' })).toBeInTheDocument();
+    expect(screen.getByText('2 of 2 values found in this document.')).toBeInTheDocument();
+    expect(dialog).toHaveTextContent('Mock AI');
+  });
+
+  it('asks before deleting and keeps the document when the reader backs out', async () => {
+    const requests = mockApi({
+      'GET /documents': { data: { documents: [doc('doc-a', 'invoice_a.pdf')], total: 1 } },
+    });
+    const { user } = renderWithRouter(<DocumentsPage />);
+
+    await user.click(await screen.findByRole('button', { name: 'Delete invoice_a.pdf' }));
+    await user.click(screen.getByRole('button', { name: 'Keep' }));
+
+    expect(documentNames()).toEqual(['invoice_a.pdf']);
+    expect(requests.some((request) => request.method === 'DELETE')).toBe(false);
   });
 
   it('explains that re-indexing everything is disabled on the public demo', async () => {

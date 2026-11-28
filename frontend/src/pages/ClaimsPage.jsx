@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ClaimsList from '../components/Claims/ClaimsList';
+import PageHeader from '../components/Shared/PageHeader';
 import { useApiQuery } from '../hooks/useApiQuery';
 import { claimsApi } from '../services/api';
 
@@ -38,7 +39,11 @@ export default function ClaimsPage() {
   };
 
   return (
-    <div className="page-enter" id="claims-page">
+    <div id="claims-page">
+      <PageHeader
+        title="Claims"
+        description="Every claim, newest first. Open one to check its fields against the source document and decide it."
+      />
       <ClaimsList
         claims={claims.data?.claims}
         total={claims.data?.total}
@@ -49,6 +54,7 @@ export default function ClaimsPage() {
         onSearchChange={(value) => setParam('search', value, '')}
         status={status}
         onStatusChange={(value) => setParam('status', value, 'all')}
+        onClearFilters={() => setSearchParams({}, { replace: true })}
       />
     </div>
   );

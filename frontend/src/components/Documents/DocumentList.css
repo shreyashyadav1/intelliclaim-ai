@@ -1,171 +1,129 @@
-.document-list-header {
-  display: flex;
+.document-rows {
+  border-top: 1px solid var(--rule);
+}
+
+/* Register row: name and tags, file details, actions. */
+.document-row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) minmax(150px, auto) auto;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--rule);
+  transition: background-color var(--duration-fast) ease;
 }
 
-.document-list-header h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
+@media (hover: hover) {
+  .document-row:hover {
+    background: color-mix(in oklab, var(--desk-raised) 60%, var(--desk));
+  }
 }
 
-.document-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.document-row-icon {
+  color: var(--ink-secondary);
 }
 
-.document-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-}
-
-.document-card-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: rgba(99, 102, 241, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-primary);
-  flex-shrink: 0;
-}
-
-.document-card-info {
-  flex: 1;
+.document-row-main {
   min-width: 0;
 }
 
-.document-card-name {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 6px;
-  white-space: nowrap;
+.document-row-name {
+  min-width: 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.document-row-open {
+  display: block;
+  max-width: 100%;
   overflow: hidden;
+  color: var(--ink);
+  font-weight: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: text-decoration-color var(--duration-fast) ease;
 }
 
-.document-card-meta {
+@media (hover: hover) {
+  .document-row-open:hover {
+    text-decoration-color: var(--ink);
+  }
+}
+
+.document-row-tags {
   display: flex;
-  align-items: center;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-1);
 }
 
-.document-card-size,
-.document-card-date {
-  font-size: 0.8rem;
-  color: var(--text-tertiary);
+.document-row-error {
+  margin-top: var(--space-1);
+  color: var(--risk-high);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
 }
 
-.document-card-actions {
+.document-row-meta {
   display: flex;
-  gap: 6px;
-  flex-shrink: 0;
+  flex-direction: column;
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  white-space: nowrap;
 }
 
-.doc-action-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-sm);
+.document-row-actions,
+.document-confirm {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: all 0.2s;
+  justify-content: flex-end;
+  gap: var(--space-1);
 }
 
-.doc-action-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+.document-confirm {
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
-.doc-action-btn--accent:hover {
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--accent-primary);
-}
-
-.doc-action-btn--danger:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--status-danger);
-}
-
-.document-card--failed {
-  border-color: rgba(239, 68, 68, 0.35);
-}
-
-.document-card-error {
-  margin-top: 8px;
-  font-size: 0.85rem;
-  color: #fca5a5;
-  word-break: break-word;
-}
-
-.doc-action-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.doc-action-btn:disabled:hover {
-  background: none;
-  color: var(--text-secondary);
-}
-
-.doc-action-spinner {
-  animation: spin 1s linear infinite;
-}
-
-.document-list-state:hover {
-  transform: none;
+.document-confirm-text {
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 .document-list-footnote {
-  margin-top: 12px;
-  font-size: 0.85rem;
-  color: var(--text-tertiary);
+  margin-top: var(--space-3);
+  color: var(--ink-secondary);
+  font-size: var(--text-sm);
 }
 
-.document-list-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  transition: all 0.2s;
-}
-
-.document-list-action:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-.document-list-action:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Four actions leave too little room for the name, badges and errors on phones,
-   so they move to their own row. */
-@media (max-width: 600px) {
-  .document-card {
-    flex-wrap: wrap;
-    row-gap: 10px;
+/* Narrow screens: file details under the name, actions on their own row. */
+@media (max-width: 720px) {
+  .document-row {
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: start;
+    padding: var(--space-3) 0;
   }
 
-  .document-card-info {
-    flex-basis: calc(100% - 60px); /* the row minus the 44px icon and the 16px gap */
+  .document-row-icon {
+    margin-top: 2px;
   }
 
-  .document-card-actions {
-    width: 100%;
-    justify-content: flex-end;
+  .document-row-meta {
+    grid-column: 2;
+    flex-direction: row;
+    gap: var(--space-3);
+  }
+
+  .document-row-actions,
+  .document-confirm {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
   }
 }

@@ -1,23 +1,19 @@
-import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar';
 import Header from './Header';
+import DemoDataNote from '../Shared/DemoDataNote';
 import OfflineBanner from '../Shared/OfflineBanner';
 import './Layout.css';
 
 export default function Layout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="layout-root">
-      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-      <div className="layout-content">
-        <OfflineBanner />
-        <Header />
-        <main className="layout-main" role="main">
-          <Outlet />
-        </main>
-      </div>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
+      <DemoDataNote />
+      <Header />
+      <OfflineBanner />
+      <main className="layout-main" id="main-content" tabIndex={-1}>
+        <Outlet />
+      </main>
     </div>
   );
 }

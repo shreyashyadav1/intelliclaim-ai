@@ -1,0 +1,427 @@
+/*
+ * The trace view: a source document set as a typed page with numbered lines,
+ * beside the extracted fields laid out like a claim form. The highlighter is
+ * used here and nowhere else.
+ */
+
+/* ── Two-column layout ── */
+.trace-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 6fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.trace-layout-source {
+  position: sticky;
+  top: calc(var(--topbar-height) + var(--space-4));
+  min-width: 0;
+}
+
+.trace-layout-aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+@media (max-width: 1023px) {
+  .trace-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+
+  .trace-layout-source {
+    position: static;
+  }
+}
+
+/* ── Source panel ── */
+.source-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.source-panel-title,
+.field-sheet-title {
+  font-size: var(--text-lg);
+}
+
+.source-chooser {
+  display: flex;
+  gap: var(--space-1);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.source-chooser-option {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-control);
+  background: var(--sheet);
+  color: var(--ink-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) {
+  .source-chooser-option:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+}
+
+.source-chooser-option[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--sheet);
+}
+
+@media (pointer: coarse) {
+  .source-chooser-option {
+    min-height: 44px;
+  }
+}
+
+/* The scroll area pads the page so its shadow isn't clipped. */
+.source-scroll {
+  max-height: calc(100dvh - var(--topbar-height) - 112px);
+  margin: 0 calc(var(--space-3) * -1);
+  padding: var(--space-1) var(--space-3) var(--space-5);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.source-scroll:focus-visible {
+  outline-offset: -2px;
+}
+
+@media (max-width: 1023px) {
+  .source-scroll {
+    max-height: min(60dvh, 560px);
+  }
+}
+
+.source-sheet {
+  min-height: 280px;
+  padding: var(--space-5) 28px var(--space-6);
+  border: 1px solid color-mix(in oklab, var(--rule) 70%, transparent);
+  border-radius: var(--radius-sheet);
+  background: var(--sheet);
+  box-shadow: var(--shadow-paper);
+}
+
+.source-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding-bottom: 10px;
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+.source-sheet-head svg {
+  flex-shrink: 0;
+}
+
+.source-sheet-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-sheet-message {
+  max-width: 60ch;
+  color: var(--ink-secondary);
+  font-family: var(--font-doc);
+}
+
+.source-empty {
+  padding: var(--space-5);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-control);
+}
+
+@media (max-width: 520px) {
+  .source-sheet {
+    padding: var(--space-4) var(--space-4) var(--space-5);
+  }
+}
+
+/* ── Numbered lines ── */
+.source-lines {
+  font-family: var(--font-doc);
+  font-size: var(--text-md);
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.source-line {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 2.5ch minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+/* Flashed when a field's line reference scrolls the page here. */
+.source-line::after {
+  content: '';
+  position: absolute;
+  inset: 0 -6px;
+  z-index: -1;
+  border-radius: var(--radius-tag);
+  background: color-mix(in oklab, var(--mark-strong) 55%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.source-line-number {
+  padding-top: 0.2em;
+  color: var(--ink-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  line-height: 2;
+  text-align: right;
+  user-select: none;
+  transition: color var(--duration-fast) ease;
+}
+
+.source-line[data-active] .source-line-number {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.source-line-text {
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.trace-mark {
+  padding: 0 1px;
+  margin: 0 -1px;
+  border-radius: var(--radius-sheet);
+  background: var(--mark);
+  box-shadow: inset 0 -2px 0 var(--mark-edge);
+  color: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition: background-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+.trace-mark[data-active] {
+  background: var(--mark-strong);
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+/* While one field is being checked, the other highlights step back. */
+.source-lines[data-has-active] .trace-mark:not([data-active]) {
+  background: color-mix(in oklab, var(--mark) 45%, var(--sheet));
+  box-shadow: none;
+}
+
+@media (forced-colors: active) {
+  .trace-mark {
+    forced-color-adjust: none;
+    background: Mark;
+    color: MarkText;
+  }
+
+  .trace-mark[data-active] {
+    outline: 2px solid MarkText;
+  }
+}
+
+/* ── Field sheet (claim-form grid) ── */
+.field-sheet {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.field-sheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.field-sheet-summary {
+  color: var(--ink-secondary);
+  font-size: var(--text-sm);
+}
+
+.field-sheet-completeness {
+  display: grid;
+  grid-template-columns: auto minmax(60px, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.field-sheet-completeness-label {
+  color: var(--ink-secondary);
+  font-weight: 500;
+}
+
+.field-sheet-completeness-value {
+  font-weight: 650;
+}
+
+.meter {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--desk-raised);
+}
+
+.meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform-origin: left center;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  background: var(--rule);
+}
+
+@container (min-width: 460px) {
+  .field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field-cell[data-wide] {
+    grid-column: 1 / -1;
+  }
+}
+
+.field-cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'label trace'
+    'value value';
+  align-items: center;
+  gap: 2px var(--space-3);
+  padding: 10px var(--space-3) var(--space-3);
+  background: var(--desk);
+  transition: background-color var(--duration-fast) ease;
+}
+
+.field-cell[data-active] {
+  background: color-mix(in oklab, var(--mark) 45%, var(--desk));
+}
+
+.field-label {
+  grid-area: label;
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+.field-value {
+  grid-area: value;
+  min-width: 0;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.field-value--missing {
+  color: var(--ink-secondary);
+  font-weight: 400;
+}
+
+.field-trace {
+  grid-area: trace;
+  justify-self: end;
+}
+
+.trace-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 6px;
+  margin: 0 -6px;
+  border-radius: var(--radius-tag);
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+button.trace-ref {
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+  button.trace-ref:hover {
+    color: var(--ink);
+    background: var(--desk-raised);
+    text-decoration-color: var(--ink);
+  }
+}
+
+.field-cell[data-active] button.trace-ref {
+  color: var(--ink);
+}
+
+@media (pointer: coarse) {
+  button.trace-ref {
+    min-height: 44px;
+    margin-block: -10px;
+  }
+}
+
+.trace-ref--absent {
+  font-weight: 500;
+}
+
+.trace-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 8px;
+  border-radius: var(--radius-sheet);
+  background: var(--mark);
+  box-shadow: inset 0 -2px 0 var(--mark-edge);
+}
+
+.field-cell[data-active] .trace-swatch {
+  background: var(--mark-strong);
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+.trace-swatch--absent {
+  background: transparent;
+  box-shadow: none;
+  border: 1px dashed var(--rule-strong);
+}

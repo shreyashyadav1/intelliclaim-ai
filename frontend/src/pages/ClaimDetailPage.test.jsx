@@ -34,18 +34,22 @@ describe('ClaimDetailPage', () => {
             risk_level: 'high',
             flags: [{ type: 'high_cost', description: 'Treatment cost exceeds $50,000', severity: 'medium' }],
             is_duplicate: false,
-            ai_review: { ai_summary: 'Cost is high for an outpatient procedure.' },
-            source: 'mock',
+            ai_review: { ai_summary: 'Cost is high for an outpatient procedure.', status: 'mock', source: 'mock' },
           },
         };
       },
     });
     const { user } = renderClaim();
 
+    // extraction_confidence is shown as completeness, not as a model confidence.
+    expect(await screen.findByText('Completeness')).toBeInTheDocument();
+    expect(screen.getByText('90%')).toBeInTheDocument();
+    expect(screen.queryByText(/confidence/i)).not.toBeInTheDocument();
+
     await user.click(await screen.findByRole('button', { name: 'Validate' }));
 
     expect(await screen.findByText('Cost is high for an outpatient procedure.')).toBeInTheDocument();
-    expect(screen.getByText('High risk · 72.5')).toBeInTheDocument();
+    expect(screen.getByText('High risk, score 72.5')).toBeInTheDocument();
     expect(screen.getByText('Treatment cost exceeds $50,000')).toBeInTheDocument();
     expect(screen.getByText('medium')).toBeInTheDocument();
     expect(screen.getByText('Mock AI')).toBeInTheDocument();
@@ -66,6 +70,48 @@ describe('ClaimDetailPage', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Changing a claim status is disabled on the public demo.');
     expect(screen.getByText('pending')).toBeInTheDocument();
     expect(screen.queryByText('approved')).not.toBeInTheDocument();
+  });
+
+  it('traces each field to the line of the source document it came from', async () => {
+    const sourceDoc = { id: 'doc-1', filename: 'invoice_dana.pdf', document_class: 'invoice', processing_status: 'processed' };
+    mockApi({
+      'GET /claims/clm-1': { data: { ...claim, document_ids: ['doc-1'] } },
+      'GET /claims/clm-1/documents': { data: { documents: [sourceDoc] } },
+      'GET /documents/doc-1': {
+        data: { ...sourceDoc, extracted_text: 'Patient: Dana Whitfield\nPolicy: POL-2026-00001\nTotal due: $72,000.00' },
+      },
+    });
+    const { user } = renderClaim();
+
+    const patientLine = await screen.findByRole('button', { name: 'Show patient name in the document: Line 1' });
+    expect(screen.getByRole('button', { name: 'Show treatment cost in the document: Line 3' })).toBeInTheDocument();
+    // The claim's diagnosis, hospital and claim number are not in this invoice.
+    expect(screen.getAllByText('Not in this document')).toHaveLength(3);
+    expect(screen.getByText('3 of 6 values found in this document.')).toBeInTheDocument();
+
+    await user.click(patientLine);
+
+    expect(screen.getByText('Dana Whitfield', { selector: 'mark' })).toHaveAttribute('data-active', 'true');
+  });
+
+  it('opens the source document named in the link and switches between documents', async () => {
+    const invoice = { id: 'doc-1', filename: 'invoice_dana.pdf', document_class: 'invoice', processing_status: 'processed' };
+    const report = { id: 'doc-2', filename: 'report_dana.pdf', document_class: 'medical_report', processing_status: 'processed' };
+    mockApi({
+      'GET /claims/clm-1': { data: { ...claim, document_ids: ['doc-1', 'doc-2'] } },
+      'GET /claims/clm-1/documents': { data: { documents: [invoice, report] } },
+      'GET /documents/doc-1': { data: { ...invoice, extracted_text: 'Total due: $72,000.00' } },
+      'GET /documents/doc-2': { data: { ...report, extracted_text: 'Diagnosis: Knee arthroscopy' } },
+    });
+    const { user } = renderWithRouter(<ClaimDetailPage />, { route: '/claims/clm-1?doc=doc-2', path: '/claims/:id' });
+
+    expect(await screen.findByRole('region', { name: 'Text of report_dana.pdf' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Medical report' })).toHaveAttribute('aria-pressed', 'true');
+
+    await user.click(screen.getByRole('button', { name: 'Invoice' }));
+
+    expect(await screen.findByRole('region', { name: 'Text of invoice_dana.pdf' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Show treatment cost in the document: Line 1' })).toBeInTheDocument();
   });
 
   it('shows a not-found message instead of a sample claim', async () => {

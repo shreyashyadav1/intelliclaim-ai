@@ -1,12 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { mockApi } from '../../test/mockApi';
 import SearchChat from './SearchChat';
 
 async function ask(user, question) {
   await user.type(screen.getByLabelText('Ask a question about your claims'), question);
-  await user.click(screen.getByRole('button', { name: 'Send question' }));
+  await user.click(screen.getByRole('button', { name: 'Ask' }));
 }
 
 describe('SearchChat', () => {
@@ -21,7 +22,7 @@ describe('SearchChat', () => {
       },
     });
     const user = userEvent.setup();
-    render(<SearchChat />);
+    render(<SearchChat />, { wrapper: MemoryRouter });
 
     await ask(user, 'Which claims are over $50,000?');
 
@@ -48,7 +49,7 @@ describe('SearchChat', () => {
       },
     });
     const user = userEvent.setup();
-    render(<SearchChat />);
+    render(<SearchChat />, { wrapper: MemoryRouter });
 
     await ask(user, 'Summarize the invoices');
 
@@ -56,5 +57,8 @@ describe('SearchChat', () => {
     expect(screen.getByText('Mock AI')).toBeInTheDocument();
     expect(screen.getByText('doc-7')).toBeInTheDocument();
     expect(screen.getByText('87%')).toBeInTheDocument();
+    // Each citation quotes its passage and links to the document it came from.
+    expect(screen.getByText('Invoice total')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Open document' })).toHaveAttribute('href', '/documents?doc=doc-7');
   });
 });

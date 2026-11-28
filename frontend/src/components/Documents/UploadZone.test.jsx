@@ -49,7 +49,7 @@ describe('UploadZone', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Upload failed: Unsupported file type: application/pdf');
     expect(screen.queryByText(/Classified as/)).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Upload Another' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Upload another' })).not.toBeInTheDocument();
     expect(onUploadComplete).not.toHaveBeenCalled();
   });
 
