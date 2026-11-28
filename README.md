@@ -431,7 +431,7 @@ average risk score; `/risk-distribution` is available to clients but not charted
 | Backend tests | `cd backend && pytest` (needs MongoDB; set `TEST_MONGODB_URI`) | 531 pass with Tesseract installed (the tests that need it are skipped without it); 91% line coverage |
 | Backend lint | `ruff check .` | clean |
 | Offline evals | `python -m evals.run --suite offline --check-thresholds` | all thresholds met |
-| Frontend | `cd frontend && npm run lint && npm test && npm run build` | lint clean, 68 tests pass, build succeeds |
+| Frontend | `cd frontend && npm run lint && npm test && npm run build` | lint clean, 71 tests pass, build succeeds |
 
 Tests never call a real AI provider: provider clients are replaced by fakes, and a guard fails any test that tries to
 build a real one. The MCP tools are tested through an in-process MCP client, and tracing with an in-memory span
