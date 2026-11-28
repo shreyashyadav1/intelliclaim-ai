@@ -21,6 +21,7 @@ from routers import analytics, claims, documents, extraction, rag, validation
 from security import PROVIDER_CHECK_LIMIT, limiter, rate_limit_exceeded_handler, require_admin_key
 from services import llm
 from services.rag_errors import IncompatibleIndexError
+from services.tracing import TRACE_ID_HEADER, TracingMiddleware, configure_tracing, shutdown_tracing
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,6 +37,7 @@ HEALTH_DB_TIMEOUT_SECONDS = 2.0
 async def lifespan(app: FastAPI):
     """Application startup and shutdown lifecycle."""
     logger.info("Starting IntelliClaim AI API...")
+    configure_tracing(APP_VERSION)
     await connect_db()
     logger.info("Database connected successfully.")
     yield
@@ -43,6 +45,7 @@ async def lifespan(app: FastAPI):
     await llm.close_clients()
     await close_db()
     logger.info("Database connection closed.")
+    shutdown_tracing()
 
 
 app = FastAPI(
@@ -69,7 +72,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=[TRACE_ID_HEADER],
 )
+# Outermost, so request spans see the final status and cover CORS handling too.
+app.add_middleware(TracingMiddleware)
 
 
 @app.exception_handler(llm.LLMError)

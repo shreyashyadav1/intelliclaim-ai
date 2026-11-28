@@ -35,6 +35,12 @@ rank-bm25==0.2.2
 # writable (as on GitHub's hosted Python), so the splitter fails with LookupError.
 nltk==3.10.3
 
+# Tracing (services/tracing.py). chromadb depends on the same packages; pinned here
+# because the application imports them directly.
+opentelemetry-api==1.45.0
+opentelemetry-sdk==1.45.0
+opentelemetry-exporter-otlp-proto-grpc==1.45.0
+
 # OCR
 PyMuPDF==1.27.2.3
 pytesseract==0.3.13

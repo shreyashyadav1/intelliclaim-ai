@@ -8,6 +8,8 @@ per-task sampling parameters come from config.GenerationParams.
 
 chat_model() wraps the same clients in LangChain chat models (ChatGroq,
 ChatOpenAI) for the RAG chain, so both paths share pools and settings.
+Every completion goes through services.tracing.TracedCompletions, which
+records a span with token usage and the estimated cost.
 
 Provider failures are raised as LLMError subclasses, which main.py turns
 into {"detail": ...} responses: 503 when no provider is configured and 502
@@ -22,6 +24,7 @@ import groq
 import openai
 
 from config import GenerationParams, settings
+from services.tracing import TracedCompletions
 
 logger = logging.getLogger("intelliclaim.llm")
 
@@ -153,7 +156,7 @@ def chat_model(provider: str, params: GenerationParams) -> Any:
             temperature=params.temperature,
             max_tokens=params.max_tokens,
             reasoning_effort=settings.GROQ_REASONING_EFFORT or None,
-            async_client=get_groq_client().chat.completions,
+            async_client=_completions("groq", get_groq_client()),
             client=_NoSyncClient(),
         )
     if provider == "openai":
@@ -165,12 +168,16 @@ def chat_model(provider: str, params: GenerationParams) -> Any:
             api_key=settings.OPENAI_API_KEY,
             temperature=params.temperature,
             max_tokens=params.max_tokens,
-            async_client=client.chat.completions,
+            async_client=_completions("openai", client),
             root_async_client=client,
             client=_NoSyncClient(),
             root_client=_NoSyncClient(),
         )
     raise ValueError(f"Unknown AI provider: {provider!r}")
+
+
+def _completions(provider: str, client: Any) -> TracedCompletions:
+    return TracedCompletions(provider, client.chat.completions)
 
 
 def configured_providers() -> list[str]:
@@ -216,7 +223,7 @@ async def groq_chat(messages: Messages, params: GenerationParams, *, json_mode: 
     attempts = 1 + (settings.LLM_MAX_RETRIES if json_mode else 0)
     for attempt in range(1, attempts + 1):
         try:
-            response = await client.chat.completions.create(
+            response = await _completions("groq", client).create(
                 model=settings.GROQ_MODEL,
                 messages=messages,
                 temperature=params.temperature,
@@ -253,7 +260,7 @@ async def openai_chat(messages: Messages, params: GenerationParams) -> str:
     """Run an OpenAI chat completion and return the message text."""
     client = get_openai_client()
     try:
-        response = await client.chat.completions.create(
+        response = await _completions("openai", client).create(
             model=settings.OPENAI_MODEL,
             messages=messages,
             temperature=params.temperature,
@@ -273,7 +280,7 @@ async def openai_tool_call(messages: Messages, params: GenerationParams, tool: d
     client = get_openai_client()
     name = tool["function"]["name"]
     try:
-        response = await client.chat.completions.create(
+        response = await _completions("openai", client).create(
             model=settings.OPENAI_MODEL,
             messages=messages,
             tools=[tool],
